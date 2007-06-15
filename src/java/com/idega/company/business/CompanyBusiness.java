@@ -28,6 +28,16 @@ public interface CompanyBusiness extends IBOService {
 	public Company getCompany(Group group) throws FinderException, RemoteException;
 
 	/**
+	 * @see com.idega.company.business.CompanyBusinessBean#getCompanies
+	 */
+	public Collection getCompanies() throws RemoteException;
+
+	/**
+	 * @see com.idega.company.business.CompanyBusinessBean#getValidCompanies
+	 */
+	public Collection getValidCompanies(boolean valid) throws RemoteException;
+
+	/**
 	 * @see com.idega.company.business.CompanyBusinessBean#storeCompany
 	 */
 	public Company storeCompany(String name, String personalID) throws CreateException, RemoteException;
@@ -41,4 +51,9 @@ public interface CompanyBusiness extends IBOService {
 	 * @see com.idega.company.business.CompanyBusinessBean#getTypes
 	 */
 	public Collection getTypes() throws RemoteException;
+
+	/**
+	 * @see com.idega.company.business.CompanyBusinessBean#storeCompanyType
+	 */
+	public void storeCompanyType(String type, String name, String description, int order) throws RemoteException;
 }

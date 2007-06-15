@@ -51,6 +51,10 @@ public class CompanyTypeBMPBean extends GenericEntity implements CompanyType {
 	}
 
 	// Getters
+	public String getType() {
+		return getStringColumnValue(COLUMN_TYPE);
+	}
+
 	public String getName() {
 		return getStringColumnValue(COLUMN_NAME);
 	}
@@ -72,6 +76,10 @@ public class CompanyTypeBMPBean extends GenericEntity implements CompanyType {
 	}
 
 	// Setters
+	public void setType(String type) {
+		setColumn(COLUMN_TYPE, type);
+	}
+
 	public void setName(String name) {
 		setColumn(COLUMN_NAME, name);
 	}

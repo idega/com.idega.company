@@ -38,6 +38,11 @@ public interface Company extends IDOEntity {
 	public String getBankAccount();
 
 	/**
+	 * @see com.idega.company.data.CompanyBMPBean#isValid
+	 */
+	public boolean isValid();
+
+	/**
 	 * @see com.idega.company.data.CompanyBMPBean#setGroup
 	 */
 	public void setGroup(Group group);
@@ -66,6 +71,11 @@ public interface Company extends IDOEntity {
 	 * @see com.idega.company.data.CompanyBMPBean#setBankAccount
 	 */
 	public void setBankAccount(String bankAccount);
+
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#setValid
+	 */
+	public void setValid(boolean valid);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#store

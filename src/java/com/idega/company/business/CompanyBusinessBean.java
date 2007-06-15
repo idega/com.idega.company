@@ -59,6 +59,24 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		return null;
 	}
 
+	public Collection getCompanies() {
+		return getCompanies(null);
+	}
+
+	public Collection getValidCompanies(boolean valid) {
+		return getCompanies(new Boolean(valid));
+	}
+
+	private Collection getCompanies(Boolean valid) {
+		try {
+			return getCompanyHome().findAll(valid);
+		}
+		catch (FinderException e) {
+			e.printStackTrace();
+			return new ArrayList();
+		}
+	}
+
 	public Company storeCompany(String name, String personalID) throws CreateException {
 		Company company = getCompanyHome().create();
 		company.setName(name);
@@ -80,6 +98,21 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		catch (FinderException e) {
 			e.printStackTrace();
 			return new ArrayList();
+		}
+	}
+
+	public void storeCompanyType(String type, String name, String description, int order) {
+		try {
+			CompanyType companyType = getCompanyTypeHome().create();
+			companyType.setType(type);
+			companyType.setName(name);
+			companyType.setLocalizedKey("company_type." + type);
+			companyType.setDescription(description);
+			companyType.setOrder(order);
+			companyType.store();
+		}
+		catch (CreateException e) {
+			e.printStackTrace();
 		}
 	}
 }

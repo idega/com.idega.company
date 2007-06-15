@@ -7,6 +7,8 @@
  */
 package com.idega.company.data;
 
+import java.util.Collection;
+
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
@@ -133,6 +135,18 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_PERSONAL_ID), MatchCriteria.EQUALS, personalID));
 
 		return idoFindOnePKByQuery(query);
+	}
+
+	public Collection ejbFindAll(Boolean valid) throws FinderException {
+		Table table = new Table(this);
+
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(table.getColumn(getIDColumnName()));
+		if (valid != null) {
+			query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_VALID), MatchCriteria.EQUALS, valid));
+		}
+
+		return idoFindPKsByQuery(query);
 	}
 
 	// General methods
