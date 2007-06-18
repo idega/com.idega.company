@@ -7,7 +7,9 @@
  */
 package com.idega.company.data;
 
+import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -15,8 +17,15 @@ import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
 
 import com.idega.company.CompanyConstants;
+import com.idega.core.contact.data.Email;
+import com.idega.core.contact.data.Phone;
+import com.idega.core.contact.data.PhoneBMPBean;
+import com.idega.core.location.data.Address;
+import com.idega.core.location.data.AddressHome;
 import com.idega.data.GenericEntity;
+import com.idega.data.IDOCompositePrimaryKeyException;
 import com.idega.data.IDOLookupException;
+import com.idega.data.IDORelationshipException;
 import com.idega.data.IDORuntimeException;
 import com.idega.data.IDOStoreException;
 import com.idega.data.query.MatchCriteria;
@@ -86,6 +95,67 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 	public boolean isValid() {
 		return getBooleanColumnValue(COLUMN_IS_VALID, true);
+	}
+
+	public Address getAddress() {
+		try {
+			AddressHome home = (AddressHome) getIDOHome(Address.class);
+			Collection addresses = getGeneralGroup().getAddresses(home.getAddressType1());
+			Iterator iterator = addresses.iterator();
+			while (iterator.hasNext()) {
+				return (Address) iterator.next();
+			}
+		}
+		catch (IDOLookupException e) {
+			e.printStackTrace();
+		}
+		catch (IDOCompositePrimaryKeyException e) {
+			e.printStackTrace();
+		}
+		catch (IDORelationshipException e) {
+			e.printStackTrace();
+		}
+		catch (RemoteException e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public Phone getPhone() {
+		Collection collection = getGeneralGroup().getPhones();
+		Iterator iterator = collection.iterator();
+		while (iterator.hasNext()) {
+			Phone phone = (Phone) iterator.next();
+			if (phone.getPhoneTypeId() == PhoneBMPBean.getHomeNumberID()) {
+				return phone;
+			}
+		}
+
+		return null;
+	}
+
+	public Phone getFax() {
+		Collection collection = getGeneralGroup().getPhones();
+		Iterator iterator = collection.iterator();
+		while (iterator.hasNext()) {
+			Phone phone = (Phone) iterator.next();
+			if (phone.getPhoneTypeId() == PhoneBMPBean.getFaxNumberID()) {
+				return phone;
+			}
+		}
+
+		return null;
+	}
+
+	public Email getEmail() {
+		Collection emails = getGeneralGroup().getEmails();
+		Iterator iterator = emails.iterator();
+		while (iterator.hasNext()) {
+			return (Email) iterator.next();
+		}
+
+		return null;
 	}
 
 	// Setters
