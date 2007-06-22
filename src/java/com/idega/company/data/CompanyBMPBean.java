@@ -44,6 +44,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	private static final String COLUMN_WEB_PAGE = "web_page";
 	private static final String COLUMN_BANK_ACCOUNT = "bank_account";
 	private static final String COLUMN_IS_VALID = "is_valid";
+	private static final String COLUMN_IS_OPEN = "is_open";
 
 	private Group iGroup;
 
@@ -66,6 +67,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		addAttribute(COLUMN_WEB_PAGE, "Web page", String.class);
 		addAttribute(COLUMN_BANK_ACCOUNT, "Bank account", String.class);
 		addAttribute(COLUMN_IS_VALID, "Is valid", Boolean.class);
+		addAttribute(COLUMN_IS_OPEN, "Is open", Boolean.class);
 	}
 
 	// Getters
@@ -94,7 +96,11 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	}
 
 	public boolean isValid() {
-		return getBooleanColumnValue(COLUMN_IS_VALID, true);
+		return getBooleanColumnValue(COLUMN_IS_VALID, false);
+	}
+
+	public boolean isOpen() {
+		return getBooleanColumnValue(COLUMN_IS_OPEN, false);
 	}
 
 	public Address getAddress() {
@@ -188,6 +194,10 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		setColumn(COLUMN_IS_VALID, valid);
 	}
 
+	public void setOpen(boolean open) {
+		setColumn(COLUMN_IS_OPEN, open);
+	}
+
 	// Finders and creators
 	public Object ejbCreate() throws CreateException {
 		this.iGroup = this.getGroupHome().create();
@@ -254,5 +264,6 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 	public void setDefaultValues() {
 		setValid(true);
+		setOpen(false);
 	}
 }

@@ -46,6 +46,11 @@ public interface Company extends IDOEntity {
 	public boolean isValid();
 
 	/**
+	 * @see com.idega.company.data.CompanyBMPBean#isOpen
+	 */
+	public boolean isOpen();
+
+	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getAddress
 	 */
 	public Address getAddress();
@@ -99,6 +104,11 @@ public interface Company extends IDOEntity {
 	 * @see com.idega.company.data.CompanyBMPBean#setValid
 	 */
 	public void setValid(boolean valid);
+
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#setOpen
+	 */
+	public void setOpen(boolean open);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#store
