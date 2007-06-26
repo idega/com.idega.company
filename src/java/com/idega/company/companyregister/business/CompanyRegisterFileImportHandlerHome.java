@@ -1,13 +1,11 @@
 package com.idega.company.companyregister.business;
 
+
+import javax.ejb.CreateException;
 import com.idega.business.IBOHome;
+import java.rmi.RemoteException;
 
-
-/**
- * @author Joakim
- *
- */
 public interface CompanyRegisterFileImportHandlerHome extends IBOHome {
 
-	public CompanyRegisterFileImportHandler create() throws javax.ejb.CreateException, java.rmi.RemoteException;
+	public CompanyRegisterFileImportHandler create() throws CreateException, RemoteException;
 }

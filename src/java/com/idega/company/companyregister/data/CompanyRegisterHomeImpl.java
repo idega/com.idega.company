@@ -1,26 +1,23 @@
 package com.idega.company.companyregister.data;
 
+
 import java.rmi.RemoteException;
 import java.util.Collection;
+import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 import com.idega.data.IDOFactory;
 
-
-/**
- * @author Joakim
- *
- */
 public class CompanyRegisterHomeImpl extends IDOFactory implements CompanyRegisterHome {
 
-	protected Class getEntityInterfaceClass() {
+	public Class getEntityInterfaceClass() {
 		return CompanyRegister.class;
 	}
 
-	public CompanyRegister create() throws javax.ejb.CreateException {
+	public CompanyRegister create() throws CreateException {
 		return (CompanyRegister) super.createIDO();
 	}
 
-	public CompanyRegister findByPrimaryKey(Object pk) throws javax.ejb.FinderException {
+	public CompanyRegister findByPrimaryKey(Object pk) throws FinderException {
 		return (CompanyRegister) super.findByPrimaryKeyIDO(pk);
 	}
 
