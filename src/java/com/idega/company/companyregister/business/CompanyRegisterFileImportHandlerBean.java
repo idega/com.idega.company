@@ -1,5 +1,5 @@
 /*
- * $Id: CompanyRegisterFileImportHandlerBean.java,v 1.2 2007/06/26 15:26:04 civilis Exp $
+ * $Id: CompanyRegisterFileImportHandlerBean.java,v 1.3 2007/06/26 16:41:10 civilis Exp $
  * Created on Nov 21, 2006
  *
  * Copyright (C) 2006 Idega Software hf. All Rights Reserved.
@@ -47,24 +47,40 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 
 	private ArrayList valueList;
 
-	public final static int COLUMN_SYMBOL = 0;
+	public final static int COLUMN_UNIQUE_ID = 0;
+	public final static int COLUMN_NOT_USED1 = 1;
+	public final static int COLUMN_PERSONAL_ID = 2;
+	public final static int COLUMN_COMMUNE = 3;
+	public final static int COLUMN_POSTAL_CODE = 4;
+	public final static int COLUMN_OLD_OPERATION_FORM = 5;
+	public final static int COLUMN_WORKING_AREA = 6;
+	public final static int COLUMN_ORDER_AREA_FOR_NAME = 7;
+	public final static int COLUMN_NAME = 8;
+	public final static int COLUMN_NOT_USED2 = 9;
+	public final static int COLUMN_ADDRESS = 10;
+	public final static int COLUMN_CEO_ID = 11;
+	public final static int COLUMN_NOT_USED3 = 12;
+	public final static int COLUMN_DATE_OF_LAST_CHANGE = 13;
+	public final static int COLUMN_OPERATION_FORM = 14;
+	public final static int COLUMN_NOT_USED4 = 15;
+	public final static int COLUMN_VAT_NUMBER = 16;
+	public final static int COLUMN_LEGAL_ADDRESS = 17;
+	public final static int COLUMN_REGISTER_DATE = 18;
+	public final static int COLUMN_OPERATION = 19;
+	public final static int COLUMN_NOT_USED5 = 20;
+	public final static int COLUMN_RECIPIENT_PERSONAL_ID = 21;
+	public final static int COLUMN_RECIPIENT_NAME = 22;
+	public final static int COLUMN_NOT_USED6 = 23;
+	public final static int COLUMN_INDUSTRY_CODE = 24;
+	public final static int COLUMN_NOT_USED7 = 25;
+	public final static int COLUMN_E_FROM_FILE = 26;
+	public final static int COLUMN_TYPE_OF_UNREGISTRATION = 27;
+	public final static int COLUMN_DATE_OF_UNREGISTRATION = 28;
+	public final static int COLUMN_NOT_USED8 = 29;
+	public final static int COLUMN_BAN_MARKING = 30;
+	public final static int COLUMN_NOT_USED9 = 31;
 
-	public final static int COLUMN_SSN = 1;
-	
-	public final static int COLUMN_DATE_OF_DEATH = 2;
-
-	public final static int COLUMN_NAME = 3;
-
-	public final static int COLUMN_STREET = 4;
-
-	public final static int COLUMN_COMMUNE = 5;
-
-	public final static int COLUMN_GENDER = 6;
-
-	public final static int COLUMN_MARITIAL_STATUS = 7;
-
-	public final static int COLUMN_SPOUSE_SSN = 8;
-
+	//-------
 	private final static int BYTES_PER_RECORD_H1 = 95;
 
 	private final static int BYTES_PER_RECORD_H2 = 107;
@@ -297,44 +313,36 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	protected boolean storeDeceasedNationRegisterEntry() throws RemoteException,
 	CreateException {
 		// variables
-		String symbol = getProperty(COLUMN_SYMBOL);
-		String ssn = getProperty(COLUMN_SSN);
-		String dateOfDeath = getProperty(COLUMN_DATE_OF_DEATH);
-		String name = getProperty(COLUMN_NAME);
-		String street = getProperty(COLUMN_STREET);
-		String commune = getProperty(COLUMN_COMMUNE);
-		String gender = getProperty(COLUMN_GENDER);
-		String maritialStatus = getProperty(COLUMN_MARITIAL_STATUS);
-		String spouseSSN = getProperty(COLUMN_SPOUSE_SSN);
+//		String symbol = getProperty(COLUMN_SYMBOL);
 
 		boolean success = true;
 
-		if (ssn == null || ssn.equals("")) {
-			return false;
-		}
-
-		success = this.deceasedBiz.updateEntry(symbol, ssn, dateOfDeath, name,
-				street, commune, gender, maritialStatus, spouseSSN);
+//		if (ssn == null || ssn.equals("")) {
+//			return false;
+//		}
+//
+//		success = this.deceasedBiz.updateEntry(symbol, ssn, dateOfDeath, name,
+//				street, commune, gender, maritialStatus, spouseSSN);
 	
 		Gender userGender = null;
-		try {
-			userGender = getGender(gender);
-		}
-		catch (FinderException e) {
-			System.out.println(e.getMessage());
-		}
+//		try {
+//			userGender = getGender(gender);
+//		}
+//		catch (FinderException e) {
+//			System.out.println(e.getMessage());
+//		}
 		IWBundle bundle = getIWMainApplication().getBundle(CompanyRegisterFileImportHandlerBean.IW_BUNDLE_IDENTIFIER);
 		String autoCreateUsersNonExistingUsersString = bundle.getProperty(AUTO_CREATE_NON_EXISTING_USERS_IN_DECEASED_IMPORT, "false");
 		User user = null;
-		try {
-			user = this.uBiz.getUser(ssn);
-		} catch (FinderException e) {
+//		try {
+//			user = this.uBiz.getUser(ssn);
+//		} catch (FinderException e) {
 			//User not found in the member system and ignored, if AUTO_CREATE_NON_EXISTING_USERS property is not set then 
-		}
-		if (user == null && autoCreateUsersNonExistingUsersString.equalsIgnoreCase("true")) {
-			IWTimestamp dateOfBirth = getDateOfBirthFromSSN(ssn);
-			this.uBiz.createUserByPersonalIDIfDoesNotExist(name,ssn,userGender,dateOfBirth);
-		}
+//		}
+//		if (user == null && autoCreateUsersNonExistingUsersString.equalsIgnoreCase("true")) {
+//			IWTimestamp dateOfBirth = getDateOfBirthFromSSN(ssn);
+//			this.uBiz.createUserByPersonalIDIfDoesNotExist(name,ssn,userGender,dateOfBirth);
+//		}
 		if (user != null) {
 			try {	
 //				NationalRegister natRegEntry = this.natRegBiz.getEntryBySSN(ssn);
@@ -349,7 +357,7 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 			this.uBiz.updateUsersMainAddressOrCreateIfDoesNotExist(user, this.deceasedAddressString, null, null, null, null, null, null);
 			this.uBiz.updateUsersCoAddressOrCreateIfDoesNotExist(user, this.deceasedAddressString, null, null, null, null, null, null);
 			
-			user.setMetaData(DATE_OF_DEATH_META_DATA_KEY, dateOfDeath);
+			//user.setMetaData(DATE_OF_DEATH_META_DATA_KEY, dateOfDeath);
 			user.store();
 
 			FamilyLogic familyService = getMemberFamilyLogic();
