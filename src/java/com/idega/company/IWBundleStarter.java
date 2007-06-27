@@ -22,8 +22,6 @@ import com.idega.user.data.GroupType;
 
 public class IWBundleStarter implements IWBundleStartable {
 	
-	public static final String IW_BUNDLE_IDENTIFIER = "com.idega.company";
-
 	public void start(IWBundle starterBundle) {
 		updateData(starterBundle.getApplication().getIWApplicationContext());
 	}
