@@ -1,97 +1,154 @@
 package com.idega.company.companyregister.data;
 
 
+import com.idega.core.location.data.Address;
+import com.idega.core.location.data.Commune;
+import com.idega.user.data.User;
 import com.idega.data.IDOEntity;
 
 public interface CompanyRegister extends IDOEntity {
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getRecipient
+	 */
+	public User getRecipient();
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#setSymbol
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setRecipient
 	 */
-	public void setSymbol(String symbol);
+	public void setRecipient(User recipient);
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#getSymbol
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getBanMarking
 	 */
-	public String getSymbol();
+	public String getBanMarking();
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#setSSN
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setBanMarking
 	 */
-	public void setSSN(String ssn);
+	public void setBanMarking(String banMarking);
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#getSSN
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getCEO
 	 */
-	public String getSSN();
+	public User getCEO();
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#setDateOfDeath
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setCEO
 	 */
-	public void setDateOfDeath(String date);
+	public void setCEO(User ceo);
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#getDateOfDeath
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getIndustryCode
 	 */
-	public String getDateOfDeath();
+	public IndustryCode getIndustryCode();
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#setName
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setIndustryCode
 	 */
-	public void setName(String name);
+	public void setIndustryCode(IndustryCode industryCode);
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#getName
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getLastChange
 	 */
-	public String getName();
+	public String getLastChange();
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#setCommune
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setLastChange
 	 */
-	public void setCommune(String commune);
+	public void setLastChange(String lastChange);
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#getCommune
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getLegalCommune
 	 */
-	public String getCommune();
+	public Commune getLegalCommune();
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#setStreet
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setLegalCommune
 	 */
-	public void setStreet(String street);
+	public void setLegalCommune(Commune legalCommune);
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#getStreet
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getOperation
 	 */
-	public String getStreet();
+	public String getOperation();
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#setGender
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setOperation
 	 */
-	public void setGender(String gender);
+	public void setOperation(String operation);
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#getGender
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getOperationForm
 	 */
-	public String getGender();
+	public OperationForm getOperationForm();
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#setMaritalStatus
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setOperationForm
 	 */
-	public void setMaritalStatus(String status);
+	public void setOperationForm(OperationForm operationForm);
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#getMaritalStatus
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getOrderAreaForName
 	 */
-	public String getMaritalStatus();
+	public String getOrderAreaForName();
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#setSpouseSSN
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setOrderAreaForName
 	 */
-	public void setSpouseSSN(String ssn);
+	public void setOrderAreaForName(String orderAreaForName);
 
 	/**
-	 * @see is.idega.block.nationalregister.data.CompanyRegisterBMPBean#getSpouseSSN
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getRegisterDate
 	 */
-	public String getSpouseSSN();
+	public String getRegisterDate();
+
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setRegisterDate
+	 */
+	public void setRegisterDate(String registerDate);
+
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getUnregisterDate
+	 */
+	public String getUnregisterDate();
+
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setUnregisterDate
+	 */
+	public void setUnregisterDate(String unregisterDate);
+
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getUnregisterType
+	 */
+	public UnregisterType getUnregisterType();
+
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setUnregisterType
+	 */
+	public void setUnregisterType(UnregisterType unregisterType);
+
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getVATNumber
+	 */
+	public String getVATNumber();
+
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setVATNumber
+	 */
+	public void setVATNumber(String number);
+
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#getWorkingArea
+	 */
+	public Commune getWorkingArea();
+
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setWorkingArea
+	 */
+	public void setWorkingArea(Commune workingArea);
+
+	/**
+	 * @see com.idega.company.companyregister.data.CompanyRegisterBMPBean#setAddress
+	 */
+	public void setAddress(Address address);
 }
