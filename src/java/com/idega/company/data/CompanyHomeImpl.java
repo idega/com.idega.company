@@ -1,5 +1,6 @@
 package com.idega.company.data;
 
+
 import java.util.Collection;
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -8,7 +9,7 @@ import com.idega.data.IDOEntity;
 import com.idega.data.IDOFactory;
 
 public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
-
+	
 	public Class getEntityInterfaceClass() {
 		return Company.class;
 	}
@@ -24,11 +25,9 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 		this.idoCheckInPooledEntity(entity);
 		try {
 			return findByPrimaryKey(pk);
-		}
-		catch (FinderException fe) {
+		} catch (FinderException fe) {
 			throw new IDOCreateException(fe);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			throw new IDOCreateException(e);
 		}
 	}

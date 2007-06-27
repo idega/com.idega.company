@@ -9,6 +9,7 @@ package com.idega.company.data;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import javax.ejb.CreateException;
@@ -22,7 +23,9 @@ import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneBMPBean;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressHome;
+import com.idega.core.location.data.Commune;
 import com.idega.data.GenericEntity;
+import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOCompositePrimaryKeyException;
 import com.idega.data.IDOLookupException;
 import com.idega.data.IDORelationshipException;
@@ -33,6 +36,7 @@ import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupHome;
+import com.idega.user.data.User;
 
 public class CompanyBMPBean extends GenericEntity implements Company {
 
@@ -45,6 +49,34 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	private static final String COLUMN_BANK_ACCOUNT = "bank_account";
 	private static final String COLUMN_IS_VALID = "is_valid";
 	private static final String COLUMN_IS_OPEN = "is_open";
+	
+	protected static final String VAT_NUMBER = "vat_number";
+	
+	protected static final String CEO_ID = "ceo_id";
+
+	protected static final String WORKING_AREA = "working_area";
+
+	protected static final String ORDER_AREA_FOR_NAME = "order_area_for_name";
+
+	protected static final String LAST_CHANGE = "last_change";
+
+	protected static final String OPERATION_FORM = "operation_form";
+
+	protected static final String LEGAL_COMMUNE = "legal_commune";
+
+	protected static final String REGISTER_DATE = "register_date";
+
+	protected static final String RECIPIENT_ID = "recipient_id";
+
+	protected static final String OPERATION = "operation";
+	
+	protected static final String INDUSTRY_CODE = "industry_code";
+	
+	protected static final String UNREGISTER_TYPE = "unregister_type";
+	
+	protected static final String UNREGISTER_DATE = "unregister_date";
+	
+	protected static final String BAN_MARKING = "ban_marking";
 
 	private Group iGroup;
 
@@ -68,6 +100,21 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		addAttribute(COLUMN_BANK_ACCOUNT, "Bank account", String.class);
 		addAttribute(COLUMN_IS_VALID, "Is valid", Boolean.class);
 		addAttribute(COLUMN_IS_OPEN, "Is open", Boolean.class);
+		
+		addAttribute(VAT_NUMBER, "VAT Number", true, true, java.lang.String.class, 5);
+		addAttribute(OPERATION, "Operation", true, true, java.lang.String.class, 10);
+		addAttribute(UNREGISTER_DATE, "Unregister Date", true, true, String.class, 21);
+		addAttribute(ORDER_AREA_FOR_NAME, "Order Area For Name", true, true, java.lang.String.class, 31);
+		addAttribute(LAST_CHANGE, "Last Change", true, true, java.lang.String.class, 21);
+		addAttribute(REGISTER_DATE, "Register Date", true, true, java.lang.String.class, 21);
+		addAttribute(BAN_MARKING, "Ban Marking", true, true, java.lang.String.class, 1);
+		addManyToOneRelationship(LEGAL_COMMUNE, "Legal Commune", Commune.class);
+		addManyToOneRelationship(OPERATION_FORM, "Operation form", OperationForm.class);
+		addManyToOneRelationship(CEO_ID, "CEO ID", User.class);
+		addManyToOneRelationship(WORKING_AREA, "Working area", Commune.class);
+		addManyToOneRelationship(INDUSTRY_CODE, "Industry Code", IndustryCode.class);
+		addManyToOneRelationship(RECIPIENT_ID, "Recipient ID", User.class);
+		addManyToOneRelationship(UNREGISTER_TYPE, "Unregister Type", UnregisterType.class);
 	}
 
 	// Getters
@@ -240,7 +287,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		getGeneralGroup().remove();
 	}
 
-	private Group getGeneralGroup() {
+	protected Group getGeneralGroup() {
 		if (this.iGroup == null) {
 			try {
 				this.iGroup = getGroupHome().findByPrimaryKey(this.getPrimaryKey());
@@ -265,5 +312,100 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	public void setDefaultValues() {
 		setValid(true);
 		setOpen(false);
+	}
+	
+	public User getRecipient() {
+		return (User) getColumnValue(RECIPIENT_ID);
+	}
+	
+	public void setRecipient(User recipient) {
+		setColumn(RECIPIENT_ID, recipient);
+	}
+	public String getBanMarking() {
+		return getStringColumnValue(BAN_MARKING);
+	}
+	
+	public void setBanMarking(String banMarking) {
+		setColumn(BAN_MARKING, banMarking);
+	}
+	public User getCEO() {
+		return (User) this.getColumnValue(CEO_ID);
+	}
+	public void setCEO(User ceo) {
+		setColumn(CEO_ID, ceo);
+	}
+	public IndustryCode getIndustryCode() {
+		return (IndustryCode) getColumnValue(INDUSTRY_CODE);
+	}
+	public void setIndustryCode(IndustryCode industryCode) {
+		setColumn(INDUSTRY_CODE, industryCode);
+	}
+	public Date getLastChange() {
+		return (Date) getColumnValue(LAST_CHANGE);
+	}
+	public void setLastChange(Date lastChange) {
+		setColumn(LAST_CHANGE, lastChange);
+	}
+	public Commune getLegalCommune() {
+		return (Commune) getColumnValue(LEGAL_COMMUNE);
+	}
+	public void setLegalCommune(Commune legalCommune) {
+		setColumn(LEGAL_COMMUNE, legalCommune);
+	}
+	public String getOperation() {
+		return getStringColumnValue(OPERATION);
+	}
+	public void setOperation(String operation) {
+		setColumn(OPERATION, operation);
+	}
+	public OperationForm getOperationForm() {
+		return (OperationForm) getColumnValue(OPERATION_FORM);
+	}
+	public void setOperationForm(OperationForm operationForm) {
+		setColumn(OPERATION_FORM, operationForm);
+	}
+	public String getOrderAreaForName() {
+		return getStringColumnValue(ORDER_AREA_FOR_NAME);
+	}
+	public void setOrderAreaForName(String orderAreaForName) {
+		setColumn(ORDER_AREA_FOR_NAME, orderAreaForName);
+	}
+	public Date getRegisterDate() {
+		return (Date) getColumnValue(REGISTER_DATE);
+	}
+	public void setRegisterDate(Date registerDate) {
+		setColumn(REGISTER_DATE, registerDate);
+	}
+	public Date getUnregisterDate() {
+		return (Date) getColumnValue(UNREGISTER_DATE);
+	}
+	public void setUnregisterDate(Date unregisterDate) {
+		setColumn(UNREGISTER_DATE, unregisterDate);
+	}
+	public UnregisterType getUnregisterType() {
+		return (UnregisterType) getColumnValue(UNREGISTER_TYPE);
+	}
+	public void setUnregisterType(UnregisterType unregisterType) {
+		setColumn(UNREGISTER_TYPE, unregisterType);
+	}
+	public String getVATNumber() {
+		return getStringColumnValue(VAT_NUMBER);
+	}
+	public void setVATNumber(String number) {
+		setColumn(VAT_NUMBER, number);
+	}
+	public Commune getWorkingArea() {
+		return (Commune) getColumnValue(WORKING_AREA);
+	}
+	public void setWorkingArea(Commune workingArea) {
+		setColumn(WORKING_AREA, workingArea);
+	}
+	public void setAddress(Address address) {
+		try {
+			getGeneralGroup().addAddress(address);
+		}
+		catch (IDOAddRelationshipException e) {
+			throw new IDORuntimeException(e.getMessage());
+		}
 	}
 }

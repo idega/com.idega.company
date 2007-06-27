@@ -1,10 +1,9 @@
-package com.idega.company.companyregister.data;
+package com.idega.company.companyregister.business;
 
 import java.util.ArrayList;
 
 import com.idega.block.importer.data.GenericImportFile;
 import com.idega.block.importer.data.ImportFile;
-import com.idega.company.companyregister.business.CompanyRegisterFileImportHandlerBean;
 
 
 public class CompanyRegisterImportFile extends GenericImportFile implements ImportFile {

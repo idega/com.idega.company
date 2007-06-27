@@ -1,4 +1,4 @@
-package com.idega.company.companyregister.data;
+package com.idega.company.data;
 
 import java.rmi.RemoteException;
 import java.util.Collection;
