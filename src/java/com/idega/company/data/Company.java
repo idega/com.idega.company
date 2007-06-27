@@ -2,13 +2,13 @@ package com.idega.company.data;
 
 
 import com.idega.core.location.data.Address;
-import com.idega.core.location.data.Commune;
-import java.util.Date;
-import com.idega.user.data.User;
-import com.idega.data.IDOStoreException;
 import com.idega.user.data.Group;
+import com.idega.core.location.data.Commune;
 import com.idega.core.contact.data.Phone;
+import java.sql.Date;
+import com.idega.user.data.User;
 import com.idega.core.contact.data.Email;
+import com.idega.data.IDOStoreException;
 import com.idega.data.IDOEntity;
 
 public interface Company extends IDOEntity {
@@ -131,11 +131,6 @@ public interface Company extends IDOEntity {
 	 * @see com.idega.company.data.CompanyBMPBean#getBanMarking
 	 */
 	public String getBanMarking();
-
-	/**
-	 * @see com.idega.company.data.CompanyBMPBean#setBanMarking
-	 */
-	public void setBanMarking(String banMarking);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getCEO
@@ -261,4 +256,9 @@ public interface Company extends IDOEntity {
 	 * @see com.idega.company.data.CompanyBMPBean#setAddress
 	 */
 	public void setAddress(Address address);
+
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#setBanMarking
+	 */
+	public void setBanMarking(String banMarking);
 }

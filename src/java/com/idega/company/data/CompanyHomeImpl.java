@@ -9,7 +9,6 @@ import com.idega.data.IDOEntity;
 import com.idega.data.IDOFactory;
 
 public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
-	
 	public Class getEntityInterfaceClass() {
 		return Company.class;
 	}
