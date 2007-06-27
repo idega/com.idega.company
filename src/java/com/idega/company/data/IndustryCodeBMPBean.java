@@ -1,14 +1,29 @@
 package com.idega.company.data;
 
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.FinderException;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
+import com.idega.company.CompanyConstants;
 import com.idega.data.GenericEntity;
+import com.idega.data.IDOLookup;
 
 public class IndustryCodeBMPBean extends GenericEntity implements IndustryCode {
 
+	private static Logger logger = Logger.getLogger(IndustryCodeBMPBean.class.getName());
+	
 	private static final long serialVersionUID = 5579820162509715518L;
 
 	protected static final String ENTITY_NAME = "com_industry_code_isat";
@@ -49,4 +64,54 @@ public class IndustryCodeBMPBean extends GenericEntity implements IndustryCode {
 		return super.idoFindAllIDsBySQL();
 	}
 
+	public void insertStartData() throws Exception {
+		super.insertStartData();
+		
+		InputStream is = getCodesInputStream();
+		
+		if(is == null)
+			return;
+		
+	    HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
+	    
+	    HSSFSheet sheet = wb.getSheetAt(0);
+	    if(sheet != null) {
+	    	Iterator it = sheet.rowIterator();
+	    	if(it.hasNext()) {
+	    		it.next();
+	    	}
+	    	while(it.hasNext()) {
+	    		HSSFRow row = (HSSFRow) it.next();
+	    		if(row != null) {
+	    			HSSFCell codeCell = row.getCell((short) 0);
+	    			if(codeCell != null) {
+	    				IndustryCode industryCode = getIndustryCodeHome().create();
+	    				industryCode.setISATCode(codeCell.getStringCellValue());
+	    				
+	    				HSSFCell descriptionCell = row.getCell((short) 1);
+	    				if(descriptionCell != null) {
+	    					industryCode.setISATDescription(descriptionCell.getStringCellValue());
+	    				}
+	    				industryCode.store();
+	    			}
+	    		}
+	    	}
+	    }
+	}
+	
+	private InputStream getCodesInputStream() {
+		
+		try {
+			return new FileInputStream(getIWMainApplication().getBundlesRealPath()+"/"+CompanyConstants.IW_BUNDLE_IDENTIFIER+".bundle/resources/startdata/Codes.xls");
+			
+		} catch (Exception e) {
+			
+			logger.log(Level.SEVERE, "Exception while retrieving codes.xls resource from: "+getIWMainApplication().getBundle(CompanyConstants.IW_BUNDLE_IDENTIFIER).getResourcesRealPath(), e);
+			return null;
+		}
+	}
+	
+	protected IndustryCodeHome getIndustryCodeHome() throws RemoteException {
+		return (IndustryCodeHome) IDOLookup.getHome(IndustryCode.class);
+	}
 }
