@@ -7,6 +7,7 @@
  */
 package com.idega.company.data;
 
+import java.io.FileInputStream;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.Collection;
@@ -17,6 +18,12 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
 import com.idega.company.CompanyConstants;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
@@ -24,9 +31,12 @@ import com.idega.core.contact.data.PhoneBMPBean;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressHome;
 import com.idega.core.location.data.Commune;
+import com.idega.core.location.data.PostalCode;
+import com.idega.core.location.data.PostalCodeHome;
 import com.idega.data.GenericEntity;
 import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOCompositePrimaryKeyException;
+import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.data.IDORelationshipException;
 import com.idega.data.IDORuntimeException;
@@ -407,5 +417,92 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	}
 	public void setBanMarking(String banMarking) {
 		setColumn(BAN_MARKING, banMarking);
+	}
+	
+	protected IndustryCodeHome getIndustryCodeHome() throws RemoteException {
+		return (IndustryCodeHome) IDOLookup.getHome(IndustryCode.class);
+	}
+	
+	protected OperationFormHome getOperationFormHome() throws RemoteException {
+		return (OperationFormHome) IDOLookup.getHome(OperationForm.class);
+	}
+	
+	protected UnregisterTypeHome getUnregisterTypeHome() throws RemoteException {
+		return (UnregisterTypeHome) IDOLookup.getHome(UnregisterType.class);
+	}
+	
+	public void insertStartData() throws Exception {
+		super.insertStartData();
+		
+		POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream("codes.xls"));
+	    HSSFWorkbook wb = new HSSFWorkbook(fs);
+	    if(wb != null) {
+		    HSSFSheet sheet = wb.getSheetAt(0);
+		    if(sheet != null) {
+		    	Iterator it = sheet.rowIterator();
+		    	if(it.hasNext()) {
+		    		it.next();
+		    	}
+		    	while(it.hasNext()) {
+		    		HSSFRow row = (HSSFRow) it.next();
+		    		if(row != null) {
+		    			HSSFCell codeCell = row.getCell((short) 0);
+		    			if(codeCell != null) {
+		    				IndustryCode industryCode = getIndustryCodeHome().create();
+		    				industryCode.setISATCode(codeCell.getStringCellValue());
+		    				
+		    				HSSFCell descriptionCell = row.getCell((short) 1);
+		    				if(descriptionCell != null) {
+		    					industryCode.setISATDescription(descriptionCell.getStringCellValue());
+		    				}
+		    			}
+		    		}
+		    	}
+		    }
+		    sheet = wb.getSheetAt(4);
+		    if(sheet != null) {
+		    	Iterator it = sheet.rowIterator();
+		    	if(it.hasNext()) {
+		    		it.next();
+		    	}
+		    	while(it.hasNext()) {
+		    		HSSFRow row = (HSSFRow) it.next();
+		    		if(row != null) {
+		    			HSSFCell codeCell = row.getCell((short) 0);
+		    			if(codeCell != null) {
+		    				OperationForm operationForm = getOperationFormHome().create();
+		    				operationForm.setCode(codeCell.getStringCellValue());
+		    				
+		    				HSSFCell descriptionCell = row.getCell((short) 1);
+		    				if(descriptionCell != null) {
+		    					operationForm.setDescription(descriptionCell.getStringCellValue());
+		    				}
+		    			}
+		    		}
+		    	}
+		    }
+		    sheet = wb.getSheetAt(5);
+		    if(sheet != null) {
+		    	Iterator it = sheet.rowIterator();
+		    	if(it.hasNext()) {
+		    		it.next();
+		    	}
+		    	while(it.hasNext()) {
+		    		HSSFRow row = (HSSFRow) it.next();
+		    		if(row != null) {
+		    			HSSFCell codeCell = row.getCell((short) 0);
+		    			if(codeCell != null) {
+		    				UnregisterType unregisterType = getUnregisterTypeHome().create();
+		    				unregisterType.setCode(codeCell.getStringCellValue());
+		    				
+		    				HSSFCell descriptionCell = row.getCell((short) 1);
+		    				if(descriptionCell != null) {
+		    					unregisterType.setDescription(descriptionCell.getStringCellValue());
+		    				}
+		    			}
+		    		}
+		    	}
+		    }
+	    }
 	}
 }

@@ -85,5 +85,12 @@
       <type>jar</type>
       <url>http://www.idega.com/</url>
     </dependency>
+    <dependency>
+      <groupId>poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>2.5-final-20040428</version>
+      <type>jar</type>
+      <url>http://jakarta.apache.org/poi/</url>
+    </dependency>
   </dependencies>
 </project>

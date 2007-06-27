@@ -21,5 +21,6 @@
 	<classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.web2.0-3.1.4.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/bundles/jars/com.idega.block.importer-3.1.2.jar"/>
 	<classpathentry kind="var" path="MAVEN_REPO/bundles/jars/is.idega.block.family-1.0.3.jar"/>
+	<classpathentry kind="var" path="MAVEN_REPO/poi/jars/poi-2.5-final-20040428.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
