@@ -4,7 +4,6 @@ import java.rmi.RemoteException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.ejb.CreateException;
 import com.idega.business.IBOServiceBean;
 import com.idega.company.data.Company;
 import com.idega.company.data.CompanyHome;
@@ -17,7 +16,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 	
 	public boolean updateEntry(
 			String symbol,
-			String ssn,
+			String personal_id,
 			String dateOfDeath,
 			String name,
 			String street,
@@ -27,7 +26,8 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			String spouseSSN) {
 				
 			try {
-				Company company_registry = null;
+				
+				Company company_registry = getEntryByPersonalId(personal_id);
 				
 				if (company_registry == null)
 					company_registry = getCompanyRegisterHome().create();
@@ -36,24 +36,29 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 				
 				company_registry.store();
 			}
-			catch (CreateException e) {
+			catch (Exception e) {
 				
-				logger.log(Level.SEVERE, "Exception while creating company register entry", e);
+				logger.log(Level.SEVERE, "Exception while creating/updating company register entry", e);
 				return false;
 			}
 
 			return true;
 		}
 	
-	protected CompanyHome getCompanyRegisterHome() {
-		CompanyHome home = null;
+	protected CompanyHome getCompanyRegisterHome() throws RemoteException {
+		
+		return (CompanyHome) IDOLookup.getHome(Company.class);
+	}
+	
+	public Company getEntryByPersonalId(String personal_id) {
+		
 		try {
-			home = (CompanyHome) IDOLookup.getHome(Company.class);
+			
+			return getCompanyRegisterHome().findByPersonalID(personal_id);
+			
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Exception while retrieving company BMP bean by personal id", e);
+			return null;
 		}
-		catch (RemoteException e) {
-			logger.log(Level.SEVERE, "Exception while retrieving company BMP bean home", e);
-		}
-
-		return home;
 	}
 }
