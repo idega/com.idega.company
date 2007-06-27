@@ -2,7 +2,6 @@ package com.idega.company.companyregister.business;
 
 
 import com.idega.user.data.Group;
-import is.idega.block.family.business.FamilyLogic;
 import com.idega.business.IBOService;
 import java.util.List;
 import com.idega.block.importer.business.ImportFileHandler;
@@ -15,16 +14,6 @@ public interface CompanyRegisterFileImportHandler extends IBOService, ImportFile
 	 * @see is.idega.block.nationalregister.business.CompanyRegisterFileImportHandlerBean#getFailedRecords
 	 */
 	public List getFailedRecords() throws RemoteException, RemoteException;
-
-	/**
-	 * @see is.idega.block.nationalregister.business.CompanyRegisterFileImportHandlerBean#getMemberFamilyLogic
-	 */
-	public FamilyLogic getMemberFamilyLogic() throws RemoteException, RemoteException;
-
-	/**
-	 * @see is.idega.block.nationalregister.business.CompanyRegisterFileImportHandlerBean#getTimeString
-	 */
-	public String getTimeString(long time) throws RemoteException;
 
 	/**
 	 * @see is.idega.block.nationalregister.business.CompanyRegisterFileImportHandlerBean#handleRecords

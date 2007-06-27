@@ -25,6 +25,8 @@ import com.idega.user.data.Group;
 
 public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusiness {
 
+	private static final long serialVersionUID = -2466677771702218426L;
+
 	private CompanyHome getCompanyHome() {
 		try {
 			return (CompanyHome) getIDOHome(Company.class);
