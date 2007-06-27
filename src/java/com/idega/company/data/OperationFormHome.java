@@ -12,7 +12,7 @@ public interface OperationFormHome extends IDOHome {
 
 	public OperationForm findByPrimaryKey(Object pk) throws FinderException;
 
-	public Collection findAllUnregisterTypes() throws FinderException, RemoteException;
+	public Collection findAllOperationForms() throws FinderException, RemoteException;
 
-	public OperationForm findUnregisterTypeByUniqueCode(String uniqueId) throws FinderException;
+	public OperationForm findOperationFormByUniqueCode(String uniqueId) throws FinderException;
 }

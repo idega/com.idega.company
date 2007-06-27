@@ -77,6 +77,10 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	protected static final String UNREGISTER_DATE = "unregister_date";
 	
 	protected static final String BAN_MARKING = "ban_marking";
+	
+	protected static final String UNIQUE_ID = "unique_id";
+	
+	protected static final String E = "e";
 
 	private Group iGroup;
 
@@ -108,6 +112,8 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		addAttribute(LAST_CHANGE, "Last Change", true, true, java.lang.String.class, 21);
 		addAttribute(REGISTER_DATE, "Register Date", true, true, java.lang.String.class, 21);
 		addAttribute(BAN_MARKING, "Ban Marking", true, true, java.lang.String.class, 1);
+//		addAttribute(BAN_MARKING, "Ban Marking", true, true, java.lang.String.class, 1);
+//		addAttribute(UNIQUE_ID, "U", true, true, java.lang.String.class, 2);
 		addManyToOneRelationship(LEGAL_COMMUNE, "Legal Commune", Commune.class);
 		addManyToOneRelationship(OPERATION_FORM, "Operation form", OperationForm.class);
 		addManyToOneRelationship(CEO_ID, "CEO ID", User.class);

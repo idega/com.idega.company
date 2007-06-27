@@ -46,11 +46,11 @@ public class OperationFormBMPBean extends GenericEntity implements
 		setColumn(CODE, code);
 	}
 	
-	public Collection ejbFindAllUnregisterTypes() throws FinderException, RemoteException {
+	public Collection ejbFindAllOperationForms() throws FinderException, RemoteException {
 		return super.idoFindAllIDsBySQL();
 	}
 	
-	public Integer ejbFindUnregisterTypeByUniqueCode(String uniqueId) throws FinderException {
+	public Integer ejbFindOperationFormByUniqueCode(String uniqueId) throws FinderException {
 		IDOQuery query = idoQueryGetSelect();
 		query.appendWhereEqualsQuoted(getIDColumnName(), uniqueId);
 

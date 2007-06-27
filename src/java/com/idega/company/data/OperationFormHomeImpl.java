@@ -21,16 +21,16 @@ public class OperationFormHomeImpl extends IDOFactory implements OperationFormHo
 		return (OperationForm) super.findByPrimaryKeyIDO(pk);
 	}
 
-	public Collection findAllUnregisterTypes() throws FinderException, RemoteException {
+	public Collection findAllOperationForms() throws FinderException, RemoteException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((OperationFormBMPBean) entity).ejbFindAllUnregisterTypes();
+		Collection ids = ((OperationFormBMPBean) entity).ejbFindAllOperationForms();
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public OperationForm findUnregisterTypeByUniqueCode(String uniqueId) throws FinderException {
+	public OperationForm findOperationFormByUniqueCode(String uniqueId) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Object pk = ((OperationFormBMPBean) entity).ejbFindUnregisterTypeByUniqueCode(uniqueId);
+		Object pk = ((OperationFormBMPBean) entity).ejbFindOperationFormByUniqueCode(uniqueId);
 		this.idoCheckInPooledEntity(entity);
 		return this.findByPrimaryKey(pk);
 	}
