@@ -1,6 +1,8 @@
 package com.idega.company.companyregister.business;
 
 import java.rmi.RemoteException;
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,6 +15,7 @@ import com.idega.company.data.OperationForm;
 import com.idega.company.data.OperationFormHome;
 import com.idega.company.data.UnregisterType;
 import com.idega.company.data.UnregisterTypeHome;
+import com.idega.core.location.business.AddressBusiness;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressHome;
 import com.idega.core.location.data.Commune;
@@ -82,9 +85,12 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 					if(addressBean == null) {
 						addressBean = getAddressHome().create();
 					}
-					//TODO separate the street name from the number
-					addressBean.setStreetName(address);
-					addressBean.setStreetNumber(address);
+					
+					AddressBusiness address_business = (AddressBusiness) getServiceInstance(AddressBusiness.class);
+					
+					addressBean.setStreetName(address_business.getStreetNameFromAddressString(address));
+					addressBean.setStreetNumber(address_business.getStreetNumberFromAddressString(address));
+					
 					Commune communeBean = addressBean.getCommune();
 					if(communeBean == null) {
 						communeBean = getCommuneHome().create();
@@ -129,8 +135,9 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 						company_registry.setUnregisterType(unregisterTypeBean);
 					}
 					
-					//TODO dateOfLastChange, registerDate, unregistrationDate
-					
+					company_registry.setLastChange(getSqlDateFromTimestampString(dateOfLastChange));
+					company_registry.setRegisterDate(getSqlDateFromTimestampString(registerDate));
+					company_registry.setUnregisterDate(getSqlDateFromTimestampString(unregistrationDate));
 				
 					company_registry.store();
 			}
@@ -146,6 +153,17 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 	protected CompanyHome getCompanyRegisterHome() throws RemoteException {
 		
 		return (CompanyHome) IDOLookup.getHome(Company.class);
+	}
+	
+	public Date getSqlDateFromTimestampString(String timestamp_str) {
+		
+		try {
+			
+			return new Date(Long.parseLong(timestamp_str));
+		} catch (Exception e) {
+			logger.log(Level.SEVERE, "Exception while parsing long string and creating sql date object", e);
+			return null;
+		}
 	}
 	
 	protected UserHome getUserHome() throws RemoteException {
