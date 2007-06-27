@@ -11,6 +11,8 @@ import com.idega.data.IDOQuery;
 public class OperationFormBMPBean extends GenericEntity implements
 		OperationForm {
 	
+	private static final long serialVersionUID = 418489784193670774L;
+
 	protected static final String ENTITY_NAME = "com_operation_form";
 	
 	protected static final String CODE = "code";

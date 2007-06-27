@@ -9,6 +9,9 @@ import com.idega.data.IDOEntity;
 import com.idega.data.IDOFactory;
 
 public class OperationFormHomeImpl extends IDOFactory implements OperationFormHome {
+	
+	private static final long serialVersionUID = -354152141433766244L;
+
 	public Class getEntityInterfaceClass() {
 		return OperationForm.class;
 	}

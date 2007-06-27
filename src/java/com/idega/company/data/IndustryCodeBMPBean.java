@@ -9,6 +9,8 @@ import com.idega.data.GenericEntity;
 
 public class IndustryCodeBMPBean extends GenericEntity implements IndustryCode {
 
+	private static final long serialVersionUID = 5579820162509715518L;
+
 	protected static final String ENTITY_NAME = "com_industry_code_isat";
 	
 	protected static final String CODE = "code";

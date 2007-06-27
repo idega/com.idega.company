@@ -9,6 +9,8 @@ import com.idega.data.IDOFactory;
 
 public class CompanyTypeHomeImpl extends IDOFactory implements CompanyTypeHome {
 
+	private static final long serialVersionUID = 7731649234727546224L;
+
 	public Class getEntityInterfaceClass() {
 		return CompanyType.class;
 	}

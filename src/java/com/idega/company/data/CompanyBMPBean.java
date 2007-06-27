@@ -8,10 +8,13 @@
 package com.idega.company.data;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
@@ -25,14 +28,13 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 import com.idega.company.CompanyConstants;
+import com.idega.company.IWBundleStarter;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneBMPBean;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressHome;
 import com.idega.core.location.data.Commune;
-import com.idega.core.location.data.PostalCode;
-import com.idega.core.location.data.PostalCodeHome;
 import com.idega.data.GenericEntity;
 import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOCompositePrimaryKeyException;
@@ -50,6 +52,8 @@ import com.idega.user.data.User;
 
 public class CompanyBMPBean extends GenericEntity implements Company {
 
+	private static final long serialVersionUID = 5902685982267772143L;
+	private static Logger logger = Logger.getLogger(CompanyBMPBean.class.getName());
 	private static final String ENTITY_NAME = "ic_company";
 
 	private static final String COLUMN_TYPE = "company_type";
@@ -434,7 +438,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	public void insertStartData() throws Exception {
 		super.insertStartData();
 		
-		POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream("codes.xls"));
+		POIFSFileSystem fs = new POIFSFileSystem(getCodesInputStream());
 	    HSSFWorkbook wb = new HSSFWorkbook(fs);
 	    if(wb != null) {
 		    HSSFSheet sheet = wb.getSheetAt(0);
@@ -504,5 +508,17 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		    	}
 		    }
 	    }
+	}
+	
+	private InputStream getCodesInputStream() {
+		
+		try {
+			return new FileInputStream(getIWMainApplication().getBundle(IWBundleStarter.IW_BUNDLE_IDENTIFIER).getResourcesRealPath()+"codes.xsl");
+			
+		} catch (Exception e) {
+			
+			logger.log(Level.SEVERE, "Exception while retrieving codes.xsl resource from: "+getIWMainApplication().getBundle(IWBundleStarter.IW_BUNDLE_IDENTIFIER).getResourcesRealPath(), e);
+			return null;
+		}
 	}
 }

@@ -9,6 +9,9 @@ import com.idega.data.IDOEntity;
 import com.idega.data.IDOFactory;
 
 public class UnregisterTypeHomeImpl extends IDOFactory implements UnregisterTypeHome {
+	
+	private static final long serialVersionUID = -1768847661140700498L;
+
 	public Class getEntityInterfaceClass() {
 		return UnregisterType.class;
 	}

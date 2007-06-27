@@ -11,6 +11,8 @@ import com.idega.data.IDOQuery;
 public class UnregisterTypeBMPBean extends GenericEntity implements
 		UnregisterType {
 	
+	private static final long serialVersionUID = 665161649041782603L;
+
 	protected static final String ENTITY_NAME = "com_unregister_type";
 	
 	protected static final String CODE = "code";

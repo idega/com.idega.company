@@ -20,6 +20,8 @@ import com.idega.idegaweb.IWApplicationContext;
 
 public class CompanyTypeBMPBean extends GenericEntity implements CompanyType {
 
+	private static final long serialVersionUID = -3847301054004712610L;
+
 	private static final String ENTITY_NAME = "com_company_type";
 
 	private static final String COLUMN_TYPE = "company_type";
