@@ -9,7 +9,7 @@ public interface CompanyRegisterBusiness extends IBOService {
 	/**
 	 * @see com.idega.company.companyregister.business.CompanyRegisterBusinessBean#updateEntry
 	 */
-	public boolean updateEntry(String uniqueId, String personal_id, String commune, String postalCode, String oldOperationForm, String workingArea, String orderAreaForName, String name, String address, String ceoId, String dateOfLastChange, String operationForm, String vatNumber, String legalAddress, String registerDate, String operation, String recipientPersonalId, String recipientName, String industryCode, String eFromFile, String unregistrationType, String unregistrationDate, String banMarking) throws RemoteException;
+	public boolean updateEntry(String personal_id, String commune, String postalCode, String workingArea, String orderAreaForName, String name, String address, String ceoId, String dateOfLastChange, String operationForm, String vatNumber, String legalAddress, String registerDate, String operation, String recipientPersonalId, String recipientName, String industryCode, String unregistrationType, String unregistrationDate, String banMarking) throws RemoteException;
 
 	/**
 	 * @see com.idega.company.companyregister.business.CompanyRegisterBusinessBean#getEntryByPersonalId

@@ -30,11 +30,9 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 	private static Logger logger = Logger.getLogger(CompanyRegisterBusinessBean.class.getName());
 	
 	public boolean updateEntry(
-			String uniqueId,
 			String personal_id,
 			String commune,
 			String postalCode,
-			String oldOperationForm,
 			String workingArea,
 			String orderAreaForName,
 			String name,
@@ -49,7 +47,6 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			String recipientPersonalId,
 			String recipientName,
 			String industryCode,
-			String eFromFile,
 			String unregistrationType,
 			String unregistrationDate,
 			String banMarking) {

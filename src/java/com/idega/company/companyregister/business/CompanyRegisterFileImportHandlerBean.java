@@ -141,8 +141,27 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	
 	protected boolean storeCompanyRegisterEntry() throws RemoteException, CreateException {
 
-		//return comp_reg_biz.updateEntry(symbol, ssn, dateOfDeath, name, street, commune, gender, maritialStatus, spouseSSN)
-
-		return false;
+		String personal_id = getProperty(COLUMN_PERSONAL_ID);
+		String commune = getProperty(COLUMN_COMMUNE);
+		String postalCode = getProperty(COLUMN_POSTAL_CODE);
+		String workingArea = getProperty(COLUMN_WORKING_AREA);
+		String orderAreaForName = getProperty(COLUMN_ORDER_AREA_FOR_NAME);
+		String name = getProperty(COLUMN_NAME);
+		String address = getProperty(COLUMN_ADDRESS);
+		String ceoId = getProperty(COLUMN_CEO_ID);
+		String dateOfLastChange = getProperty(COLUMN_DATE_OF_LAST_CHANGE);
+		String operationForm = getProperty(COLUMN_OPERATION_FORM);
+		String vatNumber = getProperty(COLUMN_VAT_NUMBER);
+		String legalAddress = getProperty(COLUMN_LEGAL_ADDRESS);
+		String registerDate = getProperty(COLUMN_REGISTER_DATE);
+		String operation = getProperty(COLUMN_OPERATION);
+		String recipientPersonalId = getProperty(COLUMN_RECIPIENT_PERSONAL_ID);
+		String recipientName = getProperty(COLUMN_RECIPIENT_NAME);
+		String industryCode = getProperty(COLUMN_INDUSTRY_CODE);
+		String unregistrationType = getProperty(COLUMN_TYPE_OF_UNREGISTRATION);
+		String unregistrationDate = getProperty(COLUMN_DATE_OF_UNREGISTRATION);
+		String banMarking = getProperty(COLUMN_BAN_MARKING);
+		
+		return comp_reg_biz.updateEntry(personal_id, commune, postalCode, workingArea, orderAreaForName, name, address, ceoId, dateOfLastChange, operationForm, vatNumber, legalAddress, registerDate, operation, recipientPersonalId, recipientName, industryCode, unregistrationType, unregistrationDate, banMarking);
 	}
 }
