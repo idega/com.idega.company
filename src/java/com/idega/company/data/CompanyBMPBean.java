@@ -116,6 +116,8 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		addManyToOneRelationship(INDUSTRY_CODE, "Industry Code", IndustryCode.class);
 		addManyToOneRelationship(RECIPIENT_ID, "Recipient ID", User.class);
 		addManyToOneRelationship(UNREGISTER_TYPE, "Unregister Type", UnregisterType.class);
+		
+		setUnique(COLUMN_PERSONAL_ID, true);
 	}
 
 	// Getters

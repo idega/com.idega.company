@@ -5,6 +5,8 @@ import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.idega.business.IBOLookupException;
+import com.idega.business.IBORuntimeException;
 import com.idega.business.IBOServiceBean;
 import com.idega.company.data.Company;
 import com.idega.company.data.CompanyHome;
@@ -52,102 +54,214 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			String unregistrationType,
 			String unregistrationDate,
 			String banMarking) {
+		
+			Company company_registry = getEntryByPersonalId(personal_id);
 				
 			try {
-				
-					Company company_registry = getEntryByPersonalId(personal_id);
-					
-					if (company_registry == null)
-						company_registry = getCompanyRegisterHome().create();
-					
-					company_registry.setBanMarking(banMarking);
-					UserBusiness userBusiness = (UserBusiness) getServiceInstance(UserBusiness.class);
-					if(userBusiness != null) {
-						User ceo = userBusiness.getUser(ceoId);
-						if(ceo == null) {
-							ceo = getUserHome().create();
-						}
-						company_registry.setCEO(ceo);
-						User recipient = userBusiness.getUser(recipientPersonalId);
-						if(recipient == null) {
-							recipient = getUserHome().create();
-						}
-						recipient.setName(recipientName);
-						company_registry.setRecipient(recipient);
-					}
-					company_registry.setOperation(operation);
-					company_registry.setOrderAreaForName(orderAreaForName);
-					company_registry.setVATNumber(vatNumber);
-					company_registry.setName(name);
-
-					Address addressBean = company_registry.getAddress();
-					if(addressBean == null) {
-						addressBean = getAddressHome().create();
-					}
-					
-					AddressBusiness address_business = (AddressBusiness) getServiceInstance(AddressBusiness.class);
-					
-					addressBean.setStreetName(address_business.getStreetNameFromAddressString(address));
-					addressBean.setStreetNumber(address_business.getStreetNumberFromAddressString(address));
-					
-					Commune communeBean = addressBean.getCommune();
-					if(communeBean == null) {
-						communeBean = getCommuneHome().create();
-					}
-					communeBean.setCommuneCode(commune);
-					addressBean.setCommune(communeBean);
-					
-					PostalCode postalCodeBean = addressBean.getPostalCode();
-					if(postalCode == null) {
-						postalCodeBean = getPostalCodeHome().create();
-					}
-					postalCodeBean.setPostalCode(postalCode);
-					addressBean.setPostalCode(postalCodeBean);
-					company_registry.setAddress(addressBean);
-
-					Commune legalCommune = company_registry.getLegalCommune();
-					if(legalCommune == null) {
-						legalCommune = getCommuneHome().create();
-					}
-					legalCommune.setCommuneCode(legalAddress);
-					company_registry.setLegalCommune(legalCommune);
-					
-					Commune workCommune = company_registry.getWorkingArea();
-					if(workCommune == null) {
-						workCommune = getCommuneHome().create();
-					}
-					workCommune.setCommuneCode(workingArea);
-					company_registry.setWorkingArea(workCommune);
-					
-					OperationForm operationFormBean = ((OperationFormHome) IDOLookup.getHome(OperationForm.class)).findOperationFormByUniqueCode(operationForm);
-					if(operationFormBean != null) {
-						company_registry.setOperationForm(operationFormBean);
-					}
-					
-					IndustryCode industryCodeBean = ((IndustryCodeHome) IDOLookup.getHome(IndustryCode.class)).findByPrimaryKey(industryCode);
-					if(industryCodeBean != null) {
-						company_registry.setIndustryCode(industryCodeBean);
-					}
-					
-					UnregisterType unregisterTypeBean = ((UnregisterTypeHome) IDOLookup.getHome(UnregisterType.class)).findUnregisterTypeByUniqueCode(unregistrationType);
-					if(unregisterTypeBean != null) {
-						company_registry.setUnregisterType(unregisterTypeBean);
-					}
-					
-					company_registry.setLastChange(getSqlDateFromTimestampString(dateOfLastChange));
-					company_registry.setRegisterDate(getSqlDateFromTimestampString(registerDate));
-					company_registry.setUnregisterDate(getSqlDateFromTimestampString(unregistrationDate));
-				
-					company_registry.store();
+				if (company_registry == null) {
+					company_registry = getCompanyRegisterHome().create();
+				}
+			} catch(Exception re) {
+				logger.log(Level.SEVERE, "Exception while creating company register entry", re);
 			}
-			catch (Exception e) {
 				
-				logger.log(Level.SEVERE, "Exception while creating/updating company register entry", e);
+			if(company_registry == null) {
 				return false;
 			}
+			if(banMarking != null && !banMarking.trim().equals("")) {
+				company_registry.setBanMarking(banMarking.trim());
+			}
+			if(operation != null && !operation.trim().equals("")) {
+				company_registry.setOperation(operation.trim());
+			}
+			if(orderAreaForName != null && !orderAreaForName.trim().equals("")) {
+				company_registry.setOrderAreaForName(orderAreaForName.trim());
+			}
+			if(vatNumber != null && !vatNumber.trim().equals("")) {
+				company_registry.setVATNumber(vatNumber.trim());
+			}
+			if(name != null && !name.trim().equals("")) {
+				company_registry.setName(name.trim());
+			}
+					
+			UserBusiness userBusiness = getUserBusiness();
+			if(userBusiness == null) {
+				logger.log(Level.SEVERE, "Could not retrieve UserBusiness service bean");
+				return false;
+			}
+			
+			User ceo = null;
+			try {
+				if(ceoId != null) {
+					ceoId = ceoId.trim();
+					if(!ceoId.equals("")) {
+						ceo = userBusiness.getUser(ceoId);
+					}
+				}
+			} catch(Exception re) {
+				logger.log(Level.SEVERE, "Could not find the user", re);
+			}
+			if(ceo == null) {
+				try {
+					ceo = getUserHome().create();
+				} catch(Exception re) {
+					logger.log(Level.SEVERE, "Exception while creating a new user entry", re);
+					return false;
+				}
+			}
+			company_registry.setCEO(ceo);
+			
+			User recipient = null;
+			try {
+				if(recipientPersonalId != null) {
+					recipientPersonalId = recipientPersonalId.trim();
+					if(!recipientPersonalId.equals("")) {
+						recipient = userBusiness.getUser(recipientPersonalId);
+					}
+				}
+			} catch(Exception re) {
+				logger.log(Level.SEVERE, "Could not find the user", re);
+			}
+			if(recipient == null) {
+				try {
+					recipient = getUserHome().create();
+				} catch(Exception re) {
+					logger.log(Level.SEVERE, "Exception while creating a new user entry", re);
+					return false;
+				}
+			}
+			recipient.setName(recipientName);
+			company_registry.setRecipient(recipient);			
+					
+
+			Address addressBean = company_registry.getAddress();
+			if(addressBean == null) {
+				try {
+					addressBean = getAddressHome().create();
+				} catch(Exception re) {
+					logger.log(Level.SEVERE, "Exception while creating a new address entry", re);
+					return false;
+				}
+			}
+					
+			AddressBusiness addressBusiness = getAddressBusiness();
+			if(addressBusiness == null) {
+				logger.log(Level.SEVERE, "Could not retrieve AddressBusiness service bean");
+				return false;
+			}
+			try {
+				if(address != null) {
+					address = address.trim();
+					if(!address.equals("")) {
+						addressBean.setStreetName(addressBusiness.getStreetNameFromAddressString(address));
+						addressBean.setStreetNumber(addressBusiness.getStreetNumberFromAddressString(address));
+					}
+				}
+			} catch(Exception re) {
+				logger.log(Level.SEVERE, "Exception while handling company address", re);
+			}
+			
+			Commune communeBean = addressBean.getCommune();
+			if(communeBean == null) {
+				try {
+					if(commune != null) {
+						commune = commune.trim();
+						if(!commune.equals("")) {
+							communeBean = getCommuneHome().findByCommuneCode(commune);
+						}
+					}
+				} catch(Exception re) {
+					logger.log(Level.SEVERE, "Exception while finding commune entry", re);
+				}
+			}
+			//communeBean.setCommuneCode(commune);
+			addressBean.setCommune(communeBean);
+			
+			company_registry.setLastChange(getSqlDateFromTimestampString(dateOfLastChange.trim()));
+			company_registry.setRegisterDate(getSqlDateFromTimestampString(registerDate.trim()));
+			company_registry.setUnregisterDate(getSqlDateFromTimestampString(unregistrationDate.trim()));
+					
+			PostalCode postalCodeBean = addressBean.getPostalCode();
+			if(postalCode == null) {
+				try {
+					if(postalCode != null) {
+						postalCode = postalCode.trim();
+						if(!postalCode.equals("")) {
+							postalCodeBean = getPostalCodeHome().findByPostalCode(postalCode);
+						}
+					}
+				} catch(Exception re) {
+					logger.log(Level.SEVERE, "Exception while finding a postal code entry", re);
+				}
+			}
+//			postalCodeBean.setPostalCode(postalCode);
+			addressBean.setPostalCode(postalCodeBean);
+//			addressBean.setP
+			addressBean.store();
+			company_registry.setAddress(addressBean);
+
+			Commune legalCommune = company_registry.getLegalCommune();
+			if(legalCommune == null) {
+				try {
+					if(legalAddress != null) {
+						legalAddress = legalAddress.trim();
+						if(!legalAddress.equals("")) {
+							legalCommune = getCommuneHome().findByCommuneCode(legalAddress);
+						}
+					}
+				} catch(Exception re) {
+					logger.log(Level.SEVERE, "Exception while finding a commune entry", re);
+				}
+			}
+//			legalCommune.setCommuneCode(legalAddress);
+			company_registry.setLegalCommune(legalCommune);
+			
+			Commune workCommune = company_registry.getWorkingArea();
+			if(workCommune == null) {
+				try {
+					if(workingArea != null) {
+						workingArea = workingArea.trim();
+						if(!workingArea.equals("")) {
+							workCommune = getCommuneHome().findByCommuneCode(workingArea);
+						}
+					}
+				} catch(Exception re) {
+					logger.log(Level.SEVERE, "Exception while finding a commune entry", re);
+				}
+			}
+//			legalCommune.setCommuneCode(legalAddress);
+			company_registry.setWorkingArea(workCommune);
+					
+			try {
+				OperationForm operationFormBean = ((OperationFormHome) IDOLookup.getHome(OperationForm.class)).findOperationFormByUniqueCode(operationForm);
+				if(operationFormBean != null) {
+					company_registry.setOperationForm(operationFormBean);
+				}
+			} catch(Exception re) {
+				logger.log(Level.SEVERE, "Exception while finding a OperationForm entry", re);
+			}
+				
+			try {
+				IndustryCode industryCodeBean = ((IndustryCodeHome) IDOLookup.getHome(IndustryCode.class)).findByPrimaryKey(industryCode);
+				if(industryCodeBean != null) {
+					company_registry.setIndustryCode(industryCodeBean);
+				}
+			} catch(Exception re) {
+				logger.log(Level.SEVERE, "Exception while finding a IndustryCode entry", re);
+			}
+			
+			try {
+				UnregisterType unregisterTypeBean = ((UnregisterTypeHome) IDOLookup.getHome(UnregisterType.class)).findUnregisterTypeByUniqueCode(unregistrationType);
+				if(unregisterTypeBean != null) {
+					company_registry.setUnregisterType(unregisterTypeBean);
+				}
+			} catch(Exception re) {
+				logger.log(Level.SEVERE, "Exception while finding a UnregisterType entry", re);
+			}
+			company_registry.store();
 
 			return true;
-		}
+	}
 	
 	protected CompanyHome getCompanyRegisterHome() throws RemoteException {
 		
@@ -190,6 +304,24 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 		} catch (Exception e) {
 			logger.log(Level.SEVERE, "Exception while retrieving company BMP bean by personal id", e);
 			return null;
+		}
+	}
+	
+	protected UserBusiness getUserBusiness() {
+		try {
+			return (UserBusiness) getServiceInstance(UserBusiness.class);
+		}
+		catch (IBOLookupException ile) {
+			throw new IBORuntimeException(ile);
+		}
+	}
+	
+	protected AddressBusiness getAddressBusiness() {
+		try {
+			return (AddressBusiness) getServiceInstance(AddressBusiness.class);
+		}
+		catch (IBOLookupException ile) {
+			throw new IBORuntimeException(ile);
 		}
 	}
 }
