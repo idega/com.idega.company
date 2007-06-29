@@ -1,5 +1,6 @@
 package com.idega.company.companyregister.business;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -130,7 +131,12 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	
 	private boolean processRecord(String record) throws RemoteException,
 	CreateException {
-		this.valueList = this.file.getValuesFromRecordString(record);
+		try {
+			this.valueList = this.file.getValuesFromRecordString(record);
+			
+		} catch (Exception e) {
+			return false;
+		}
 
 		boolean success = storeCompanyRegisterEntry();
 
@@ -162,6 +168,51 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 		String unregistrationDate = getProperty(COLUMN_DATE_OF_UNREGISTRATION);
 		String banMarking = getProperty(COLUMN_BAN_MARKING);
 		
+		/*System.out.println("---------entry----------------");
+		System.out.println("personal_id:"+personal_id+"==");
+		System.out.println("commune:"+commune+"==");
+		System.out.println("postalCode:"+postalCode+"==");
+		System.out.println("workingArea:"+workingArea+"==");
+		System.out.println("orderAreaForName:"+orderAreaForName+"==");
+		System.out.println("name:"+name+"==");
+		System.out.println("address:"+address+"==");
+		System.out.println("ceoId:"+ceoId+"==");
+		System.out.println("dateOfLastChange:"+dateOfLastChange+"==");
+		System.out.println("operationForm:"+operationForm+"==");
+		System.out.println("vatNumber:"+vatNumber+"==");
+		System.out.println("legalAddress:"+legalAddress+"==");
+		System.out.println("registerDate:"+registerDate+"==");
+		System.out.println("operation:"+operation+"==");
+		System.out.println("recipientPersonalId:"+recipientPersonalId+"==");
+		System.out.println("recipientName:"+recipientName+"==");
+		System.out.println("industryCode:"+industryCode+"==");
+		System.out.println("unregistrationType:"+unregistrationType+"==");
+		System.out.println("unregistrationDate:"+unregistrationDate+"==");
+		System.out.println("banMarking:"+banMarking+"==");
+		System.out.println("-------------------------");
+		
+		
+		*/
+		
+//		System.out.println("x: "+CompanyRegisterImportFile.getSQLDateFromStringFormat(dateOfLastChange, null, CompanyRegisterBusinessBean.RECORDS_DATE_FORMAT));
+//		System.out.println("y: "+CompanyRegisterImportFile.getSQLDateFromStringFormat(registerDate, null, CompanyRegisterBusinessBean.RECORDS_DATE_FORMAT));
+		
+//		return true;
 		return comp_reg_biz.updateEntry(personal_id, commune, postalCode, workingArea, orderAreaForName, name, address, ceoId, dateOfLastChange, operationForm, vatNumber, legalAddress, registerDate, operation, recipientPersonalId, recipientName, industryCode, unregistrationType, unregistrationDate, banMarking);
+	}
+	
+	public static void main(String[] args) {
+		try {
+			System.out.println("handling file");
+			CompanyRegisterFileImportHandler handler = new CompanyRegisterFileImportHandlerBean();
+			
+			CompanyRegisterImportFile file = new CompanyRegisterImportFile();
+			file.setFile(new File("/Users/civilis/Documents/work/company_import/fyrirtaeki-daglegt-ferli.dat"));
+			handler.setImportFile(file);
+			handler.handleRecords();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
