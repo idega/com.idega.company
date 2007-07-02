@@ -92,7 +92,7 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	public void printFailedRecords() {
 		
 		if (!this.failedRecordList.isEmpty())
-			logger.log(Level.WARNING, "Import failed for these records, please fix and import again: ");
+			logger.log(Level.WARNING, "Import failed for these records (total: "+failedRecordList.size()+"), please fix and import again: ");
 
 		Iterator iter = this.failedRecordList.iterator();
 		
@@ -167,6 +167,8 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 		String unregistrationType = getProperty(COLUMN_TYPE_OF_UNREGISTRATION);
 		String unregistrationDate = getProperty(COLUMN_DATE_OF_UNREGISTRATION);
 		String banMarking = getProperty(COLUMN_BAN_MARKING);
+		
+		//System.out.println("vatNumber: -"+vatNumber+"-");
 		
 		/*System.out.println("---------entry----------------");
 		System.out.println("personal_id:"+personal_id+"==");
