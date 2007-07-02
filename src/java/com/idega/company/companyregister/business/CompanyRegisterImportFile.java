@@ -43,83 +43,33 @@ public class CompanyRegisterImportFile extends GenericImportFile implements Impo
 			
 				case CompanyRegisterFileImportHandlerBean.COLUMN_UNIQUE_ID : return recordString.substring(0+offset,2+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED1 : return recordString.substring(2+offset,10+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_PERSONAL_ID : return recordString.substring(10+offset,20+offset);
+				case CompanyRegisterFileImportHandlerBean.COLUMN_PERSONAL_ID : return guessAndReturnNumericalId(recordString, 10, 20);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_COMMUNE : return recordString.substring(20+offset,24+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_POSTAL_CODE : return recordString.substring(24+offset,27+offset);
+				case CompanyRegisterFileImportHandlerBean.COLUMN_POSTAL_CODE : return guessAndReturnNumericalId(recordString, 24, 27);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_OLD_OPERATION_FORM : return recordString.substring(27+offset,28+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_WORKING_AREA : return recordString.substring(28+offset,32+offset);
+				case CompanyRegisterFileImportHandlerBean.COLUMN_WORKING_AREA : return guessAndReturnNumericalId(recordString, 28, 32);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_ORDER_AREA_FOR_NAME : return recordString.substring(32+offset,63+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NAME : return recordString.substring(63+offset,94+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED2 : return recordString.substring(94+offset,125+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_ADDRESS : return recordString.substring(125+offset,146+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_CEO_ID : 
-
-//					workaround - address length is not constant in the record files. (bug from national registry)
-					
-					String ceo_id = recordString.substring(146+offset,156+offset);
-					
-					if(ceo_id.trim().length() == 0)
-						return "";
-					
-					int idx = TextSoap.getIndexOfFirstNumberInString(ceo_id);
-					
-					if(idx == 0 && !TextSoap.numericString(ceo_id))
-						throw new IllegalArgumentException("Record string provided in bad format: "+recordString);
-					
-					if(idx == 0)
-						return ceo_id;
-					
-					offset = offset+idx;
-					
-					ceo_id = recordString.substring(146+offset,156+offset);
-					
-					if(!TextSoap.numericString(ceo_id))
-//						give up
-						throw new IllegalArgumentException("Record string provided in bad format: "+recordString);
-					
-					return ceo_id;
-					
+				case CompanyRegisterFileImportHandlerBean.COLUMN_CEO_ID : return guessAndReturnNumericalId(recordString, 146, 156);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED3 : return recordString.substring(156+offset,164+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_DATE_OF_LAST_CHANGE : 
-					
-					String date_str = recordString.substring(164+offset,170+offset);
-					
-					if(!isDateCool(date_str))
-						throw new IllegalArgumentException("Record string provided in bad format: "+recordString);
-					
-					return date_str;
-					
+				case CompanyRegisterFileImportHandlerBean.COLUMN_DATE_OF_LAST_CHANGE : return getDateAndCheckForCoolness(recordString, 164, 170);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_OPERATION_FORM : return recordString.substring(170+offset,172+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED4 : return recordString.substring(172+offset,175+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_VAT_NUMBER : return recordString.substring(175+offset,180+offset);
+				case CompanyRegisterFileImportHandlerBean.COLUMN_VAT_NUMBER : return guessAndReturnNumericalId(recordString, 175, 180);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_LEGAL_ADDRESS : return recordString.substring(180+offset,184+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_REGISTER_DATE : 
-					
-					date_str = recordString.substring(184+offset,192+offset);
-					
-					if(!isDateCool(date_str))
-						throw new IllegalArgumentException("Record string provided in bad format: "+recordString);
-					
-					return date_str;
-					
+				case CompanyRegisterFileImportHandlerBean.COLUMN_REGISTER_DATE : return getDateAndCheckForCoolness(recordString, 184, 192);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_OPERATION : return recordString.substring(192+offset,208+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED5 : return recordString.substring(208+offset,216+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_RECIPIENT_PERSONAL_ID : return recordString.substring(216+offset,226+offset);
+				case CompanyRegisterFileImportHandlerBean.COLUMN_RECIPIENT_PERSONAL_ID : return guessAndReturnNumericalId(recordString, 216, 226);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_RECIPIENT_NAME : return recordString.substring(226+offset,257+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED6 : return recordString.substring(257+offset,260+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_INDUSTRY_CODE : return recordString.substring(260+offset,265+offset);
+				case CompanyRegisterFileImportHandlerBean.COLUMN_INDUSTRY_CODE : return guessAndReturnNumericalId(recordString, 260, 265);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED7 : return recordString.substring(265+offset,273+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_E_FROM_FILE : return recordString.substring(273+offset,274+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_TYPE_OF_UNREGISTRATION : return recordString.substring(274+offset,278+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_DATE_OF_UNREGISTRATION : 
-					
-					date_str = recordString.substring(278+offset,286+offset);
-					
-					if(!isDateCool(date_str))
-						throw new IllegalArgumentException("Record string provided in bad format: "+recordString);
-					
-					return date_str;
-					
+				case CompanyRegisterFileImportHandlerBean.COLUMN_DATE_OF_UNREGISTRATION : getDateAndCheckForCoolness(recordString, 278, 286);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED8 : return recordString.substring(286+offset,291+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_BAN_MARKING : return recordString.substring(291+offset,292+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED9 : return recordString.substring(292+offset,300+offset);
@@ -132,12 +82,48 @@ public class CompanyRegisterImportFile extends GenericImportFile implements Impo
 		}
 	}
 	
-	private boolean isDateCool(String date_str) {
+	private String guessAndReturnNumericalId(String recordString, int idx1, int idx2) {
+		String numerical_id = recordString.substring(idx1+offset, idx2+offset);
 		
-		if(date_str == null || date_str.trim().length() == 0)
-			return true;
+		if(numerical_id.trim().length() == 0)
+			return "";
+		
+		int idx = TextSoap.getIndexOfFirstNumberInString(numerical_id);
+		
+		if(idx == 0 && !TextSoap.numericString(numerical_id))
+			throw new IllegalArgumentException("Record string provided in bad format: "+recordString);
+		
+		if(idx == 0)
+			return numerical_id;
+		
+		offset = offset+idx;
+		
+		numerical_id = recordString.substring(idx1+offset,idx2+offset);
+		
+		if(!TextSoap.numericString(numerical_id))
+//			give up
+			throw new IllegalArgumentException("Record string provided in bad format: "+recordString);
+		
+		return numerical_id;
+	}
+	
+	private String getDateAndCheckForCoolness(String recordString, int idx1, int idx2) {
 
-		return getSQLDateFromStringFormat(date_str, null, CompanyRegisterBusinessBean.RECORDS_DATE_FORMAT) == null ? false : true;
+		int date_format_length = CompanyRegisterBusinessBean.RECORDS_DATE_FORMAT.length();
+		if(idx2 - idx1 < date_format_length)
+			throw new IllegalArgumentException("Indexes provided grasp too narrow string length ("+(idx2-idx1)+"), should be at least "+date_format_length+" symbols");
+		
+		idx2 = idx1 + date_format_length;
+		
+		String date_str = guessAndReturnNumericalId(recordString, idx1, idx2);
+		
+		if(date_str.trim().length() == 0)
+			return date_str;
+		
+		if(getSQLDateFromStringFormat(date_str, null, CompanyRegisterBusinessBean.RECORDS_DATE_FORMAT) == null)
+			throw new IllegalArgumentException("Record string provided in bad format: "+recordString);
+		
+		return date_str;
 	}
 	
 	public static Date getSQLDateFromStringFormat(String str, Logger logger, String RECORDS_DATE_FORMAT) {
