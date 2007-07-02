@@ -79,6 +79,16 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 	}
 
+	public Collection getActiveCompanies() {
+		try {
+			return getCompanyHome().findAllWithOpenStatus();
+		}
+		catch (FinderException e) {
+			e.printStackTrace();
+			return new ArrayList();
+		}
+	}
+
 	public Company storeCompany(String name, String personalID) throws CreateException {
 		Company company = getCompanyHome().create();
 		company.setName(name);

@@ -50,9 +50,9 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	private static final String COLUMN_BANK_ACCOUNT = "bank_account";
 	private static final String COLUMN_IS_VALID = "is_valid";
 	private static final String COLUMN_IS_OPEN = "is_open";
-	
+
 	protected static final String VAT_NUMBER = "vat_number";
-	
+
 	protected static final String CEO_ID = "ceo_id";
 
 	protected static final String WORKING_AREA = "working_area";
@@ -70,13 +70,13 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	protected static final String RECIPIENT_ID = "recipient_id";
 
 	protected static final String OPERATION = "operation";
-	
+
 	protected static final String INDUSTRY_CODE = "industry_code";
-	
+
 	protected static final String UNREGISTER_TYPE = "unregister_type";
-	
+
 	protected static final String UNREGISTER_DATE = "unregister_date";
-	
+
 	protected static final String BAN_MARKING = "ban_marking";
 
 	private Group iGroup;
@@ -101,7 +101,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		addAttribute(COLUMN_BANK_ACCOUNT, "Bank account", String.class);
 		addAttribute(COLUMN_IS_VALID, "Is valid", Boolean.class);
 		addAttribute(COLUMN_IS_OPEN, "Is open", Boolean.class);
-		
+
 		addAttribute(VAT_NUMBER, "VAT Number", java.lang.String.class);
 		addAttribute(OPERATION, "Operation", java.lang.String.class);
 		addAttribute(UNREGISTER_DATE, "Unregister Date", java.sql.Date.class);
@@ -279,6 +279,16 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return idoFindPKsByQuery(query);
 	}
 
+	public Collection ejbFindAllWithOpenStatus() throws FinderException {
+		Table table = new Table(this);
+
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(table.getColumn(getIDColumnName()));
+		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_OPEN), true));
+
+		return idoFindPKsByQuery(query);
+	}
+
 	// General methods
 	public void store() throws IDOStoreException {
 		getGeneralGroup().store();
@@ -323,16 +333,16 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 	public void setDefaultValues() {
 		setValid(true);
-		setOpen(false);
 	}
-	
+
 	public User getRecipient() {
 		return (User) getColumnValue(RECIPIENT_ID);
 	}
-	
+
 	public void setRecipient(User recipient) {
 		setColumn(RECIPIENT_ID, recipient);
 	}
+
 	public String getBanMarking() {
 		return getStringColumnValue(BAN_MARKING);
 	}
@@ -340,75 +350,99 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	public User getCEO() {
 		return (User) this.getColumnValue(CEO_ID);
 	}
+
 	public void setCEO(User ceo) {
 		setColumn(CEO_ID, ceo);
 	}
+
 	public IndustryCode getIndustryCode() {
 		return (IndustryCode) getColumnValue(INDUSTRY_CODE);
 	}
+
 	public void setIndustryCode(IndustryCode industryCode) {
 		setColumn(INDUSTRY_CODE, industryCode);
 	}
+
 	public Date getLastChange() {
 		return (Date) getColumnValue(LAST_CHANGE);
 	}
+
 	public void setLastChange(Date lastChange) {
 		setColumn(LAST_CHANGE, lastChange);
 	}
+
 	public Commune getLegalCommune() {
 		return (Commune) getColumnValue(LEGAL_COMMUNE);
 	}
+
 	public void setLegalCommune(Commune legalCommune) {
 		setColumn(LEGAL_COMMUNE, legalCommune);
 	}
+
 	public String getOperation() {
 		return getStringColumnValue(OPERATION);
 	}
+
 	public void setOperation(String operation) {
 		setColumn(OPERATION, operation);
 	}
+
 	public OperationForm getOperationForm() {
 		return (OperationForm) getColumnValue(OPERATION_FORM);
 	}
+
 	public void setOperationForm(OperationForm operationForm) {
 		setColumn(OPERATION_FORM, operationForm);
 	}
+
 	public String getOrderAreaForName() {
 		return getStringColumnValue(ORDER_AREA_FOR_NAME);
 	}
+
 	public void setOrderAreaForName(String orderAreaForName) {
 		setColumn(ORDER_AREA_FOR_NAME, orderAreaForName);
 	}
+
 	public Date getRegisterDate() {
 		return (Date) getColumnValue(REGISTER_DATE);
 	}
+
 	public void setRegisterDate(Date registerDate) {
 		setColumn(REGISTER_DATE, registerDate);
 	}
+
 	public Date getUnregisterDate() {
 		return (Date) getColumnValue(UNREGISTER_DATE);
 	}
+
 	public void setUnregisterDate(Date unregisterDate) {
 		setColumn(UNREGISTER_DATE, unregisterDate);
 	}
+
 	public UnregisterType getUnregisterType() {
 		return (UnregisterType) getColumnValue(UNREGISTER_TYPE);
 	}
+
 	public void setUnregisterType(UnregisterType unregisterType) {
 		setColumn(UNREGISTER_TYPE, unregisterType);
 	}
+
 	public String getVATNumber() {
 		return getStringColumnValue(VAT_NUMBER);
 	}
+
 	public void setVATNumber(String number) {
 		setColumn(VAT_NUMBER, number);
 	}
+
 	public Commune getWorkingArea() {
 		return (Commune) getColumnValue(WORKING_AREA);
 	}
+
 	public void setWorkingArea(Commune workingArea) {
 		setColumn(WORKING_AREA, workingArea);
 	}
+
 	public void setAddress(Address address) {
 		try {
 			getGeneralGroup().addAddress(address);
@@ -417,6 +451,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 			throw new IDORuntimeException(e.getMessage());
 		}
 	}
+
 	public void setBanMarking(String banMarking) {
 		setColumn(BAN_MARKING, banMarking);
 	}

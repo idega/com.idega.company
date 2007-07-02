@@ -1,6 +1,5 @@
 package com.idega.company.data;
 
-
 import java.util.Collection;
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -9,8 +8,6 @@ import com.idega.data.IDOEntity;
 import com.idega.data.IDOFactory;
 
 public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
-	
-	private static final long serialVersionUID = -4670954950285777003L;
 
 	public Class getEntityInterfaceClass() {
 		return Company.class;
@@ -27,9 +24,11 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 		this.idoCheckInPooledEntity(entity);
 		try {
 			return findByPrimaryKey(pk);
-		} catch (FinderException fe) {
+		}
+		catch (FinderException fe) {
 			throw new IDOCreateException(fe);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new IDOCreateException(e);
 		}
 	}
@@ -44,6 +43,13 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 	public Collection findAll(Boolean valid) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Collection ids = ((CompanyBMPBean) entity).ejbFindAll(valid);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Collection findAllWithOpenStatus() throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection ids = ((CompanyBMPBean) entity).ejbFindAllWithOpenStatus();
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}

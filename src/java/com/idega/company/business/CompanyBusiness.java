@@ -38,6 +38,11 @@ public interface CompanyBusiness extends IBOService {
 	public Collection getValidCompanies(boolean valid) throws RemoteException;
 
 	/**
+	 * @see com.idega.company.business.CompanyBusinessBean#getActiveCompanies
+	 */
+	public Collection getActiveCompanies() throws RemoteException;
+
+	/**
 	 * @see com.idega.company.business.CompanyBusinessBean#storeCompany
 	 */
 	public Company storeCompany(String name, String personalID) throws CreateException, RemoteException;
