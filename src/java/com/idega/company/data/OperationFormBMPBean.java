@@ -68,7 +68,7 @@ public class OperationFormBMPBean extends GenericEntity implements
 	
 	public Integer ejbFindOperationFormByUniqueCode(String uniqueId) throws FinderException {
 		IDOQuery query = idoQueryGetSelect();
-		query.appendWhereEqualsQuoted(getIDColumnName(), uniqueId);
+		query.appendWhereEqualsQuoted(CODE, uniqueId);
 
 		return (Integer) idoFindOnePKByQuery(query);
 	}

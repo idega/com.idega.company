@@ -133,12 +133,14 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			if(recipient == null) {
 				try {
 					recipient = getUserHome().create();
-				} catch(Exception re) {
+				} catch(Exception re) { 
 					logger.log(Level.SEVERE, "Exception while creating a new user entry", re);
 					return false;
 				}
 			}
-			recipient.setName(recipientName);
+			if(!recipientName.trim().equals("")) {
+				recipient.setName(recipientName);
+			}
 			recipient.setPersonalID(recipientPersonalId);
 			company_registry.setRecipient(recipient);		
 					

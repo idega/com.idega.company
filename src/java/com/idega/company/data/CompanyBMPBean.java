@@ -282,6 +282,15 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	// General methods
 	public void store() throws IDOStoreException {
 		getGeneralGroup().store();
+		User ceo = getCEO();
+		if(ceo != null) {
+			ceo.store();
+		}
+		//getAddress().store();
+		User recipient = getRecipient();
+		if(recipient != null) {
+			recipient.store();
+		}
 		super.store();
 	}
 

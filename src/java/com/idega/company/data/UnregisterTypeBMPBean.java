@@ -68,7 +68,7 @@ public class UnregisterTypeBMPBean extends GenericEntity implements
 	
 	public Integer ejbFindUnregisterTypeByUniqueCode(String uniqueId) throws FinderException {
 		IDOQuery query = idoQueryGetSelect();
-		query.appendWhereEqualsQuoted(getIDColumnName(), uniqueId);
+		query.appendWhereEqualsQuoted(CODE, uniqueId);
 
 		return (Integer) idoFindOnePKByQuery(query);
 	}

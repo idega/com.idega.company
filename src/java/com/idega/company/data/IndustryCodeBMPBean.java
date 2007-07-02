@@ -41,7 +41,7 @@ public class IndustryCodeBMPBean extends GenericEntity implements IndustryCode {
 		addAttribute(DESCRIPTION, "Description", true, true, java.lang.String.class);
 		
 		addIndex(CODE);
-		setUnique(CODE, true);
+		setPrimaryKey(CODE);
 	}
 
 	public String getISATCode() {
