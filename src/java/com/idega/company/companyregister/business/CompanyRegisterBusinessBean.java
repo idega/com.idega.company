@@ -68,6 +68,10 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 				logger.log(Level.SEVERE, "Exception while creating company register entry", re);
 				return false;
 			}
+			
+			if(company_registry.getPersonalID() == null || company_registry.getPersonalID().equals("")) {
+				company_registry.setPersonalID(personal_id);
+			}
 				
 			if(banMarking != null && !banMarking.trim().equals("")) {
 				company_registry.setBanMarking(banMarking.trim());
@@ -111,6 +115,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 					return false;
 				}
 			}
+			ceo.setPersonalID(ceoId);
 			company_registry.setCEO(ceo);
 			
 			User recipient = null;
@@ -134,7 +139,8 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 				}
 			}
 			recipient.setName(recipientName);
-			company_registry.setRecipient(recipient);			
+			recipient.setPersonalID(recipientPersonalId);
+			company_registry.setRecipient(recipient);		
 					
 
 			Address addressBean = company_registry.getAddress();
@@ -178,14 +184,13 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 					logger.log(Level.SEVERE, "Exception while finding commune entry", re);
 				}
 			}
-			//communeBean.setCommuneCode(commune);
 			addressBean.setCommune(communeBean);
 			company_registry.setLastChange(CompanyRegisterImportFile.getSQLDateFromStringFormat(dateOfLastChange.trim(), logger, RECORDS_DATE_FORMAT));
 			company_registry.setRegisterDate(CompanyRegisterImportFile.getSQLDateFromStringFormat(registerDate.trim(), logger, RECORDS_DATE_FORMAT));
 			company_registry.setUnregisterDate(CompanyRegisterImportFile.getSQLDateFromStringFormat(unregistrationDate.trim(), logger, RECORDS_DATE_FORMAT));
 					
 			PostalCode postalCodeBean = addressBean.getPostalCode();
-			if(postalCode == null) {
+			if(postalCodeBean == null) {
 				try {
 					if(postalCode != null) {
 						postalCode = postalCode.trim();
@@ -198,9 +203,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 					logger.log(Level.SEVERE, "Exception while finding a postal code entry", re);
 				}
 			}
-//			postalCodeBean.setPostalCode(postalCode);
 			addressBean.setPostalCode(postalCodeBean);
-//			addressBean.setP
 			addressBean.store();
 			company_registry.setAddress(addressBean);
 
@@ -218,7 +221,6 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 					logger.log(Level.SEVERE, "Exception while finding a commune entry", re);
 				}
 			}
-//			legalCommune.setCommuneCode(legalAddress);
 			company_registry.setLegalCommune(legalCommune);
 			
 			Commune workCommune = company_registry.getWorkingArea();
@@ -235,7 +237,6 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 					logger.log(Level.SEVERE, "Exception while finding a commune entry", re);
 				}
 			}
-//			legalCommune.setCommuneCode(legalAddress);
 			company_registry.setWorkingArea(workCommune);
 					
 			try {
