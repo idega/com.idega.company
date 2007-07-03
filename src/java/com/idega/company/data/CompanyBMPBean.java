@@ -68,6 +68,8 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	protected static final String REGISTER_DATE = "register_date";
 
 	protected static final String RECIPIENT_ID = "recipient_id";
+	
+	protected static final String RECIPIENT_NAME = "recipient_name";
 
 	protected static final String OPERATION = "operation";
 
@@ -109,12 +111,14 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		addAttribute(LAST_CHANGE, "Last Change", java.sql.Date.class);
 		addAttribute(REGISTER_DATE, "Register Date", java.sql.Date.class);
 		addAttribute(BAN_MARKING, "Ban Marking", java.lang.String.class);
+		addAttribute(RECIPIENT_ID, "Recipient ID", java.lang.String.class);
+		addAttribute(RECIPIENT_NAME, "Recipient Name", java.lang.String.class);
 		addManyToOneRelationship(LEGAL_COMMUNE, "Legal Commune", Commune.class);
 		addManyToOneRelationship(OPERATION_FORM, "Operation form", OperationForm.class);
 		addManyToOneRelationship(CEO_ID, "CEO ID", User.class);
 		addManyToOneRelationship(WORKING_AREA, "Working area", Commune.class);
 		addManyToOneRelationship(INDUSTRY_CODE, "Industry Code", IndustryCode.class);
-		addManyToOneRelationship(RECIPIENT_ID, "Recipient ID", User.class);
+//		addManyToOneRelationship(RECIPIENT_ID, "Recipient ID", User.class);
 		addManyToOneRelationship(UNREGISTER_TYPE, "Unregister Type", UnregisterType.class);
 		
 		setUnique(COLUMN_PERSONAL_ID, true);
@@ -296,11 +300,6 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		if(ceo != null) {
 			ceo.store();
 		}
-		//getAddress().store();
-		User recipient = getRecipient();
-		if(recipient != null) {
-			recipient.store();
-		}
 		super.store();
 	}
 
@@ -334,13 +333,21 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	public void setDefaultValues() {
 		setValid(true);
 	}
-
-	public User getRecipient() {
-		return (User) getColumnValue(RECIPIENT_ID);
+	
+	public String getRecipientId() {
+		return getStringColumnValue(RECIPIENT_ID);
+	}
+	
+	public String getRecipientName() {
+		return getStringColumnValue(RECIPIENT_NAME);
 	}
 
-	public void setRecipient(User recipient) {
+	public void setRecipientId(String recipient) {
 		setColumn(RECIPIENT_ID, recipient);
+	}
+	
+	public void setRecipientName(String recipient) {
+		setColumn(RECIPIENT_NAME, recipient);
 	}
 
 	public String getBanMarking() {

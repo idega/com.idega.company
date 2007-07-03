@@ -12,7 +12,6 @@ import com.idega.data.IDOStoreException;
 import com.idega.data.IDOEntity;
 
 public interface Company extends IDOEntity {
-
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getGroup
 	 */
@@ -119,14 +118,24 @@ public interface Company extends IDOEntity {
 	public void store() throws IDOStoreException;
 
 	/**
-	 * @see com.idega.company.data.CompanyBMPBean#getRecipient
+	 * @see com.idega.company.data.CompanyBMPBean#getRecipientId
 	 */
-	public User getRecipient();
+	public String getRecipientId();
 
 	/**
-	 * @see com.idega.company.data.CompanyBMPBean#setRecipient
+	 * @see com.idega.company.data.CompanyBMPBean#getRecipientName
 	 */
-	public void setRecipient(User recipient);
+	public String getRecipientName();
+
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#setRecipientId
+	 */
+	public void setRecipientId(String recipient);
+
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#setRecipientName
+	 */
+	public void setRecipientName(String recipient);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getBanMarking
