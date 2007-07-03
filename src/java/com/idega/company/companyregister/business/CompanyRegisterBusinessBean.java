@@ -118,31 +118,36 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			ceo.setPersonalID(ceoId);
 			company_registry.setCEO(ceo);
 			
-			User recipient = null;
-			try {
-				if(recipientPersonalId != null) {
-					recipientPersonalId = recipientPersonalId.trim();
-					if(!recipientPersonalId.equals("")) {
-						recipient = userBusiness.getUser(recipientPersonalId);
-					}
-				}
-			} catch(FinderException re) {
-			} catch(Exception re) {
-				logger.log(Level.SEVERE, "Could not find the user", re);
+//			User recipient = null;
+//			try {
+//				if(recipientPersonalId != null) {
+//					recipientPersonalId = recipientPersonalId.trim();
+//					if(!recipientPersonalId.equals("")) {
+//						recipient = userBusiness.getUser(recipientPersonalId);
+//					}
+//				}
+//			} catch(FinderException re) {
+//			} catch(Exception re) {
+//				logger.log(Level.SEVERE, "Could not find the user", re);
+//			}
+//			if(recipient == null) {
+//				try {
+//					recipient = getUserHome().create();
+//				} catch(Exception re) { 
+//					logger.log(Level.SEVERE, "Exception while creating a new user entry", re);
+//					return false;
+//				}
+//			}
+//			if(!recipientName.trim().equals("")) {
+//				recipient.setName(recipientName);
+//			}
+//			recipient.setPersonalID(recipientPersonalId);
+			if(recipientPersonalId != null && !recipientPersonalId.trim().equals("")) {
+				company_registry.setRecipientId(recipientPersonalId);
 			}
-			if(recipient == null) {
-				try {
-					recipient = getUserHome().create();
-				} catch(Exception re) { 
-					logger.log(Level.SEVERE, "Exception while creating a new user entry", re);
-					return false;
-				}
+			if(recipientName != null && !recipientName.trim().equals("")) {
+				company_registry.setRecipientName(recipientName);
 			}
-			if(!recipientName.trim().equals("")) {
-				recipient.setName(recipientName);
-			}
-			recipient.setPersonalID(recipientPersonalId);
-			company_registry.setRecipient(recipient);		
 					
 
 			Address addressBean = company_registry.getAddress();
