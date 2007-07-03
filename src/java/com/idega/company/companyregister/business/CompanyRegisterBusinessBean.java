@@ -149,6 +149,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			if(addressBean == null) {
 				try {
 					addressBean = getAddressHome().create();
+					addressBean.setAddressType(getAddressHome().getAddressType1());
 				} catch(Exception re) {
 					logger.log(Level.SEVERE, "Exception while creating a new address entry", re);
 					return false;
@@ -252,7 +253,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			}
 				
 			try {
-				IndustryCode industryCodeBean = ((IndustryCodeHome) IDOLookup.getHome(IndustryCode.class)).findByPrimaryKey(industryCode);
+				IndustryCode industryCodeBean = ((IndustryCodeHome) IDOLookup.getHome(IndustryCode.class)).findIndustryByUniqueCode(industryCode);
 				if(industryCodeBean != null) {
 					company_registry.setIndustryCode(industryCodeBean);
 				}
