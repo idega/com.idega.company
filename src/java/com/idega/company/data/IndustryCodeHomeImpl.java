@@ -9,9 +9,6 @@ import com.idega.data.IDOEntity;
 import com.idega.data.IDOFactory;
 
 public class IndustryCodeHomeImpl extends IDOFactory implements IndustryCodeHome {
-	
-	private static final long serialVersionUID = -6363480548828621327L;
-
 	public Class getEntityInterfaceClass() {
 		return IndustryCode.class;
 	}
@@ -29,5 +26,12 @@ public class IndustryCodeHomeImpl extends IDOFactory implements IndustryCodeHome
 		Collection ids = ((IndustryCodeBMPBean) entity).ejbFindAllUnregisterTypes();
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public IndustryCode findIndustryByUniqueCode(String uniqueId) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Object pk = ((IndustryCodeBMPBean) entity).ejbFindIndustryByUniqueCode(uniqueId);
+		this.idoCheckInPooledEntity(entity);
+		return this.findByPrimaryKey(pk);
 	}
 }

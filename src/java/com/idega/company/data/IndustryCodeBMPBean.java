@@ -19,6 +19,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import com.idega.company.CompanyConstants;
 import com.idega.data.GenericEntity;
 import com.idega.data.IDOLookup;
+import com.idega.data.IDOQuery;
 
 public class IndustryCodeBMPBean extends GenericEntity implements IndustryCode {
 
@@ -37,11 +38,12 @@ public class IndustryCodeBMPBean extends GenericEntity implements IndustryCode {
 	}
 
 	public void initializeAttributes() {
+		addAttribute(getIDColumnName());
 		addAttribute(CODE, "ISAT Code", true, true, java.lang.String.class, 5);
 		addAttribute(DESCRIPTION, "Description", true, true, java.lang.String.class);
 		
 		addIndex(CODE);
-		setPrimaryKey(CODE);
+		setUnique(CODE, true);
 	}
 
 	public String getISATCode() {
@@ -62,6 +64,13 @@ public class IndustryCodeBMPBean extends GenericEntity implements IndustryCode {
 	
 	public Collection ejbFindAllUnregisterTypes() throws FinderException, RemoteException {
 		return super.idoFindAllIDsBySQL();
+	}
+	
+	public Integer ejbFindIndustryByUniqueCode(String uniqueId) throws FinderException {
+		IDOQuery query = idoQueryGetSelect();
+		query.appendWhereEqualsQuoted(CODE, uniqueId);
+
+		return (Integer) idoFindOnePKByQuery(query);
 	}
 
 	public void insertStartData() throws Exception {
