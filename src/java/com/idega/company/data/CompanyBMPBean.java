@@ -296,10 +296,10 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	// General methods
 	public void store() throws IDOStoreException {
 		getGeneralGroup().store();
-		User ceo = getCEO();
+		/*User ceo = getCEO();
 		if(ceo != null) {
 			ceo.store();
-		}
+		}*/
 		super.store();
 	}
 
@@ -308,7 +308,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		getGeneralGroup().remove();
 	}
 
-	protected Group getGeneralGroup() {
+	public Group getGeneralGroup() {
 		if (this.iGroup == null) {
 			try {
 				this.iGroup = getGroupHome().findByPrimaryKey(this.getPrimaryKey());

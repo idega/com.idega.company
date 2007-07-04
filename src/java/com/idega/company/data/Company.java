@@ -12,6 +12,7 @@ import com.idega.data.IDOStoreException;
 import com.idega.data.IDOEntity;
 
 public interface Company extends IDOEntity {
+	public Group getGeneralGroup();
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getGroup
 	 */

@@ -1,6 +1,8 @@
 package com.idega.company.companyregister.business;
 
 import java.rmi.RemoteException;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -107,16 +109,24 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			} catch(Exception re) {
 				logger.log(Level.SEVERE, "Could not find the user", re);
 			}
-			if(ceo == null) {
+			boolean createNewCeo = false;
+			if(ceo != null) {
+				if(!ceoId.equals(ceo.getPersonalID())) {
+					createNewCeo = true;
+				}
+			}
+			if(ceo == null || createNewCeo) {
 				try {
 					ceo = getUserHome().create();
+					ceo.setPersonalID(ceoId);
+					ceo.store();
+					company_registry.setCEO(ceo);
 				} catch(Exception re) {
 					logger.log(Level.SEVERE, "Exception while creating a new user entry", re);
 					return false;
 				}
 			}
-			ceo.setPersonalID(ceoId);
-			company_registry.setCEO(ceo);
+			
 			
 //			User recipient = null;
 //			try {
@@ -213,7 +223,24 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			}
 			addressBean.setPostalCode(postalCodeBean);
 			addressBean.store();
-			company_registry.setAddress(addressBean);
+			try {
+				Collection addreses = company_registry.getGeneralGroup().getAddresses(getAddressHome().getAddressType1());
+				String pk1 = ((Integer) addressBean.getPrimaryKey()).toString();
+				boolean addressSet = false;
+				for(Iterator it = addreses.iterator(); it.hasNext(); ) {
+					Address adr = (Address) it.next();
+					String pk2 = ((Integer) adr.getPrimaryKey()).toString();
+					if(pk1.equals(pk2)) {
+						addressSet = true;
+						break;
+					}
+				}
+				if(!addressSet) {
+					company_registry.setAddress(addressBean);
+				}
+			} catch(Exception e) {
+				logger.log(Level.SEVERE, "Exception while all address entries for a company", e);
+			}
 
 			Commune legalCommune = company_registry.getLegalCommune();
 			if(legalCommune == null) {
