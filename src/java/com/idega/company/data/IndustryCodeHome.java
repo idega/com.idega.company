@@ -12,7 +12,7 @@ public interface IndustryCodeHome extends IDOHome {
 
 	public IndustryCode findByPrimaryKey(Object pk) throws FinderException;
 
-	public Collection findAllUnregisterTypes() throws FinderException, RemoteException;
+	public Collection findAllIndustryCodes() throws FinderException, RemoteException;
 
 	public IndustryCode findIndustryByUniqueCode(String uniqueId) throws FinderException;
 }

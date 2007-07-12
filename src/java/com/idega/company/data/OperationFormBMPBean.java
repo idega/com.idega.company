@@ -75,17 +75,17 @@ public class OperationFormBMPBean extends GenericEntity implements
 	
 	public void insertStartData() throws Exception {
 		super.insertStartData();
-		logger.log(Level.ALL, "OperationFormBMP after super.insertStartData");
+		
 		InputStream is = getCodesInputStream();
 		
 		if(is == null)
 			return;
-		logger.log(Level.ALL, "OperationFormBMP get inputStream");
+		
 	    HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
 	    
 	    HSSFSheet sheet = wb.getSheetAt(4);
 	    if(sheet != null) {
-	    	logger.log(Level.ALL, "OperationFormBMP get 4th sheet in XLS file");
+	    	
 	    	Iterator it = sheet.rowIterator();
 	    	if(it.hasNext()) {
 	    		it.next();
@@ -95,7 +95,7 @@ public class OperationFormBMPBean extends GenericEntity implements
 	    		if(row != null) {
 	    			HSSFCell codeCell = row.getCell((short) 0);
 	    			if(codeCell != null) {
-	    				logger.log(Level.ALL, "OperationFormBMP create and store new entity");
+	    				
 	    				OperationForm operationForm = getOperationFormHome().create();
 	    				operationForm.setCode(codeCell.getStringCellValue());
 	    				

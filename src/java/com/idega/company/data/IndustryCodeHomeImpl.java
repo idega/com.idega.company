@@ -21,9 +21,9 @@ public class IndustryCodeHomeImpl extends IDOFactory implements IndustryCodeHome
 		return (IndustryCode) super.findByPrimaryKeyIDO(pk);
 	}
 
-	public Collection findAllUnregisterTypes() throws FinderException, RemoteException {
+	public Collection findAllIndustryCodes() throws FinderException, RemoteException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((IndustryCodeBMPBean) entity).ejbFindAllUnregisterTypes();
+		Collection ids = ((IndustryCodeBMPBean) entity).ejbFindAllIndustryCodes();
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}

@@ -1,17 +1,37 @@
 package com.idega.company.companyregister.business;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.CreateException;
+import javax.ejb.FinderException;
+
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+
 import com.idega.block.importer.business.ImportFileHandler;
 import com.idega.block.importer.data.ImportFile;
 import com.idega.business.IBOServiceBean;
+import com.idega.company.CompanyConstants;
+import com.idega.company.data.IndustryCode;
+import com.idega.company.data.IndustryCodeHome;
+import com.idega.company.data.OperationForm;
+import com.idega.company.data.OperationFormHome;
+import com.idega.company.data.UnregisterType;
+import com.idega.company.data.UnregisterTypeHome;
+import com.idega.data.IDOLookup;
 import com.idega.user.data.Group;
 
 public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean 
@@ -67,6 +87,8 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 		String item;
 		
 		try {
+			checkCodesStartData();
+			
 			comp_reg_biz = (CompanyRegisterBusiness) getServiceInstance(CompanyRegisterBusiness.class);
 			
 			while (!(item = (String)file.getNextRecord()).equals("")) {
@@ -143,6 +165,154 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 		this.valueList = null;
 
 		return success;
+	}
+	
+	private void importOperationForms(InputStream is) throws IOException, CreateException {
+	    HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
+	    
+	    HSSFSheet sheet = wb.getSheetAt(4);
+	    if(sheet != null) {
+	    	Iterator it = sheet.rowIterator();
+	    	if(it.hasNext()) {
+	    		it.next();
+	    	}
+	    	while(it.hasNext()) {
+	    		HSSFRow row = (HSSFRow) it.next();
+	    		if(row != null) {
+	    			HSSFCell codeCell = row.getCell((short) 0);
+	    			if(codeCell != null) {
+	    				OperationForm operationForm = getOperationFormHome().create();
+	    				operationForm.setCode(codeCell.getStringCellValue());
+	    				
+	    				HSSFCell descriptionCell = row.getCell((short) 1);
+	    				if(descriptionCell != null) {
+	    					operationForm.setDescription(descriptionCell.getStringCellValue());
+	    				}
+	    				operationForm.store();
+	    			}
+	    		}
+	    	}
+	    }
+	}
+	
+	private void importIndustryCodes(InputStream is) throws IOException, CreateException {
+		HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
+	    
+	    HSSFSheet sheet = wb.getSheetAt(0);
+	    if(sheet != null) {
+	    	Iterator it = sheet.rowIterator();
+	    	if(it.hasNext()) {
+	    		it.next();
+	    	}
+	    	while(it.hasNext()) {
+	    		HSSFRow row = (HSSFRow) it.next();
+	    		if(row != null) {
+	    			HSSFCell codeCell = row.getCell((short) 0);
+	    			if(codeCell != null) {
+	    				IndustryCode industryCode = getIndustryCodeHome().create();
+	    				industryCode.setISATCode(codeCell.getStringCellValue());
+	    				
+	    				HSSFCell descriptionCell = row.getCell((short) 1);
+	    				if(descriptionCell != null) {
+	    					industryCode.setISATDescription(descriptionCell.getStringCellValue());
+	    				}
+	    				industryCode.store();
+	    			}
+	    		}
+	    	}
+	    }
+	}
+	
+	private void importUnregisterTypes(InputStream is) throws IOException, CreateException {
+		HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
+	    
+	    HSSFSheet sheet = wb.getSheetAt(5);
+	    if(sheet != null) {
+	    	Iterator it = sheet.rowIterator();
+	    	if(it.hasNext()) {
+	    		it.next();
+	    	}
+	    	while(it.hasNext()) {
+	    		HSSFRow row = (HSSFRow) it.next();
+	    		if(row != null) {
+	    			HSSFCell codeCell = row.getCell((short) 0);
+	    			if(codeCell != null) {
+	    				UnregisterType unregisterType = getUnregisterTypeHome().create();
+	    				unregisterType.setCode(codeCell.getStringCellValue());
+	    				
+	    				HSSFCell descriptionCell = row.getCell((short) 1);
+	    				if(descriptionCell != null) {
+	    					unregisterType.setDescription(descriptionCell.getStringCellValue());
+	    				}
+	    				unregisterType.store();
+	    			}
+	    		}
+	    	}
+	    }
+	}
+		
+	
+	private void checkCodesStartData() {
+		InputStream is = null;
+		try {
+			is = new FileInputStream(getIWMainApplication().getBundlesRealPath()+"/"+CompanyConstants.IW_BUNDLE_IDENTIFIER+".bundle/resources/startdata/Codes.xls");
+		} catch(Exception e) {
+			logger.log(Level.SEVERE, "Exception while retrieving codes.xls resource from: "+getIWMainApplication().getBundle(CompanyConstants.IW_BUNDLE_IDENTIFIER).getResourcesRealPath(), e);
+			return;
+		}
+		if(is == null) {
+			logger.log(Level.SEVERE, "Exception while retrieving codes.xls resource from: "+getIWMainApplication().getBundle(CompanyConstants.IW_BUNDLE_IDENTIFIER).getResourcesRealPath());
+			return;
+		}
+		try {
+			Collection operationForms = null;
+			try {
+				operationForms = ((OperationFormHome) IDOLookup.getHome(OperationForm.class)).findAllOperationForms();
+				if(operationForms.isEmpty()) {
+					logger.log(Level.ALL, "No Operation forms, importing new ones");
+					importOperationForms(is);
+				}
+			} catch(FinderException re) {
+				logger.log(Level.ALL, "No Operation forms, importing new ones");
+				importOperationForms(is);
+			}
+			Collection unregisterTypes = null;
+			try {
+				unregisterTypes = ((UnregisterTypeHome) IDOLookup.getHome(UnregisterType.class)).findAllUnregisterTypes();
+				if(unregisterTypes.isEmpty()) {
+					logger.log(Level.ALL, "No unregister types, importing new ones");
+					importUnregisterTypes(is);
+				}
+			} catch(FinderException re) {
+				logger.log(Level.ALL, "No unregister types, importing new ones");
+				importUnregisterTypes(is);
+			}
+			Collection industryCodes = null;
+			try {
+				industryCodes = ((IndustryCodeHome) IDOLookup.getHome(IndustryCode.class)).findAllIndustryCodes();
+				if(industryCodes.isEmpty()) {
+					logger.log(Level.ALL, "No industry codes, importing new ones");
+					importIndustryCodes(is);
+				}
+			} catch(FinderException re) {
+				logger.log(Level.ALL, "No industry codes, importing new ones");
+				importIndustryCodes(is);
+			}
+		} catch(Exception re) {
+			logger.log(Level.SEVERE, "Exception importing new initial data", re);
+		}
+	}
+	
+	private OperationFormHome getOperationFormHome() throws RemoteException {
+		return (OperationFormHome) IDOLookup.getHome(OperationForm.class);
+	}
+	
+	private UnregisterTypeHome getUnregisterTypeHome() throws RemoteException {
+		return (UnregisterTypeHome) IDOLookup.getHome(UnregisterType.class);
+	}
+	
+	private IndustryCodeHome getIndustryCodeHome() throws RemoteException {
+		return (IndustryCodeHome) IDOLookup.getHome(IndustryCode.class);
 	}
 	
 	protected boolean storeCompanyRegisterEntry() throws RemoteException, CreateException {
