@@ -69,7 +69,7 @@ public class CompanyRegisterImportFile extends GenericImportFile implements Impo
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED7 : return recordString.substring(265+offset,273+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_E_FROM_FILE : return recordString.substring(273+offset,274+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_TYPE_OF_UNREGISTRATION : return recordString.substring(274+offset,278+offset);
-				case CompanyRegisterFileImportHandlerBean.COLUMN_DATE_OF_UNREGISTRATION : getDateAndCheckForCoolness(recordString, 278, 286);
+				case CompanyRegisterFileImportHandlerBean.COLUMN_DATE_OF_UNREGISTRATION : return getDateAndCheckForCoolness(recordString, 278, 286);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED8 : return recordString.substring(286+offset,291+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_BAN_MARKING : return recordString.substring(291+offset,292+offset);
 				case CompanyRegisterFileImportHandlerBean.COLUMN_NOT_USED9 : return recordString.substring(292+offset,300+offset);
