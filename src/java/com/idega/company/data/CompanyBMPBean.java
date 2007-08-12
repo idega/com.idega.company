@@ -68,7 +68,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	protected static final String REGISTER_DATE = "register_date";
 
 	protected static final String RECIPIENT_ID = "recipient_id";
-	
+
 	protected static final String RECIPIENT_NAME = "recipient_name";
 
 	protected static final String OPERATION = "operation";
@@ -118,9 +118,9 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		addManyToOneRelationship(CEO_ID, "CEO ID", User.class);
 		addManyToOneRelationship(WORKING_AREA, "Working area", Commune.class);
 		addManyToOneRelationship(INDUSTRY_CODE, "Industry Code", IndustryCode.class);
-//		addManyToOneRelationship(RECIPIENT_ID, "Recipient ID", User.class);
+		//		addManyToOneRelationship(RECIPIENT_ID, "Recipient ID", User.class);
 		addManyToOneRelationship(UNREGISTER_TYPE, "Unregister Type", UnregisterType.class);
-		
+
 		setUnique(COLUMN_PERSONAL_ID, true);
 	}
 
@@ -279,6 +279,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		if (valid != null) {
 			query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_VALID), MatchCriteria.EQUALS, valid));
 		}
+		query.addOrder(table, COLUMN_NAME, true);
 
 		return idoFindPKsByQuery(query);
 	}
@@ -289,6 +290,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		SelectQuery query = new SelectQuery(table);
 		query.addColumn(table.getColumn(getIDColumnName()));
 		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_OPEN), true));
+		query.addOrder(table, COLUMN_NAME, true);
 
 		return idoFindPKsByQuery(query);
 	}
@@ -333,11 +335,11 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	public void setDefaultValues() {
 		setValid(true);
 	}
-	
+
 	public String getRecipientId() {
 		return getStringColumnValue(RECIPIENT_ID);
 	}
-	
+
 	public String getRecipientName() {
 		return getStringColumnValue(RECIPIENT_NAME);
 	}
@@ -345,7 +347,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	public void setRecipientId(String recipient) {
 		setColumn(RECIPIENT_ID, recipient);
 	}
-	
+
 	public void setRecipientName(String recipient) {
 		setColumn(RECIPIENT_NAME, recipient);
 	}
