@@ -5,69 +5,15 @@
   </properties>
   <body>
 
-    <release version="3.1.6" date="2007-05-29">
-      <action dev="sigtryggur" type="update">
-      		Added some icons to the treeview in the userapplication
-      </action>       
-    </release>
-    
-    <release version="3.1.5" date="2007-04-23">
-      <action dev="eiki" type="update">
-      		Merged changes made in v.2.0 to v3.1, added Felix icelandic locale variant and changed bundle properties to application properties.
-      </action>       
-    </release>
-    
-    <release version="3.1.4" date="2007-02-16">
-      <action dev="eiki" type="update">
-      		Change the UserLoginTab in com.idega.user to fix a security hole along with Login and user classes in core.
-			Now only the user himself, admin or the first person or the persons group that changes the users password for the first time can change it again. 
-      </action>       
-    </release>
-    
-    <release version="3.1.3" date="2007-01-26">
-      <action dev="sigtryggur" type="update">
-      	Added new email sending function to BasicUserOverview
-      </action>       
-    </release>
-
-	<release version="3.1.2" date="2005-06-22">
-      <action dev="tryggvil" type="update">
-      	Bufgix version. Removing method from LinkToUserStats.
-      </action>       
-    </release>
-
-	<release version="3.1.0" date="2005-06-16">
-      <action dev="tryggvil" type="update">
-      	Declaration of version for including in ePlatform release 3.1
-      </action>
-      <action dev="tryggvil" type="update">
-      	Small UI updates to conform better with the ePlatform 3 workspace
-      </action>            
-    </release>
-
-	<release version="1.1.3" date="2005-09-15">
-      <action dev="tryggvil" type="update">
-		depends now on core 3.0.6
+    <release version="3.1.1" date="2007-08-14">
+      <action dev="laddi" type="update">
+        Creating new release with all changes.
       </action>              
     </release>
-       <release version="1.1.2" date="2005-05-25">
-      <action dev="tryggvil" type="update">
-		depends now on core 3.0.5
-      </action>
-    </release>
-     <release version="1.1.1" date="2005-04-06">
-      <action dev="tryggvil" type="update">
-		depends now on core 3.0.4
-      </action>              
-    </release>
-      <release version="1.1.0" date="2005-03-11">
-      <action dev="tryggvil" type="update">
-		depends now on log 1.1.1
-      </action>              
-    </release>
-    <release version="1.0.0" date="2005-03-10">
-      <action dev="tryggvil" type="update">
-        Declaration of version for use in new systems based on JSF.
+
+    <release version="3.1.0" date="2007-06-30">
+      <action dev="laddi" type="update">
+        New bundle version.
       </action>              
     </release>
 
