@@ -277,7 +277,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		SelectQuery query = new SelectQuery(table);
 		query.addColumn(table.getColumn(getIDColumnName()));
 		if (valid != null) {
-			query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_VALID), MatchCriteria.EQUALS, valid));
+			query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_VALID), MatchCriteria.EQUALS, valid.booleanValue()));
 		}
 		query.addOrder(table, COLUMN_NAME, true);
 
