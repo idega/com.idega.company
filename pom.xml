@@ -8,9 +8,19 @@
   <groupId>com.idega.block.platform</groupId>
   <artifactId>com.idega.company</artifactId>
   <packaging>jar</packaging>
-  <version>4.0.0</version>
+  <version>4.0.0-SNAPSHOT</version>
   <name>idegaWeb Company</name>
   <description>Company Application</description>
+  
+  <scm>
+    <!--
+    <connection>scm:cvs:ext:${user.name}@code.idega.com:/idega/cvs:${groupId}/${artifactId}/</connection>
+    <developerConnection>scm:cvs:ext:${user.name}@code.idega.com:/idega/cvs:${groupId}/${artifactId}/</developerConnection> 
+     -->
+    <connection>scm:cvs:ext:${user.name}@code.idega.com:/idega/cvs:${groupId}/${artifactId}/</connection>
+    <developerConnection>scm:cvs:ext:${user.name}@code.idega.com:/idega/cvs:${groupId}/${artifactId}/</developerConnection>
+  </scm>
+  
   <developers>
     <developer>
       <name>Tryggvi Larusson</name>
