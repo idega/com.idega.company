@@ -1,4 +1,4 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
   	<groupId>com.idega.block.platform</groupId>
@@ -8,7 +8,7 @@
   <groupId>com.idega.block.platform</groupId>
   <artifactId>com.idega.company</artifactId>
   <packaging>jar</packaging>
-  <version>4.0.0-SNAPSHOT</version>
+  <version>4.0.0</version>
   <name>idegaWeb Company</name>
   <description>Company Application</description>
   <developers>
@@ -17,28 +17,28 @@
       <id>tryggvil</id>
       <email>tryggvi@idega.is</email>
       <organization>idega software</organization>
-      <roles/>
+      <roles />
     </developer>
     <developer>
       <name>Pall Helgason</name>
       <id>palli</id>
       <email>palli@idega.is</email>
       <organization>idega software</organization>
-      <roles/>
+      <roles />
     </developer>
     <developer>
       <name>Eirikur Sveinn Hrafnsson</name>
       <id>eiki</id>
       <email>eiki@idega.is</email>
       <organization>idega software</organization>
-      <roles/>
+      <roles />
     </developer>
     <developer>
       <name>Thorhallur Helgason</name>
       <id>laddi</id>
       <email>laddi@idega.is</email>
       <organization>idega software</organization>
-      <roles/>
+      <roles />
     </developer>
   </developers>
   
@@ -75,4 +75,8 @@
       <type>jar</type>
     </dependency>
   </dependencies>
+
+  <scm>
+    <tag>com_idega_company-4_0_0</tag>
+  </scm>
 </project>
