@@ -75,8 +75,4 @@
       <type>jar</type>
     </dependency>
   </dependencies>
-
-  <scm>
-    <tag>com_idega_company-4_0_0</tag>
-  </scm>
 </project>
