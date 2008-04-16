@@ -77,43 +77,50 @@ public class IndustryCodeBMPBean extends GenericEntity implements IndustryCode {
 		super.insertStartData();
 		InputStream is = getCodesInputStream();
 		
-		if(is == null)
+		if (is == null) {
 			return;
-	    HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
-	    
-	    HSSFSheet sheet = wb.getSheetAt(0);
-	    if(sheet != null) {
-	    	Iterator it = sheet.rowIterator();
-	    	if(it.hasNext()) {
-	    		it.next();
-	    	}
-	    	while(it.hasNext()) {
-	    		HSSFRow row = (HSSFRow) it.next();
-	    		if(row != null) {
-	    			HSSFCell codeCell = row.getCell((short) 0);
-	    			if(codeCell != null) {
-	    				IndustryCode industryCode = getIndustryCodeHome().create();
-	    				industryCode.setISATCode(codeCell.getStringCellValue());
-	    				
-	    				HSSFCell descriptionCell = row.getCell((short) 1);
-	    				if(descriptionCell != null) {
-	    					industryCode.setISATDescription(descriptionCell.getStringCellValue());
-	    				}
-	    				industryCode.store();
-	    			}
-	    		}
-	    	}
-	    }
+		}
+		
+		try {
+		    HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
+		    
+		    HSSFSheet sheet = wb.getSheetAt(0);
+		    if(sheet != null) {
+		    	Iterator it = sheet.rowIterator();
+		    	if(it.hasNext()) {
+		    		it.next();
+		    	}
+		    	while(it.hasNext()) {
+		    		HSSFRow row = (HSSFRow) it.next();
+		    		if(row != null) {
+		    			HSSFCell codeCell = row.getCell((short) 0);
+		    			if(codeCell != null) {
+		    				IndustryCode industryCode = getIndustryCodeHome().create();
+		    				industryCode.setISATCode(codeCell.getStringCellValue());
+		    				
+		    				HSSFCell descriptionCell = row.getCell((short) 1);
+		    				if(descriptionCell != null) {
+		    					industryCode.setISATDescription(descriptionCell.getStringCellValue());
+		    				}
+		    				industryCode.store();
+		    			}
+		    		}
+		    	}
+		    }
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			is.close();
+		}
 	}
 	
 	private InputStream getCodesInputStream() {
-		
+		String path = getIWMainApplication().getBundlesRealPath()+"/"+CompanyConstants.IW_BUNDLE_IDENTIFIER+".bundle/resources/startdata/Codes.xls";
 		try {
-			return new FileInputStream(getIWMainApplication().getBundlesRealPath()+"/"+CompanyConstants.IW_BUNDLE_IDENTIFIER+".bundle/resources/startdata/Codes.xls");
+			return new FileInputStream(path);
 			
 		} catch (Exception e) {
-			
-			logger.log(Level.SEVERE, "Exception while retrieving codes.xls resource from: "+getIWMainApplication().getBundle(CompanyConstants.IW_BUNDLE_IDENTIFIER).getResourcesRealPath(), e);
+			logger.log(Level.SEVERE, "Exception while retrieving codes from: " + path, e);
 			return null;
 		}
 	}
