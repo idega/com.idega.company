@@ -194,6 +194,20 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 		return null;
 	}
+	
+	public void updatePhone(Phone newPhone) {
+		Collection collection = getGeneralGroup().getPhones();
+		Iterator iterator = collection.iterator();
+		while (iterator.hasNext()) {
+			Phone phone = (Phone) iterator.next();
+			if (phone.getPhoneTypeId() == PhoneBMPBean.getHomeNumberID()) {
+				if(!phone.getNumber().equals(newPhone.getNumber())) {
+					phone.setNumber(newPhone.getNumber());
+					phone.store();
+				}
+			}
+		}
+	}
 
 	public Phone getFax() {
 		Collection collection = getGeneralGroup().getPhones();
@@ -207,6 +221,20 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 		return null;
 	}
+	
+	public void updateFax(Phone newFax) {
+		Collection collection = getGeneralGroup().getPhones();
+		Iterator iterator = collection.iterator();
+		while (iterator.hasNext()) {
+			Phone phone = (Phone) iterator.next();
+			if (phone.getPhoneTypeId() == PhoneBMPBean.getFaxNumberID()) {
+				if(!phone.getNumber().equals(newFax.getNumber())) {
+					phone.setNumber(newFax.getNumber());
+					phone.store();
+				}
+			}
+		}
+	}
 
 	public Email getEmail() {
 		Collection emails = getGeneralGroup().getEmails();
@@ -216,6 +244,18 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		}
 
 		return null;
+	}
+	
+	public void updateEmail(Email newEmail) {
+		Collection emails = getGeneralGroup().getEmails();
+		Iterator iterator = emails.iterator();
+		while (iterator.hasNext()) {
+			Email email = (Email) iterator.next();
+			if(!email.getEmailAddress().equals(newEmail.getEmailAddress())) {
+				email.setEmailAddress(newEmail.getEmailAddress());
+				email.store();
+			}
+		}
 	}
 
 	// Setters

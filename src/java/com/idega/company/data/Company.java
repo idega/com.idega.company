@@ -62,16 +62,31 @@ public interface Company extends IDOEntity {
 	 * @see com.idega.company.data.CompanyBMPBean#getPhone
 	 */
 	public Phone getPhone();
+	
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#setPhone
+	 */
+	public void updatePhone(Phone phone);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getFax
 	 */
 	public Phone getFax();
+	
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#getFax
+	 */
+	public void updateFax(Phone fax);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getEmail
 	 */
 	public Email getEmail();
+	
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#getEmail
+	 */
+	public void updateEmail(Email email);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#setGroup
