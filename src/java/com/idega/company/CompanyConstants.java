@@ -11,6 +11,4 @@ public class CompanyConstants {
 
 	public static final String IW_BUNDLE_IDENTIFIER = "com.idega.company";
 
-	public static final String GROUP_TYPE_COMPANY = "iw_company";
-
 }

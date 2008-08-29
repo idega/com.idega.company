@@ -15,11 +15,11 @@ import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 
 import com.idega.business.IBOServiceBean;
-import com.idega.company.CompanyConstants;
 import com.idega.company.data.Company;
 import com.idega.company.data.CompanyHome;
 import com.idega.company.data.CompanyType;
 import com.idega.company.data.CompanyTypeHome;
+import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.data.IDORuntimeException;
 import com.idega.user.data.Group;
 
@@ -55,7 +55,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 	}
 
 	public Company getCompany(Group group) throws FinderException {
-		if (group.getGroupType().equals(CompanyConstants.GROUP_TYPE_COMPANY)) {
+		if (group.getGroupType().equals(StandardRoles.ROLE_KEY_COMPANY)) {
 			return getCompany(group.getPrimaryKey());
 		}
 		return null;
