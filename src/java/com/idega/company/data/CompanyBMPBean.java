@@ -17,7 +17,7 @@ import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
 
-import com.idega.core.accesscontrol.business.StandardRoles;
+import com.idega.company.CompanyConstants;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneBMPBean;
@@ -295,7 +295,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	// Finders and creators
 	public Object ejbCreate() throws CreateException {
 		this.iGroup = this.getGroupHome().create();
-		this.iGroup.setGroupType(StandardRoles.ROLE_KEY_COMPANY);
+		this.iGroup.setGroupType(CompanyConstants.GROUP_TYPE_COMPANY);
 		this.iGroup.store();
 		this.setPrimaryKey(this.iGroup.getPrimaryKey());
 		return super.ejbCreate();

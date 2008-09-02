@@ -14,7 +14,6 @@ import javax.ejb.FinderException;
 
 import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
-import com.idega.core.accesscontrol.business.StandardRoles;
 import com.idega.idegaweb.IWApplicationContext;
 import com.idega.idegaweb.IWBundle;
 import com.idega.idegaweb.IWBundleStartable;
@@ -31,7 +30,7 @@ public class IWBundleStarter implements IWBundleStartable {
 	}
 
 	private void updateData(IWApplicationContext iwac) {
-		insertGroupType(iwac, StandardRoles.ROLE_KEY_COMPANY);
+		insertGroupType(iwac, CompanyConstants.GROUP_TYPE_COMPANY);
 	}
 
 	private void insertGroupType(IWApplicationContext iwac, String groupType) {
