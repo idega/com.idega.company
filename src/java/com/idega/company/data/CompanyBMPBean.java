@@ -83,14 +83,17 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 	private Group iGroup;
 
+	@Override
 	protected boolean doInsertInCreate() {
 		return true;
 	}
 
+	@Override
 	public String getEntityName() {
 		return ENTITY_NAME;
 	}
 
+	@Override
 	public void initializeAttributes() {
 		addOneToOneRelationship(getIDColumnName(), Group.class);
 		setAsPrimaryKey(getIDColumnName(), true);
@@ -133,6 +136,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return (CompanyType) getColumnValue(COLUMN_TYPE);
 	}
 
+	@Override
 	public String getName() {
 		return getStringColumnValue(COLUMN_NAME);
 	}
@@ -196,15 +200,18 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	}
 	
 	public void updatePhone(Phone newPhone) {
-		Collection collection = getGeneralGroup().getPhones();
-		Iterator iterator = collection.iterator();
-		while (iterator.hasNext()) {
-			Phone phone = (Phone) iterator.next();
-			if (phone.getPhoneTypeId() == PhoneBMPBean.getHomeNumberID()) {
-				if(!phone.getNumber().equals(newPhone.getNumber())) {
-					phone.setNumber(newPhone.getNumber());
-					phone.store();
-				}
+		Phone phone = getPhone();
+		if(phone == null) {
+			try {
+				newPhone.store();
+				getGeneralGroup().addPhone(newPhone);
+			} catch (IDOAddRelationshipException e) {
+				e.printStackTrace();
+			}
+		} else {
+			if(!phone.getNumber().equals(newPhone.getNumber())) {
+				phone.setNumber(newPhone.getNumber());
+				phone.store();
 			}
 		}
 	}
@@ -223,15 +230,18 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	}
 	
 	public void updateFax(Phone newFax) {
-		Collection collection = getGeneralGroup().getPhones();
-		Iterator iterator = collection.iterator();
-		while (iterator.hasNext()) {
-			Phone phone = (Phone) iterator.next();
-			if (phone.getPhoneTypeId() == PhoneBMPBean.getFaxNumberID()) {
-				if(!phone.getNumber().equals(newFax.getNumber())) {
-					phone.setNumber(newFax.getNumber());
-					phone.store();
-				}
+		Phone fax = getFax();
+		if(fax == null) {
+			try {
+				newFax.store();
+				getGeneralGroup().addPhone(newFax);
+			} catch (IDOAddRelationshipException e) {
+				e.printStackTrace();
+			}
+		} else {
+			if(!fax.getNumber().equals(newFax.getNumber())) {
+				fax.setNumber(newFax.getNumber());
+				fax.store();
 			}
 		}
 	}
@@ -247,10 +257,15 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	}
 	
 	public void updateEmail(Email newEmail) {
-		Collection emails = getGeneralGroup().getEmails();
-		Iterator iterator = emails.iterator();
-		while (iterator.hasNext()) {
-			Email email = (Email) iterator.next();
+		Email email = getEmail();
+		if(email == null) {
+			try {
+				newEmail.store();
+				getGeneralGroup().addEmail(newEmail);
+			} catch (IDOAddRelationshipException e) {
+				e.printStackTrace();
+			}
+		} else {
 			if(!email.getEmailAddress().equals(newEmail.getEmailAddress())) {
 				email.setEmailAddress(newEmail.getEmailAddress());
 				email.store();
@@ -267,6 +282,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		setColumn(COLUMN_TYPE, type);
 	}
 
+	@Override
 	public void setName(String name) {
 		getGeneralGroup().setName(name);
 		setColumn(COLUMN_NAME, name);
@@ -293,6 +309,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	}
 
 	// Finders and creators
+	@Override
 	public Object ejbCreate() throws CreateException {
 		this.iGroup = this.getGroupHome().create();
 		this.iGroup.setGroupType(CompanyConstants.GROUP_TYPE_COMPANY);
@@ -336,6 +353,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	}
 
 	// General methods
+	@Override
 	public void store() throws IDOStoreException {
 		getGeneralGroup().store();
 		/*User ceo = getCEO();
@@ -345,6 +363,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		super.store();
 	}
 
+	@Override
 	public void remove() throws RemoveException {
 		super.remove();
 		getGeneralGroup().remove();
@@ -372,6 +391,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		}
 	}
 
+	@Override
 	public void setDefaultValues() {
 		setValid(true);
 	}
