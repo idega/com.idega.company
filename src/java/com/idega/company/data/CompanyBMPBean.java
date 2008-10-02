@@ -209,7 +209,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 				e.printStackTrace();
 			}
 		} else {
-			if(!phone.getNumber().equals(newPhone.getNumber())) {
+			if(phone.getNumber() == null || !phone.getNumber().equals(newPhone.getNumber())) {
 				phone.setNumber(newPhone.getNumber());
 				phone.store();
 			}
@@ -239,7 +239,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 				e.printStackTrace();
 			}
 		} else {
-			if(!fax.getNumber().equals(newFax.getNumber())) {
+			if(fax.getNumber() == null || !fax.getNumber().equals(newFax.getNumber())) {
 				fax.setNumber(newFax.getNumber());
 				fax.store();
 			}
@@ -266,7 +266,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 				e.printStackTrace();
 			}
 		} else {
-			if(!email.getEmailAddress().equals(newEmail.getEmailAddress())) {
+			if(email.getEmailAddress() == null || !email.getEmailAddress().equals(newEmail.getEmailAddress())) {
 				email.setEmailAddress(newEmail.getEmailAddress());
 				email.store();
 			}
