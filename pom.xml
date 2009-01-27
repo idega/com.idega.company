@@ -3,11 +3,11 @@
   <parent>
   	<groupId>com.idega.block.egov</groupId>
   	<artifactId>com.idega.block.egov</artifactId>
-  	<version>4.1.0</version>
+  	<version>4.1.1-SNAPSHOT</version>
   </parent>
   <groupId>com.idega.block.egov</groupId>
   <artifactId>com.idega.company</artifactId>
-  <version>4.1.0</version>
+  <version>4.1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>idegaWeb Company</name>
   <description>Company Application</description>
@@ -19,7 +19,6 @@
      -->
     <connection>scm:cvs:ext:idegaweb@code.idega.com:/idega/cvs:com.idega.block.egov/com.idega.company/</connection>
     <developerConnection>scm:cvs:ext:idegaweb@code.idega.com:/idega/cvs:com.idega.block.egov/com.idega.company/</developerConnection>
-    <tag>com_idega_block_egov-4_1_0</tag>
   </scm>
   
   <developers>
