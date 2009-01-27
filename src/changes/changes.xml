@@ -1,0 +1,21 @@
+<document xmlns="http://maven.apache.org/changes/1.0.0">
+  <properties>
+    <title>Core User changes</title>
+    <author email="tryggvi@idega.com">Tryggvi Larusson</author>
+  </properties>
+  <body>
+
+    <release version="3.1.1" date="2007-08-14">
+      <action dev="laddi" type="update">
+        Creating new release with all changes.
+      </action>              
+    </release>
+
+    <release version="3.1.0" date="2007-06-30">
+      <action dev="laddi" type="update">
+        New bundle version.
+      </action>              
+    </release>
+
+  </body>
+</document>
