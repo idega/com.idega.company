@@ -81,6 +81,10 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	public List getFailedRecords() throws RemoteException {
 		return failedRecordList;
 	}
+	
+	public List getSuccessRecords() throws RemoteException {
+		return null;
+	}
 
 	public boolean handleRecords() throws RemoteException {
 		
