@@ -1,6 +1,5 @@
 package com.idega.company.handler;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.jbpm.graph.exe.ExecutionContext;
@@ -37,35 +36,33 @@ public class CreateCompanyHandler extends CreateUserHandler {
 	@Override
 	public void execute(ExecutionContext context) throws Exception {
 		if (getUserData() == null || getCompanyData() == null) {
-			LOGGER.warning("Not enough data to create company!");
-			return;
+			throw new RuntimeException("Not enough data to create company!");
 		}
 		
 		try {
 			super.execute(context);
 		} catch(Exception e) {
-			LOGGER.log(Level.WARNING, "Error creating user!", e);
-			return;
+			throw new RuntimeException("Error creating user!", e);
 		}
 		
 		User createdUser = null;
 		try {
 			createdUser = getUser();
 		} catch(Exception e) {
-			LOGGER.log(Level.WARNING, "User was not found by personal id: " + getUserData().getPersonalId(), e);
+			throw new RuntimeException("User was not found by personal id: " + getUserData().getPersonalId(), e);
 		}
 		if (createdUser == null) {
-			return;
+			throw new RuntimeException("User was not found by personal id: " + getUserData().getPersonalId());
 		}
 		
 		Company company = null;
 		try {
 			company = getCreatedCompany();
 		} catch(Exception e) {
-			LOGGER.log(Level.WARNING, "Error creating company!", e);
+			throw new RuntimeException("Error creating company!", e);
 		}
 		if (company == null) {
-			return;
+			throw new RuntimeException("Company was not found nor created");
 		}
 		
 		createdUser.setMetaData(MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY, company.getPrimaryKey().toString());
