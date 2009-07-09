@@ -10,7 +10,6 @@ package com.idega.company.business;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 
@@ -22,6 +21,7 @@ import com.idega.company.data.CompanyType;
 import com.idega.company.data.CompanyTypeHome;
 import com.idega.data.IDORuntimeException;
 import com.idega.user.data.Group;
+import com.idega.util.StringUtil;
 
 public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusiness {
 
@@ -47,6 +47,10 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 
 	// Company
 	public Company getCompany(String personalID) throws FinderException {
+		if (StringUtil.isEmpty(personalID)) {
+			return null;
+		}
+		
 		return getCompanyHome().findByPersonalID(personalID);
 	}
 
@@ -61,31 +65,31 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		return null;
 	}
 
-	public Collection getCompanies() {
+	public Collection<Company> getCompanies() {
 		return getCompanies(null);
 	}
 
-	public Collection getValidCompanies(boolean valid) {
+	public Collection<Company> getValidCompanies(boolean valid) {
 		return getCompanies(new Boolean(valid));
 	}
 
-	private Collection getCompanies(Boolean valid) {
+	private Collection<Company> getCompanies(Boolean valid) {
 		try {
 			return getCompanyHome().findAll(valid);
 		}
 		catch (FinderException e) {
 			e.printStackTrace();
-			return new ArrayList();
+			return new ArrayList<Company>();
 		}
 	}
 
-	public Collection getActiveCompanies() {
+	public Collection<Company> getActiveCompanies() {
 		try {
 			return getCompanyHome().findAllWithOpenStatus();
 		}
 		catch (FinderException e) {
 			e.printStackTrace();
-			return new ArrayList();
+			return new ArrayList<Company>();
 		}
 	}
 
@@ -103,13 +107,13 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		return getCompanyTypeHome().findByPrimaryKey(pk);
 	}
 
-	public Collection getTypes() {
+	public Collection<CompanyType> getTypes() {
 		try {
 			return getCompanyTypeHome().findAll();
 		}
 		catch (FinderException e) {
 			e.printStackTrace();
-			return new ArrayList();
+			return new ArrayList<CompanyType>();
 		}
 	}
 
@@ -126,5 +130,13 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		catch (CreateException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public Company getCompanyByName(String name) throws FinderException, RemoteException {
+		if (StringUtil.isEmpty(name)) {
+			return null;
+		}
+		
+		return getCompanyHome().findByName(name);
 	}
 }
