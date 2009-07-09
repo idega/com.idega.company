@@ -12,5 +12,5 @@ public interface CompanyTypeHome extends IDOHome {
 
 	public CompanyType findByPrimaryKey(Object pk) throws FinderException;
 
-	public Collection findAll() throws FinderException;
+	public Collection<CompanyType> findAll() throws FinderException;
 }

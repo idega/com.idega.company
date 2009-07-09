@@ -13,8 +13,10 @@ public interface CompanyHome extends IDOHome {
 	public Company create() throws CreateException;
 
 	public Company findByPersonalID(String personalID) throws FinderException;
+	
+	public Company findByName(String name) throws FinderException;
 
-	public Collection findAll(Boolean valid) throws FinderException;
+	public Collection<Company> findAll(Boolean valid) throws FinderException;
 
-	public Collection findAllWithOpenStatus() throws FinderException;
+	public Collection<Company> findAllWithOpenStatus() throws FinderException;
 }

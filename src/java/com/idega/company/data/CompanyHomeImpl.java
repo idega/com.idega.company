@@ -9,7 +9,11 @@ import com.idega.data.IDOEntity;
 import com.idega.data.IDOFactory;
 
 public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
-	public Class getEntityInterfaceClass() {
+
+	private static final long serialVersionUID = -1818354539448892809L;
+
+	@Override
+	public Class<Company> getEntityInterfaceClass() {
 		return Company.class;
 	}
 
@@ -38,17 +42,26 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 		return this.findByPrimaryKey(pk);
 	}
 
-	public Collection findAll(Boolean valid) throws FinderException {
+	@SuppressWarnings("unchecked")
+	public Collection<Company> findAll(Boolean valid) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Collection ids = ((CompanyBMPBean) entity).ejbFindAll(valid);
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
-	public Collection findAllWithOpenStatus() throws FinderException {
+	@SuppressWarnings("unchecked")
+	public Collection<Company> findAllWithOpenStatus() throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Collection ids = ((CompanyBMPBean) entity).ejbFindAllWithOpenStatus();
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Company findByName(String name) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Object pk = ((CompanyBMPBean) entity).ejbFindByName(name);
+		this.idoCheckInPooledEntity(entity);
+		return this.findByPrimaryKey(pk);
 	}
 }

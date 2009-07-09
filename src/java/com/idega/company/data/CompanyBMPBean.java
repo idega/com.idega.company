@@ -10,8 +10,6 @@ package com.idega.company.data;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.Collection;
-import java.util.Iterator;
-
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
@@ -37,6 +35,7 @@ import com.idega.data.query.Table;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupHome;
 import com.idega.user.data.User;
+import com.idega.util.ListUtil;
 
 public class CompanyBMPBean extends GenericEntity implements Company {
 
@@ -161,13 +160,13 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return getBooleanColumnValue(COLUMN_IS_OPEN, false);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Address getAddress() {
 		try {
 			AddressHome home = (AddressHome) getIDOHome(Address.class);
-			Collection addresses = getGeneralGroup().getAddresses(home.getAddressType1());
-			Iterator iterator = addresses.iterator();
-			while (iterator.hasNext()) {
-				return (Address) iterator.next();
+			Collection<Address> addresses = getGeneralGroup().getAddresses(home.getAddressType1());
+			if (!ListUtil.isEmpty(addresses)) {
+				return addresses.iterator().next();
 			}
 		}
 		catch (IDOLookupException e) {
@@ -186,16 +185,22 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return null;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Phone getPhone() {
-		Collection collection = getGeneralGroup().getPhones();
-		Iterator iterator = collection.iterator();
-		while (iterator.hasNext()) {
-			Phone phone = (Phone) iterator.next();
-			if (phone.getPhoneTypeId() == PhoneBMPBean.getHomeNumberID()) {
+		return getPhoneByType(getGeneralGroup().getPhones(), PhoneBMPBean.getHomeNumberID());
+	}
+	
+	private Phone getPhoneByType(Collection<Phone> phones, int type) {
+		if (ListUtil.isEmpty(phones)) {
+			return null;
+		}
+		
+		for (Phone phone: phones) {
+			if (phone.getPhoneTypeId() == type) {
 				return phone;
 			}
 		}
-
+		
 		return null;
 	}
 	
@@ -216,17 +221,9 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public Phone getFax() {
-		Collection collection = getGeneralGroup().getPhones();
-		Iterator iterator = collection.iterator();
-		while (iterator.hasNext()) {
-			Phone phone = (Phone) iterator.next();
-			if (phone.getPhoneTypeId() == PhoneBMPBean.getFaxNumberID()) {
-				return phone;
-			}
-		}
-
-		return null;
+		return getPhoneByType(getGeneralGroup().getPhones(), PhoneBMPBean.getFaxNumberID());
 	}
 	
 	public void updateFax(Phone newFax) {
@@ -246,14 +243,13 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public Email getEmail() {
-		Collection emails = getGeneralGroup().getEmails();
-		Iterator iterator = emails.iterator();
-		while (iterator.hasNext()) {
-			return (Email) iterator.next();
+		Collection<Email> emails = getGeneralGroup().getEmails();
+		if (ListUtil.isEmpty(emails)) {
+			return null;
 		}
-
-		return null;
+		return emails.iterator().next();
 	}
 	
 	public void updateEmail(Email newEmail) {
@@ -327,8 +323,19 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 		return idoFindOnePKByQuery(query);
 	}
+	
+	public Object ejbFindByName(String name) throws FinderException {
+		Table table = new Table(this);
 
-	public Collection ejbFindAll(Boolean valid) throws FinderException {
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(table.getColumn(getIDColumnName()));
+		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_NAME), MatchCriteria.EQUALS, name));
+
+		return idoFindOnePKByQuery(query);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Collection<Company> ejbFindAll(Boolean valid) throws FinderException {
 		Table table = new Table(this);
 
 		SelectQuery query = new SelectQuery(table);
@@ -341,7 +348,8 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return idoFindPKsByQuery(query);
 	}
 
-	public Collection ejbFindAllWithOpenStatus() throws FinderException {
+	@SuppressWarnings("unchecked")
+	public Collection<Company> ejbFindAllWithOpenStatus() throws FinderException {
 		Table table = new Table(this);
 
 		SelectQuery query = new SelectQuery(table);
