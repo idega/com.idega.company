@@ -90,6 +90,7 @@ public class CreateCompanyHandler extends CreateUserHandler {
 		//	Address
 		AddressHome addressHome = (AddressHome) IDOLookup.getHome(Address.class);
 		Address companyAddress = addressHome.create();
+		companyAddress.setAddressType(addressHome.getAddressType1());
 		companyAddress.setStreetName(getCompanyData().getAddress());
 		companyAddress.store();
 		
@@ -107,6 +108,7 @@ public class CreateCompanyHandler extends CreateUserHandler {
 		
 		//	Storing
 		companyAddress.setPostalCode(postalCode);
+		companyAddress.store();
 		company.setAddress(companyAddress);
 		company.store();
 		
