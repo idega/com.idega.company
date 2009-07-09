@@ -84,5 +84,9 @@
       <version>${poi-poi-version}</version>
       <type>jar</type>
     </dependency>
+    <dependency>
+    	<groupId>com.idega.block.egov</groupId>
+		<artifactId>is.idega.idegaweb.egov.citizen</artifactId>
+    </dependency>
   </dependencies>
 </project>
