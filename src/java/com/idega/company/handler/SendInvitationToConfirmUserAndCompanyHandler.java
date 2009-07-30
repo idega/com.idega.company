@@ -96,7 +96,7 @@ public class SendInvitationToConfirmUserAndCompanyHandler implements ActionHandl
 			try {
 				SendMail.send(from, email, null, null, host, subject, text);
 			} catch(Exception e) {
-				LOGGER.log(Level.WARNING, "Error sending email to: '" + email + "' about new user and company registration", e);
+				LOGGER.log(Level.WARNING, "Error sending email to: '" + email + "' about new user and company registration ('"+text+"')", e);
 			}
 		}
 	}
