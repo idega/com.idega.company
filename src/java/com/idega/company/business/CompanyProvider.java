@@ -17,11 +17,15 @@ import org.springframework.stereotype.Service;
 import com.idega.business.IBOLookup;
 import com.idega.company.bean.CompanyInfo;
 import com.idega.company.data.Company;
+import com.idega.core.accesscontrol.business.LoginSession;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.PostalCode;
 import com.idega.dwr.business.DWRAnnotationPersistance;
 import com.idega.idegaweb.IWMainApplication;
+import com.idega.user.data.MetadataConstants;
+import com.idega.user.data.User;
 import com.idega.util.StringUtil;
+import com.idega.util.expression.ELUtil;
 
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 @Service(CompanyProvider.BEAN_NAME)
@@ -103,5 +107,47 @@ public class CompanyProvider implements DWRAnnotationPersistance, Serializable {
 			LOGGER.log(Level.WARNING, "Error getting CompanyBusiness", e);
 		}
 		return null;
+	}
+	
+	public Integer getCompanyPersonalIdForCurrentUser() {
+		LoginSession loginSession = null;
+		try {
+			loginSession = ELUtil.getInstance().getBean(LoginSession.class);
+		} catch(Exception e) {
+			LOGGER.log(Level.WARNING, "Error getting " + LoginSession.class, e);
+		}
+		if (loginSession == null) {
+			return 0;
+		}
+		
+		User currentUser = null;
+		try {
+			currentUser = loginSession.getUser();
+		} catch(Exception e) {
+			LOGGER.log(Level.WARNING, "Error getting current user", e);
+		}
+		if (currentUser == null) {
+			return 0;
+		}
+		
+		String companyId = currentUser.getMetaData(MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY);
+		if (StringUtil.isEmpty(companyId)) {
+			return 0;
+		}
+		
+		Company company = null;
+		try {
+			company = getCompanyBusiness().getCompany(companyId);
+		} catch(Exception e) {
+			LOGGER.log(Level.WARNING, "Company was not found by ID: " + companyId, e);
+		}
+		
+		try {
+			return company == null ? 0 : Integer.valueOf(company.getPersonalID());
+		} catch(NumberFormatException e) {
+			LOGGER.log(Level.WARNING, "Invalid personal ID!", e);
+		}
+		
+		return 0;
 	}
 }
