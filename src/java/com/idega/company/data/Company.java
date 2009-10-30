@@ -1,18 +1,17 @@
 package com.idega.company.data;
 
 
-import com.idega.core.location.data.Address;
-import com.idega.user.data.Group;
-import com.idega.core.location.data.Commune;
-import com.idega.core.contact.data.Phone;
 import java.sql.Date;
-import com.idega.user.data.User;
-import com.idega.core.contact.data.Email;
-import com.idega.data.IDOStoreException;
+import com.idega.core.contact.data.Phone;
 import com.idega.data.IDOEntity;
+import com.idega.user.data.User;
+import com.idega.core.location.data.Address;
+import com.idega.data.IDOStoreException;
+import com.idega.core.contact.data.Email;
+import com.idega.core.location.data.Commune;
+import com.idega.user.data.Group;
 
 public interface Company extends IDOEntity {
-	public Group getGeneralGroup();
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getGroup
 	 */
@@ -44,6 +43,11 @@ public interface Company extends IDOEntity {
 	public String getBankAccount();
 
 	/**
+	 * @see com.idega.company.data.CompanyBMPBean#getExtraInfo
+	 */
+	public String getExtraInfo();
+
+	/**
 	 * @see com.idega.company.data.CompanyBMPBean#isValid
 	 */
 	public boolean isValid();
@@ -62,31 +66,31 @@ public interface Company extends IDOEntity {
 	 * @see com.idega.company.data.CompanyBMPBean#getPhone
 	 */
 	public Phone getPhone();
-	
+
 	/**
-	 * @see com.idega.company.data.CompanyBMPBean#setPhone
+	 * @see com.idega.company.data.CompanyBMPBean#updatePhone
 	 */
-	public void updatePhone(Phone phone);
+	public void updatePhone(Phone newPhone);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getFax
 	 */
 	public Phone getFax();
-	
+
 	/**
-	 * @see com.idega.company.data.CompanyBMPBean#getFax
+	 * @see com.idega.company.data.CompanyBMPBean#updateFax
 	 */
-	public void updateFax(Phone fax);
+	public void updateFax(Phone newFax);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getEmail
 	 */
 	public Email getEmail();
-	
+
 	/**
-	 * @see com.idega.company.data.CompanyBMPBean#getEmail
+	 * @see com.idega.company.data.CompanyBMPBean#updateEmail
 	 */
-	public void updateEmail(Email email);
+	public void updateEmail(Email newEmail);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#setGroup
@@ -119,6 +123,11 @@ public interface Company extends IDOEntity {
 	public void setBankAccount(String bankAccount);
 
 	/**
+	 * @see com.idega.company.data.CompanyBMPBean#setExtraInfo
+	 */
+	public void setExtraInfo(String extraInfo);
+
+	/**
 	 * @see com.idega.company.data.CompanyBMPBean#setValid
 	 */
 	public void setValid(boolean valid);
@@ -132,6 +141,11 @@ public interface Company extends IDOEntity {
 	 * @see com.idega.company.data.CompanyBMPBean#store
 	 */
 	public void store() throws IDOStoreException;
+
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#getGeneralGroup
+	 */
+	public Group getGeneralGroup();
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getRecipientId

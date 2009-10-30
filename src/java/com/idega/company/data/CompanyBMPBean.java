@@ -49,6 +49,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	private static final String COLUMN_BANK_ACCOUNT = "bank_account";
 	private static final String COLUMN_IS_VALID = "is_valid";
 	private static final String COLUMN_IS_OPEN = "is_open";
+	private static final String COLUMN_EXTRA_INFO = "extra_info";
 
 	protected static final String VAT_NUMBER = "vat_number";
 
@@ -105,6 +106,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		addAttribute(COLUMN_BANK_ACCOUNT, "Bank account", String.class);
 		addAttribute(COLUMN_IS_VALID, "Is valid", Boolean.class);
 		addAttribute(COLUMN_IS_OPEN, "Is open", Boolean.class);
+		addAttribute(COLUMN_EXTRA_INFO, "Extra info", String.class);
 
 		addAttribute(VAT_NUMBER, "VAT Number", java.lang.String.class);
 		addAttribute(OPERATION, "Operation", java.lang.String.class);
@@ -150,6 +152,10 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 	public String getBankAccount() {
 		return getStringColumnValue(COLUMN_BANK_ACCOUNT);
+	}
+
+	public String getExtraInfo() {
+		return getStringColumnValue(COLUMN_EXTRA_INFO);
 	}
 
 	public boolean isValid() {
@@ -296,6 +302,10 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		setColumn(COLUMN_BANK_ACCOUNT, bankAccount);
 	}
 
+	public void setExtraInfo(String extraInfo) {
+		setColumn(COLUMN_EXTRA_INFO, extraInfo);
+	}
+
 	public void setValid(boolean valid) {
 		setColumn(COLUMN_IS_VALID, valid);
 	}
@@ -355,6 +365,19 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		SelectQuery query = new SelectQuery(table);
 		query.addColumn(table.getColumn(getIDColumnName()));
 		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_OPEN), true));
+		query.addOrder(table, COLUMN_NAME, true);
+
+		return idoFindPKsByQuery(query);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Collection<Company> ejbFindAllActiveWithOpenStatus() throws FinderException {
+		Table table = new Table(this);
+
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(table.getColumn(getIDColumnName()));
+		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_VALID), MatchCriteria.EQUALS, true));
+		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_OPEN), MatchCriteria.EQUALS, true));
 		query.addOrder(table, COLUMN_NAME, true);
 
 		return idoFindPKsByQuery(query);

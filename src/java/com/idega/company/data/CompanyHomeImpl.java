@@ -1,19 +1,15 @@
 package com.idega.company.data;
 
 
-import java.util.Collection;
-import javax.ejb.CreateException;
-import javax.ejb.FinderException;
-import com.idega.data.IDOCreateException;
-import com.idega.data.IDOEntity;
 import com.idega.data.IDOFactory;
+import javax.ejb.CreateException;
+import com.idega.data.IDOEntity;
+import com.idega.data.IDOCreateException;
+import javax.ejb.FinderException;
+import java.util.Collection;
 
 public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
-
-	private static final long serialVersionUID = -1818354539448892809L;
-
-	@Override
-	public Class<Company> getEntityInterfaceClass() {
+	public Class getEntityInterfaceClass() {
 		return Company.class;
 	}
 
@@ -42,26 +38,34 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 		return this.findByPrimaryKey(pk);
 	}
 
-	@SuppressWarnings("unchecked")
-	public Collection<Company> findAll(Boolean valid) throws FinderException {
-		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((CompanyBMPBean) entity).ejbFindAll(valid);
-		this.idoCheckInPooledEntity(entity);
-		return this.getEntityCollectionForPrimaryKeys(ids);
-	}
-
-	@SuppressWarnings("unchecked")
-	public Collection<Company> findAllWithOpenStatus() throws FinderException {
-		IDOEntity entity = this.idoCheckOutPooledEntity();
-		Collection ids = ((CompanyBMPBean) entity).ejbFindAllWithOpenStatus();
-		this.idoCheckInPooledEntity(entity);
-		return this.getEntityCollectionForPrimaryKeys(ids);
-	}
-
 	public Company findByName(String name) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Object pk = ((CompanyBMPBean) entity).ejbFindByName(name);
 		this.idoCheckInPooledEntity(entity);
 		return this.findByPrimaryKey(pk);
+	}
+
+	public Collection<Company> findAll(Boolean valid) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection<Company> ids = ((CompanyBMPBean) entity).ejbFindAll(valid);
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Collection<Company> findAllWithOpenStatus() throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection<Company> ids = ((CompanyBMPBean) entity)
+				.ejbFindAllWithOpenStatus();
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	public Collection<Company> findAllActiveWithOpenStatus()
+			throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection<Company> ids = ((CompanyBMPBean) entity)
+				.ejbFindAllActiveWithOpenStatus();
+		this.idoCheckInPooledEntity(entity);
+		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 }
