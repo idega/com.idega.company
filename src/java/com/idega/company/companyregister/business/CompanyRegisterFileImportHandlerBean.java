@@ -264,10 +264,6 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 			logger.log(Level.SEVERE, "Exception while retrieving codes.xls resource from: "+getIWMainApplication().getBundle(CompanyConstants.IW_BUNDLE_IDENTIFIER).getResourcesRealPath(), e);
 			return;
 		}
-		if(is == null) {
-			logger.log(Level.SEVERE, "Exception while retrieving codes.xls resource from: "+getIWMainApplication().getBundle(CompanyConstants.IW_BUNDLE_IDENTIFIER).getResourcesRealPath());
-			return;
-		}
 		try {
 			Collection operationForms = null;
 			try {
