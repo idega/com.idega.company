@@ -364,7 +364,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 		SelectQuery query = new SelectQuery(table);
 		query.addColumn(table.getColumn(getIDColumnName()));
-		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_OPEN), true));
+		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_OPEN), MatchCriteria.EQUALS, true));
 		query.addOrder(table, COLUMN_NAME, true);
 
 		return idoFindPKsByQuery(query);
@@ -382,7 +382,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 		return idoFindPKsByQuery(query);
 	}
-
+	
 	// General methods
 	@Override
 	public void store() throws IDOStoreException {

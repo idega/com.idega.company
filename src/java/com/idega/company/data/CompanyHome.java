@@ -7,7 +7,6 @@ import javax.ejb.FinderException;
 import java.util.Collection;
 
 public interface CompanyHome extends IDOHome {
-
 	public Company findByPrimaryKey(Object pk) throws FinderException;
 
 	public Company create() throws CreateException;
