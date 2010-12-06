@@ -109,7 +109,7 @@ public class CompanyProvider implements DWRAnnotationPersistance, Serializable {
 		return null;
 	}
 	
-	public Integer getCompanyPersonalIdForCurrentUser() {
+	public String getCompanyPersonalIdForCurrentUser() {
 		LoginSession loginSession = null;
 		try {
 			loginSession = ELUtil.getInstance().getBean(LoginSession.class);
@@ -117,7 +117,7 @@ public class CompanyProvider implements DWRAnnotationPersistance, Serializable {
 			LOGGER.log(Level.WARNING, "Error getting " + LoginSession.class, e);
 		}
 		if (loginSession == null) {
-			return 0;
+			return null;
 		}
 		
 		User currentUser = null;
@@ -127,12 +127,12 @@ public class CompanyProvider implements DWRAnnotationPersistance, Serializable {
 			LOGGER.log(Level.WARNING, "Error getting current user", e);
 		}
 		if (currentUser == null) {
-			return 0;
+			return null;
 		}
 		
 		String companyId = currentUser.getMetaData(MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY);
 		if (StringUtil.isEmpty(companyId)) {
-			return 0;
+			return null;
 		}
 		
 		Company company = null;
@@ -142,12 +142,6 @@ public class CompanyProvider implements DWRAnnotationPersistance, Serializable {
 			LOGGER.log(Level.WARNING, "Company was not found by ID: " + companyId, e);
 		}
 		
-		try {
-			return company == null ? 0 : Integer.valueOf(company.getPersonalID());
-		} catch(NumberFormatException e) {
-			LOGGER.log(Level.WARNING, "Invalid personal ID!", e);
-		}
-		
-		return 0;
+		return company == null ? null : company.getPersonalID();
 	}
 }
