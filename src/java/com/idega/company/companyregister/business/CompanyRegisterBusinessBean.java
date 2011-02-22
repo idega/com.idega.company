@@ -118,6 +118,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			if(ceo == null || createNewCeo) {
 				try {
 					ceo = getUserHome().create();
+					ceo.setFullName(name.trim());
 					ceo.setPersonalID(ceoId);
 					ceo.store();
 					company_registry.setCEO(ceo);
