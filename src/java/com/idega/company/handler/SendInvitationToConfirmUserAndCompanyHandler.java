@@ -136,7 +136,6 @@ public class SendInvitationToConfirmUserAndCompanyHandler implements ActionHandl
 		return emails;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private Collection<User> getHandlers() {
 		AccessController accessController = IWMainApplication.getDefaultIWMainApplication().getAccessController();
 		Collection<Group> groups = accessController.getAllGroupsForRoleKey("bpm_user_and_company_confirmation_handler",
