@@ -225,11 +225,12 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			addressBean.setPostalCode(postalCodeBean);
 			addressBean.store();
 			try {
-				Collection addreses = company_registry.getGeneralGroup().getAddresses(getAddressHome().getAddressType1());
+				@SuppressWarnings("unchecked")
+				Collection<Address> addreses = company_registry.getGeneralGroup().getAddresses(getAddressHome().getAddressType1());
 				String pk1 = ((Integer) addressBean.getPrimaryKey()).toString();
 				boolean addressSet = false;
-				for(Iterator it = addreses.iterator(); it.hasNext(); ) {
-					Address adr = (Address) it.next();
+				for(Iterator<Address> it = addreses.iterator(); it.hasNext(); ) {
+					Address adr = it.next();
 					String pk2 = ((Integer) adr.getPrimaryKey()).toString();
 					if(pk1.equals(pk2)) {
 						addressSet = true;
