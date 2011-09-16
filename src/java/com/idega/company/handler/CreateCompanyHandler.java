@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.idega.business.IBOLookup;
 import com.idega.company.data.Company;
 import com.idega.company.data.CompanyHome;
+import com.idega.company.event.CompanyCreatedEvent;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressHome;
 import com.idega.core.location.data.PostalCode;
@@ -22,6 +23,7 @@ import com.idega.jbpm.identity.authentication.CreateUserHandler;
 import com.idega.user.business.UserBusiness;
 import com.idega.user.data.MetadataConstants;
 import com.idega.user.data.User;
+import com.idega.util.expression.ELUtil;
 
 @Service("createCompanyHandler")
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
@@ -67,6 +69,8 @@ public class CreateCompanyHandler extends CreateUserHandler {
 		
 		createdUser.setMetaData(MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY, company.getPrimaryKey().toString());
 		createdUser.store();
+		
+		ELUtil.getInstance().publishEvent(new CompanyCreatedEvent(this, createdUser, company));
 	}
 	
 	private Company getCreatedCompany() throws Exception {
