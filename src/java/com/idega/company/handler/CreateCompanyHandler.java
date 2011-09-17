@@ -41,6 +41,7 @@ public class CreateCompanyHandler extends CreateUserHandler {
 			throw new RuntimeException("Not enough data to create company!");
 		}
 		
+		setPublishEvent(Boolean.FALSE);
 		try {
 			super.execute(context);
 		} catch(Exception e) {
