@@ -65,7 +65,7 @@ public class SendInvitationToConfirmUserAndCompanyHandler implements ActionHandl
 		
 		long taskinstanceId = tasks.get(0).getTaskInstanceId();
 		
-		List<String> emails = getEmails(getHandlers());
+		final List<String> emails = getEmails(getHandlers());
 		if (ListUtil.isEmpty(emails)) {
 			throw new RuntimeException("There are no users to confirm registration! User must have role 'bpm_user_and_company_confirmation_handler' to be able to confirm it.");
 		}
@@ -81,24 +81,31 @@ public class SendInvitationToConfirmUserAndCompanyHandler implements ActionHandl
 		}
 		
 		IWMainApplicationSettings settings = iwc.getApplicationSettings();
-		String from = settings.getProperty(CoreConstants.PROP_SYSTEM_MAIL_FROM_ADDRESS);
-		String host = settings.getProperty(CoreConstants.PROP_SYSTEM_SMTP_MAILSERVER);
+		final String from = settings.getProperty(CoreConstants.PROP_SYSTEM_MAIL_FROM_ADDRESS);
+		final String host = settings.getProperty(CoreConstants.PROP_SYSTEM_SMTP_MAILSERVER);
 		
 		IWResourceBundle iwrb = iwc.getIWMainApplication().getBundle(CompanyConstants.IW_BUNDLE_IDENTIFIER).getResourceBundle(iwc);
-		String subject = iwrb.getLocalizedString("confirm.user_and_company_registration_email_subject", "Confirm new registration");
-		String text = new StringBuilder(iwrb.getLocalizedString("confirm.new_registration_received_confirm_it",
+		final String subject = iwrb.getLocalizedString("confirm.user_and_company_registration_email_subject", "Confirm new registration");
+		final String text = new StringBuilder(iwrb.getLocalizedString("confirm.new_registration_received_confirm_it",
 				"New registration was received, please confirm it at: ")).append(uri).toString();
 		
 		if (StringUtil.isEmpty(host) || StringUtil.isEmpty(from)) {
 			throw new RuntimeException("Unable to send emails because of missing parameters");
 		}
-		for (String email: emails) {
-			try {
-				SendMail.send(from, email, null, null, host, subject, text);
-			} catch(Exception e) {
-				LOGGER.log(Level.WARNING, "Error sending email to: '" + email + "' about new user and company registration ('"+text+"')", e);
+		
+		Thread sender = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				for (String email: emails) {
+					try {
+						SendMail.send(from, email, null, null, host, subject, text);
+					} catch(Exception e) {
+						LOGGER.log(Level.WARNING, "Error sending email to: '" + email + "' about new user and company registration ('"+text+"')", e);
+					}
+				}
 			}
-		}
+		});
+		sender.start();
 	}
 	
 	private String getConfirmationUri(IWContext iwc, long taskInstanceId) {
