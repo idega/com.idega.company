@@ -25,12 +25,14 @@ import com.idega.user.data.MetadataConstants;
 import com.idega.user.data.User;
 import com.idega.util.expression.ELUtil;
 
-@Service("createCompanyHandler")
+@Service(CreateCompanyHandler.BEAN_NAME)
 @Scope(BeanDefinition.SCOPE_PROTOTYPE)
 public class CreateCompanyHandler extends CreateUserHandler {
 
 	private static final long serialVersionUID = 6987169880677900872L;
 	private static final Logger LOGGER = Logger.getLogger(CreateCompanyHandler.class.getName());
+	
+	public static final String BEAN_NAME = "createCompanyHandler";
 	
 	private UserPersonalData userData;
 	private CompanyData companyData;
@@ -68,10 +70,14 @@ public class CreateCompanyHandler extends CreateUserHandler {
 			throw new RuntimeException("Company was not found nor created");
 		}
 		
-		createdUser.setMetaData(MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY, company.getPrimaryKey().toString());
-		createdUser.store();
+		bindUserAndCompany(createdUser, company);
 		
 		ELUtil.getInstance().publishEvent(new CompanyCreatedEvent(this, createdUser, company));
+	}
+	
+	public void bindUserAndCompany(User user, Company company) {
+		user.setMetaData(MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY, company.getPrimaryKey().toString());
+		user.store();
 	}
 	
 	private Company getCreatedCompany() throws Exception {
