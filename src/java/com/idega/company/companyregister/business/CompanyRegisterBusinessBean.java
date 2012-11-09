@@ -121,13 +121,13 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 					ceo.setFullName(name.trim());
 					ceo.setPersonalID(ceoId);
 					ceo.store();
-					company_registry.setCEO(ceo);
 				} catch(Exception re) {
 					logger.log(Level.SEVERE, "Exception while creating a new user entry", re);
 					return false;
 				}
 			}
 			
+			company_registry.setCEO(ceo);
 			
 //			User recipient = null;
 //			try {
