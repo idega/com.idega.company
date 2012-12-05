@@ -35,6 +35,7 @@ import com.idega.data.query.Table;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupHome;
 import com.idega.user.data.User;
+import com.idega.util.CoreConstants;
 import com.idega.util.ListUtil;
 
 public class CompanyBMPBean extends GenericEntity implements Company {
@@ -554,5 +555,40 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 
 	public void setBanMarking(String banMarking) {
 		setColumn(BAN_MARKING, banMarking);
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(super.toString()).append(CoreConstants.NEWLINE)
+		.append("getType(): ").append(getType()).append(CoreConstants.NEWLINE)
+		.append("getName(): ").append(getName()).append(CoreConstants.NEWLINE)
+		.append("getPersonalID(): ").append(getPersonalID()).append(CoreConstants.NEWLINE)
+		.append("getWebPage(): ").append(getWebPage()).append(CoreConstants.NEWLINE)
+		.append("getBankAccount(): ").append(getBankAccount()).append(CoreConstants.NEWLINE)
+		.append("getExtraInfo(): ").append(getExtraInfo()).append(CoreConstants.NEWLINE)
+		.append("isValid(): ").append(isValid()).append(CoreConstants.NEWLINE)
+		.append("isOpen(): ").append(isOpen()).append(CoreConstants.NEWLINE)
+		.append("getAddress(): ").append(getAddress()).append(CoreConstants.NEWLINE)
+		.append("getPhone(): ").append(getPhone()).append(CoreConstants.NEWLINE)
+		.append("getFax(): ").append(getFax()).append(CoreConstants.NEWLINE)
+		.append("getEmail(): ").append(getEmail()).append(CoreConstants.NEWLINE)
+		.append("getGeneralGroup(): ").append(getGeneralGroup()).append(CoreConstants.NEWLINE)
+		.append("getRecipientId(): ").append(getRecipientId()).append(CoreConstants.NEWLINE)
+		.append("getRecipientName(): ").append(getRecipientName()).append(CoreConstants.NEWLINE)
+		.append("getBanMarking(): ").append(getBanMarking()).append(CoreConstants.NEWLINE)
+		.append("getCEO(): ").append(getCEO()).append(CoreConstants.NEWLINE)
+		.append("getIndustryCode(): ").append(getIndustryCode()).append(CoreConstants.NEWLINE)
+		.append("getLastChange(): ").append(getLastChange()).append(CoreConstants.NEWLINE)
+		.append("getLegalCommune(): ").append(getLegalCommune()).append(CoreConstants.NEWLINE)
+		.append("getOperation(): ").append(getOperation()).append(CoreConstants.NEWLINE)
+		.append("getOperationForm(): ").append(getOperationForm()).append(CoreConstants.NEWLINE)
+		.append("getOrderAreaForName(): ").append(getOrderAreaForName()).append(CoreConstants.NEWLINE)
+		.append("getRegisterDate(): ").append(getRegisterDate()).append(CoreConstants.NEWLINE)
+		.append("getUnregisterDate(): ").append(getUnregisterDate()).append(CoreConstants.NEWLINE)
+		.append("getUnregisterType(): ").append(getUnregisterType()).append(CoreConstants.NEWLINE)
+		.append("getVATNumber(): ").append(getVATNumber()).append(CoreConstants.NEWLINE)
+		.append("getWorkingArea(): ").append(getWorkingArea()).append(CoreConstants.NEWLINE);
+		return sb.toString();
 	}
 }
