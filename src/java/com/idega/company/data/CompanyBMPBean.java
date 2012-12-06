@@ -10,6 +10,7 @@ package com.idega.company.data;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.Collection;
+
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
@@ -577,7 +578,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		.append("getRecipientId(): ").append(getRecipientId()).append(CoreConstants.NEWLINE)
 		.append("getRecipientName(): ").append(getRecipientName()).append(CoreConstants.NEWLINE)
 		.append("getBanMarking(): ").append(getBanMarking()).append(CoreConstants.NEWLINE)
-		.append("getCEO(): ").append(getCEO()).append(CoreConstants.NEWLINE)
+		.append("getCEO(): {").append(getCEO()).append("}").append(CoreConstants.NEWLINE)
 		.append("getIndustryCode(): ").append(getIndustryCode()).append(CoreConstants.NEWLINE)
 		.append("getLastChange(): ").append(getLastChange()).append(CoreConstants.NEWLINE)
 		.append("getLegalCommune(): ").append(getLegalCommune()).append(CoreConstants.NEWLINE)

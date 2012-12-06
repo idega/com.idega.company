@@ -198,6 +198,16 @@ public interface CompanyService {
 	
 	/**
 	 * 
+	 * @param personalID - {@link Company#getPersonalID()}, not 
+	 * <code>null</code>.
+	 * @return {@link User#getGender()} of {@link Company#getCEO()} or 
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public String getCEOGenderID(String personalID);
+	
+	/**
+	 * 
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company} by given id or <code>null</code> on failure.
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>

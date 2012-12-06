@@ -100,6 +100,7 @@ import com.idega.core.contact.data.Phone;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.Commune;
 import com.idega.core.location.data.PostalCode;
+import com.idega.user.data.Gender;
 import com.idega.user.data.User;
 import com.idega.util.CoreConstants;
 import com.idega.util.StringUtil;
@@ -308,5 +309,24 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 		}
 		
 		return null;
+	}
+
+	public Gender getCEOGender(String personalID) {
+		User ceo = getCEO(personalID);
+		if (ceo == null) {
+			return null;
+		}
+		
+		return ceo.getGender();
+	}
+	
+	@Override
+	public String getCEOGenderID(String personalID) {
+		Gender gender = getCEOGender(personalID);
+		if (gender == null) {
+			return "3";
+		}
+		
+		return gender.getPrimaryKey().toString();
 	}
 }
