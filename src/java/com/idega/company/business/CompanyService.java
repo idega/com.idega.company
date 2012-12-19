@@ -213,6 +213,17 @@ public interface CompanyService {
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Company getCompany(String personalID);
+	
+	/**
+	 * 
+	 * <p>Searches {@link Company} for given {@link User}. If there is more
+	 * than one, returns first one.</p>
+	 * @param user - {@link Company#getCEO()}.
+	 * @return {@link Company}, where {@link User} is CEO or <code>null</code>
+	 * on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Company getCompany(User user);
 
 	/**
 	 * 

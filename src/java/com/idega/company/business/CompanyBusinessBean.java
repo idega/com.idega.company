@@ -10,6 +10,7 @@ package com.idega.company.business;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
+
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
 
@@ -21,6 +22,7 @@ import com.idega.company.data.CompanyType;
 import com.idega.company.data.CompanyTypeHome;
 import com.idega.data.IDORuntimeException;
 import com.idega.user.data.Group;
+import com.idega.user.data.User;
 import com.idega.util.StringUtil;
 
 public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusiness {
@@ -148,5 +150,10 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 		
 		return getCompanyHome().findByName(name);
+	}
+
+	@Override
+	public Collection<Company> getCompaniesForUser(User user) {
+		return getCompanyHome().findAll(user);
 	}
 }

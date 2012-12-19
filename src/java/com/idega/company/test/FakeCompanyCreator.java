@@ -376,7 +376,8 @@ public class FakeCompanyCreator extends DefaultSpringBean {
 		
 		fakeCompany.setBanMarking(banMarking);
 		
-			
+		fakeCompany.setOpen(RandomUtils.nextBoolean());
+		
 		try {
 			fakeCompany.store();
 		} catch (IDOStoreException e) {

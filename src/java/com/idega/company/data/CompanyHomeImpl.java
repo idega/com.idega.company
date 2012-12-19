@@ -1,12 +1,16 @@
 package com.idega.company.data;
 
 
-import com.idega.data.IDOFactory;
-import javax.ejb.CreateException;
-import com.idega.data.IDOEntity;
-import com.idega.data.IDOCreateException;
-import javax.ejb.FinderException;
 import java.util.Collection;
+import java.util.logging.Level;
+
+import javax.ejb.CreateException;
+import javax.ejb.FinderException;
+
+import com.idega.data.IDOCreateException;
+import com.idega.data.IDOEntity;
+import com.idega.data.IDOFactory;
+import com.idega.user.data.User;
 
 public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 	public Class getEntityInterfaceClass() {
@@ -67,5 +71,32 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 				.ejbFindAllActiveWithOpenStatus();
 		this.idoCheckInPooledEntity(entity);
 		return this.getEntityCollectionForPrimaryKeys(ids);
+	}
+
+	@Override
+	public Collection<Company> findAll(User user) {
+		if (user == null) {
+			java.util.logging.Logger.getLogger(getClass().getName()).log(
+					Level.WARNING, User.class + 
+					" must be not null.");
+			return null;
+		}
+		
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Collection<Company> ids = null;
+		try {
+			ids = ((CompanyBMPBean) entity).ejbFindAll(user);
+		} catch (FinderException e) {
+			java.util.logging.Logger.getLogger(getClass().getName()).log(
+					Level.WARNING, "Unable to find companies.", e);
+		}
+		this.idoCheckInPooledEntity(entity);
+		try {
+			return this.getEntityCollectionForPrimaryKeys(ids);
+		} catch (FinderException e) {
+			java.util.logging.Logger.getLogger(getClass().getName()).log(
+					Level.WARNING, "Unable to find companies.", e);
+			return null;
+		}
 	}
 }

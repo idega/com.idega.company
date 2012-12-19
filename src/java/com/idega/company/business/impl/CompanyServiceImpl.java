@@ -83,6 +83,7 @@
 package com.idega.company.business.impl;
 
 import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.logging.Level;
 
 import javax.ejb.FinderException;
@@ -103,6 +104,7 @@ import com.idega.core.location.data.PostalCode;
 import com.idega.user.data.Gender;
 import com.idega.user.data.User;
 import com.idega.util.CoreConstants;
+import com.idega.util.ListUtil;
 import com.idega.util.StringUtil;
 
 /**
@@ -328,5 +330,29 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 		}
 		
 		return gender.getPrimaryKey().toString();
+	}
+
+	@Override
+	public Company getCompany(User user) {
+		if (user == null) {
+			getLogger().log(Level.INFO, User.class + " is null, no " + 
+					Company.class +
+					" will be returned.");
+			
+			return null;
+		}
+		
+		Collection<Company> companies = getCompanyBusiness()
+				.getCompaniesForUser(user);
+		if (ListUtil.isEmpty(companies)) {
+			return null;
+		}
+		
+		for (Company company: companies) {
+			// FIXME Kind a stupid idea to return first company
+			return company;
+		}
+		
+		return null;
 	}
 }

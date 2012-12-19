@@ -385,6 +385,35 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return idoFindPKsByQuery(query);
 	}
 	
+	/**
+	 * 
+	 * <p>Finds all active and valid {@link Company}s by 
+	 * {@link Company#getCEO()}.</p>
+	 * @param user - {@link Company#getCEO()}.
+	 * @return {@link Collection} of {@link Company}s or <code>null</code>
+	 * on failure.
+	 * @throws FinderException - if unable to find {@link Company}.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	@SuppressWarnings("unchecked")
+	public Collection<Company> ejbFindAll(User user) throws FinderException {
+		if (user == null) {
+			log("Given " + User.class + " is: " + user);
+			return null;
+		}
+		
+		Table table = new Table(this);
+
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(table.getColumn(getIDColumnName()));
+		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_VALID), MatchCriteria.EQUALS, true));
+		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_IS_OPEN), MatchCriteria.EQUALS, true));
+		query.addCriteria(new MatchCriteria(table.getColumn(CEO_ID), MatchCriteria.EQUALS, user.getPrimaryKey().toString()));
+		query.addOrder(table, COLUMN_NAME, true);
+
+		return idoFindPKsByQuery(query);
+	}
+	
 	// General methods
 	@Override
 	public void store() throws IDOStoreException {

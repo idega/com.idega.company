@@ -1,14 +1,18 @@
 package com.idega.company.business;
 
 
-import com.idega.company.data.CompanyType;
-import javax.ejb.CreateException;
 import java.rmi.RemoteException;
-import javax.ejb.FinderException;
-import com.idega.business.IBOService;
 import java.util.Collection;
-import com.idega.user.data.Group;
+import java.util.List;
+
+import javax.ejb.CreateException;
+import javax.ejb.FinderException;
+
+import com.idega.business.IBOService;
 import com.idega.company.data.Company;
+import com.idega.company.data.CompanyType;
+import com.idega.user.data.Group;
+import com.idega.user.data.User;
 
 public interface CompanyBusiness extends IBOService {
 	/**
@@ -50,7 +54,17 @@ public interface CompanyBusiness extends IBOService {
 	 */
 	public Collection<Company> getActiveAndOpenCompanies()
 			throws RemoteException;
-
+	
+	/**
+	 * 
+	 * <p>Searches {@link Company}s, where given {@link User} ir CEO.</p>
+	 * @param user - {@link Company#getCEO()}.
+	 * @return {@link List} of {@link Company}s, where user is CEO or 
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Collection<Company> getCompaniesForUser(User user);
+	
 	/**
 	 * @see com.idega.company.business.CompanyBusinessBean#storeCompany
 	 */
