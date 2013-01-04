@@ -34,11 +34,11 @@ import com.idega.company.data.UnregisterTypeHome;
 import com.idega.data.IDOLookup;
 import com.idega.user.data.Group;
 
-public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean 
+public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 		implements CompanyRegisterFileImportHandler, ImportFileHandler {
-	
+
 	private static final long serialVersionUID = 2628917943901423114L;
-	
+
 	public final static int COLUMN_UNIQUE_ID = 0;
 	public final static int COLUMN_NOT_USED1 = 1;
 	public final static int COLUMN_PERSONAL_ID = 2;
@@ -74,72 +74,78 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 
 	private ImportFile file;
 	private Logger logger = Logger.getLogger(CompanyRegisterFileImportHandlerBean.class.getName());
-	private ArrayList failedRecordList = new ArrayList();
-	private ArrayList valueList;
+	private List<String> failedRecordList = new ArrayList<String>();
+	private List<String> valueList;
 	private CompanyRegisterBusiness comp_reg_biz;
 
-	public List getFailedRecords() throws RemoteException {
+	@Override
+	public List<String> getFailedRecords() throws RemoteException {
 		return failedRecordList;
 	}
-	
-	public List getSuccessRecords() throws RemoteException {
-		return new ArrayList();
+
+	@Override
+	public List<String> getSuccessRecords() throws RemoteException {
+		return new ArrayList<String>();
 	}
 
+	@Override
 	public boolean handleRecords() throws RemoteException {
-		
+
 		String item;
-		
+
 		try {
 			checkCodesStartData();
-			
+
 			comp_reg_biz = (CompanyRegisterBusiness) getServiceInstance(CompanyRegisterBusiness.class);
-			
+
 			while (!(item = (String)file.getNextRecord()).equals("")) {
-				
+
 				if (!processRecord(item)) {
 					failedRecordList.add(item);
 				}
 			}
 			file.close();
-			
+
 			printFailedRecords();
-	
+
 			return true;
-		
+
 		} catch (Exception ex) {
-			
+
 			logger.log(Level.SEVERE, "Exception while handling company register records", ex);
 
 			return false;
 		}
 	}
 
+	@Override
 	public void printFailedRecords() {
-		
+
 		if (!this.failedRecordList.isEmpty())
 			logger.log(Level.WARNING, "Import failed for these records (total: "+failedRecordList.size()+"), please fix and import again: ");
 
-		Iterator iter = this.failedRecordList.iterator();
-		
+		Iterator<String> iter = this.failedRecordList.iterator();
+
 		while (iter.hasNext())
-			logger.log(Level.WARNING, (String) iter.next());
+			logger.log(Level.WARNING, iter.next());
 	}
 
+	@Override
 	public void setImportFile(ImportFile file) throws RemoteException {
 		this.file = file;
 	}
 
+	@Override
 	public void setRootGroup(Group rootGroup) throws RemoteException {
 	}
-	
+
 	private String getProperty(int columnIndex) {
 		String value = null;
 
 		if (this.valueList != null) {
 
 			try {
-				value = (String) this.valueList.get(columnIndex);
+				value = this.valueList.get(columnIndex);
 			} catch (RuntimeException e) {
 				return null;
 			}
@@ -154,12 +160,11 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 			return null;
 		}
 	}
-	
-	private boolean processRecord(String record) throws RemoteException,
-	CreateException {
+
+	private boolean processRecord(String record) throws RemoteException, CreateException {
 		try {
 			this.valueList = this.file.getValuesFromRecordString(record);
-			
+
 		} catch (Exception e) {
 			return false;
 		}
@@ -170,10 +175,10 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 
 		return success;
 	}
-	
+
 	private void importOperationForms(InputStream is) throws IOException, CreateException {
 	    HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
-	    
+
 	    HSSFSheet sheet = wb.getSheetAt(4);
 	    if(sheet != null) {
 	    	Iterator it = sheet.rowIterator();
@@ -187,7 +192,7 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	    			if(codeCell != null) {
 	    				OperationForm operationForm = getOperationFormHome().create();
 	    				operationForm.setCode(codeCell.getStringCellValue());
-	    				
+
 	    				HSSFCell descriptionCell = row.getCell((short) 1);
 	    				if(descriptionCell != null) {
 	    					operationForm.setDescription(descriptionCell.getStringCellValue());
@@ -198,10 +203,10 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	    	}
 	    }
 	}
-	
+
 	private void importIndustryCodes(InputStream is) throws IOException, CreateException {
 		HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
-	    
+
 	    HSSFSheet sheet = wb.getSheetAt(0);
 	    if(sheet != null) {
 	    	Iterator it = sheet.rowIterator();
@@ -215,7 +220,7 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	    			if(codeCell != null) {
 	    				IndustryCode industryCode = getIndustryCodeHome().create();
 	    				industryCode.setISATCode(codeCell.getStringCellValue());
-	    				
+
 	    				HSSFCell descriptionCell = row.getCell((short) 1);
 	    				if(descriptionCell != null) {
 	    					industryCode.setISATDescription(descriptionCell.getStringCellValue());
@@ -226,10 +231,10 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	    	}
 	    }
 	}
-	
+
 	private void importUnregisterTypes(InputStream is) throws IOException, CreateException {
 		HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
-	    
+
 	    HSSFSheet sheet = wb.getSheetAt(5);
 	    if(sheet != null) {
 	    	Iterator it = sheet.rowIterator();
@@ -243,7 +248,7 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	    			if(codeCell != null) {
 	    				UnregisterType unregisterType = getUnregisterTypeHome().create();
 	    				unregisterType.setCode(codeCell.getStringCellValue());
-	    				
+
 	    				HSSFCell descriptionCell = row.getCell((short) 1);
 	    				if(descriptionCell != null) {
 	    					unregisterType.setDescription(descriptionCell.getStringCellValue());
@@ -254,8 +259,8 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	    	}
 	    }
 	}
-		
-	
+
+
 	private void checkCodesStartData() {
 		InputStream is = null;
 		try {
@@ -302,19 +307,19 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 			logger.log(Level.SEVERE, "Exception importing new initial data", re);
 		}
 	}
-	
+
 	private OperationFormHome getOperationFormHome() throws RemoteException {
 		return (OperationFormHome) IDOLookup.getHome(OperationForm.class);
 	}
-	
+
 	private UnregisterTypeHome getUnregisterTypeHome() throws RemoteException {
 		return (UnregisterTypeHome) IDOLookup.getHome(UnregisterType.class);
 	}
-	
+
 	private IndustryCodeHome getIndustryCodeHome() throws RemoteException {
 		return (IndustryCodeHome) IDOLookup.getHome(IndustryCode.class);
 	}
-	
+
 	protected boolean storeCompanyRegisterEntry() throws RemoteException, CreateException {
 
 		String personal_id = getProperty(COLUMN_PERSONAL_ID);
@@ -337,9 +342,9 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 		String unregistrationType = getProperty(COLUMN_TYPE_OF_UNREGISTRATION);
 		String unregistrationDate = getProperty(COLUMN_DATE_OF_UNREGISTRATION);
 		String banMarking = getProperty(COLUMN_BAN_MARKING);
-		
+
 		//System.out.println("vatNumber: -"+vatNumber+"-");
-		
+
 		/*System.out.println("---------entry----------------");
 		System.out.println("personal_id:"+personal_id+"==");
 		System.out.println("commune:"+commune+"==");
@@ -362,27 +367,27 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 		System.out.println("unregistrationDate:"+unregistrationDate+"==");
 		System.out.println("banMarking:"+banMarking+"==");
 		System.out.println("-------------------------");
-		
-		
+
+
 		*/
-		
+
 //		System.out.println("x: "+CompanyRegisterImportFile.getSQLDateFromStringFormat(dateOfLastChange, null, CompanyRegisterBusinessBean.RECORDS_DATE_FORMAT));
 //		System.out.println("y: "+CompanyRegisterImportFile.getSQLDateFromStringFormat(registerDate, null, CompanyRegisterBusinessBean.RECORDS_DATE_FORMAT));
-		
+
 //		return true;
 		return comp_reg_biz.updateEntry(personal_id, commune, postalCode, workingArea, orderAreaForName, name, address, ceoId, dateOfLastChange, operationForm, vatNumber, legalAddress, registerDate, operation, recipientPersonalId, recipientName, industryCode, unregistrationType, unregistrationDate, banMarking);
 	}
-	
+
 	public static void main(String[] args) {
 		try {
 			System.out.println("handling file");
 			CompanyRegisterFileImportHandler handler = new CompanyRegisterFileImportHandlerBean();
-			
+
 			CompanyRegisterImportFile file = new CompanyRegisterImportFile();
 			file.setFile(new File("/Users/civilis/Documents/work/company_import/fyrirtaeki-daglegt-ferli.dat"));
 			handler.setImportFile(file);
 			handler.handleRecords();
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -18,6 +18,7 @@ import com.idega.business.IBOLookup;
 import com.idega.company.bean.CompanyInfo;
 import com.idega.company.data.Company;
 import com.idega.core.accesscontrol.business.LoginSession;
+import com.idega.core.business.DefaultSpringBean;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.PostalCode;
 import com.idega.dwr.business.DWRAnnotationPersistance;
@@ -33,21 +34,21 @@ import com.idega.util.expression.ELUtil;
 		@Param(name="beanName", value=CompanyProvider.BEAN_NAME),
 		@Param(name="javascript", value=CompanyProvider.DWR_OBJECT)
 	}, name=CompanyProvider.DWR_OBJECT)
-public class CompanyProvider implements DWRAnnotationPersistance, Serializable {
+public class CompanyProvider extends DefaultSpringBean implements DWRAnnotationPersistance, Serializable {
 
 	private static final long serialVersionUID = -5517414374982486474L;
-	
+
 	private static final Logger LOGGER = Logger.getLogger(CompanyProvider.class.getName());
-	
+
 	static final String BEAN_NAME = "companyInfoProvider";
 	public static final String DWR_OBJECT = "CompanyProvider";
-	
+
 	@RemoteMethod
 	public CompanyInfo getCompanyInfoByName(String name) {
 		if (StringUtil.isEmpty(name)) {
 			return null;
 		}
-		
+
 		Company company = null;
 		try {
 			company = getCompanyBusiness().getCompanyByName(name);
@@ -56,16 +57,16 @@ public class CompanyProvider implements DWRAnnotationPersistance, Serializable {
 		} catch(Exception e) {
 			LOGGER.log(Level.WARNING, "Error getting company by name: " + name, e);
 		}
-	
+
 		return getCompanyInfo(company);
 	}
-	
+
 	@RemoteMethod
 	public CompanyInfo getCompanyInfoByPersonalId(String personalId) {
 		if (StringUtil.isEmpty(personalId)) {
 			return null;
 		}
-		
+
 		Company company = null;
 		try {
 			company = getCompanyBusiness().getCompany(personalId);
@@ -74,29 +75,29 @@ public class CompanyProvider implements DWRAnnotationPersistance, Serializable {
 		} catch(Exception e) {
 			LOGGER.log(Level.WARNING, "Error getting company by SSN: " + personalId, e);
 		}
-	
+
 		return getCompanyInfo(company);
 	}
-	
+
 	private CompanyInfo getCompanyInfo(Company company) {
 		if (company == null) {
 			return null;
 		}
-		
+
 		CompanyInfo info = new CompanyInfo();
 		info.setName(company.getName());
 		info.setPersonalId(company.getPersonalID());
-		
+
 		Address address = company.getAddress();
 		if (address != null) {
 			info.setAddress(address.getStreetName());
-			
+
 			PostalCode postalCode = address.getPostalCode();
 			if (postalCode != null) {
 				info.setPostalCode(postalCode.getPostalCode());
 			}
 		}
-		
+
 		return info;
 	}
 
@@ -108,7 +109,7 @@ public class CompanyProvider implements DWRAnnotationPersistance, Serializable {
 		}
 		return null;
 	}
-	
+
 	public String getCompanyPersonalIdForCurrentUser() {
 		LoginSession loginSession = null;
 		try {
@@ -119,29 +120,29 @@ public class CompanyProvider implements DWRAnnotationPersistance, Serializable {
 		if (loginSession == null) {
 			return null;
 		}
-		
+
 		User currentUser = null;
 		try {
-			currentUser = loginSession.getUser();
+			currentUser = getOldUser(loginSession.getUser());
 		} catch(Exception e) {
 			LOGGER.log(Level.WARNING, "Error getting current user", e);
 		}
 		if (currentUser == null) {
 			return null;
 		}
-		
+
 		String companyId = currentUser.getMetaData(MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY);
 		if (StringUtil.isEmpty(companyId)) {
 			return null;
 		}
-		
+
 		Company company = null;
 		try {
 			company = getCompanyBusiness().getCompany(companyId);
 		} catch(Exception e) {
 			LOGGER.log(Level.WARNING, "Company was not found by ID: " + companyId, e);
 		}
-		
+
 		return company == null ? null : company.getPersonalID();
 	}
 }

@@ -46,53 +46,54 @@ public class SendInvitationToConfirmUserAndCompanyHandler implements ActionHandl
 	private static final long serialVersionUID = 3038274093701390134L;
 
 	private static final Logger LOGGER = Logger.getLogger(SendInvitationToConfirmUserAndCompanyHandler.class.getName());
-	
+
 	@Autowired
 	private BPMFactory bpmFactory;
-		
+
+	@Override
 	public void execute(ExecutionContext context) throws Exception {
 		ProcessInstance processInstance = context.getProcessInstance();
 		if (processInstance == null) {
 			throw new RuntimeException("Process instace is null!");
 		}
-		
+
 		long id = processInstance.getId();
 		ProcessInstanceW piw = getBpmFactory().getProcessManagerByProcessInstanceId(id).getProcessInstance(id);
 		List<TaskInstanceW> tasks = piw.getUnfinishedTaskInstancesForTask("Confirm user and company");
 		if (ListUtil.isEmpty(tasks)) {
 			throw new RuntimeException("Task 'Confirm user and company' was not found!");
 		}
-		
+
 		long taskinstanceId = tasks.get(0).getTaskInstanceId();
-		
+
 		final List<String> emails = getEmails(getHandlers());
 		if (ListUtil.isEmpty(emails)) {
 			throw new RuntimeException("There are no users to confirm registration! User must have role 'bpm_user_and_company_confirmation_handler' to be able to confirm it.");
 		}
-		
+
 		IWContext iwc = CoreUtil.getIWContext();
 		if (iwc == null) {
 			throw new RuntimeException("IWContext is unavailable");
 		}
-		
+
 		String uri = getConfirmationUri(iwc, taskinstanceId);
 		if (StringUtil.isEmpty(uri)) {
 			throw new RuntimeException("Page with type 'bpm_app_starter' was not found!");
 		}
-		
+
 		IWMainApplicationSettings settings = iwc.getApplicationSettings();
 		final String from = settings.getProperty(CoreConstants.PROP_SYSTEM_MAIL_FROM_ADDRESS);
 		final String host = settings.getProperty(CoreConstants.PROP_SYSTEM_SMTP_MAILSERVER);
-		
+
 		IWResourceBundle iwrb = iwc.getIWMainApplication().getBundle(CompanyConstants.IW_BUNDLE_IDENTIFIER).getResourceBundle(iwc);
 		final String subject = iwrb.getLocalizedString("confirm.user_and_company_registration_email_subject", "Confirm new registration");
 		final String text = new StringBuilder(iwrb.getLocalizedString("confirm.new_registration_received_confirm_it",
 				"New registration was received, please confirm it at: ")).append(uri).toString();
-		
+
 		if (StringUtil.isEmpty(host) || StringUtil.isEmpty(from)) {
 			throw new RuntimeException("Unable to send emails because of missing parameters");
 		}
-		
+
 		Thread sender = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -107,30 +108,30 @@ public class SendInvitationToConfirmUserAndCompanyHandler implements ActionHandl
 		});
 		sender.start();
 	}
-	
+
 	private String getConfirmationUri(IWContext iwc, long taskInstanceId) {
 		BuilderLogic builder = BuilderLogic.getInstance();
 		String url = builder.getFullPageUrlByPageType(iwc, "bpm_app_starter", false);
 		if (StringUtil.isEmpty(url)) {
 			return null;
 		}
-		
+
 		URIUtil uri = new URIUtil(url);
 		uri.setParameter(BPMTaskViewer.TASK_INSTANCE_PROPERTY, String.valueOf(taskInstanceId));
-		
+
 		return uri.getUri();
 	}
-	
+
 	private List<String> getEmails(Collection<User> handlers) {
 		if (ListUtil.isEmpty(handlers)) {
 			return null;
 		}
-		
+
 		UserBusiness userBusiness = getUserBusiness();
 		if (userBusiness == null) {
 			return null;
 		}
-		
+
 		List<String> emails = new ArrayList<String>(handlers.size());
 		for (User user: handlers) {
 			Email email = getEmail(user);
@@ -139,23 +140,23 @@ public class SendInvitationToConfirmUserAndCompanyHandler implements ActionHandl
 				emails.add(emailAddress);
 			}
 		}
-		
+
 		return emails;
 	}
-	
+
 	private Collection<User> getHandlers() {
 		AccessController accessController = IWMainApplication.getDefaultIWMainApplication().getAccessController();
-		Collection<Group> groups = accessController.getAllGroupsForRoleKey("bpm_user_and_company_confirmation_handler",
+		Collection<Group> groups = accessController.getAllGroupsForRoleKeyLegacy("bpm_user_and_company_confirmation_handler",
 				IWMainApplication.getDefaultIWApplicationContext());
 		if (ListUtil.isEmpty(groups)) {
 			return null;
 		}
-		
+
 		UserBusiness userBusiness = getUserBusiness();
 		if (userBusiness == null) {
 			return null;
 		}
-		
+
 		List<User> users = new ArrayList<User>();
 		for (Group group: groups) {
 			if (group instanceof User) {
@@ -174,15 +175,15 @@ public class SendInvitationToConfirmUserAndCompanyHandler implements ActionHandl
 					for (User user: usersInGroup) {
 						if (!users.contains(user)) {
 							users.add(user);
-						}					
+						}
 					}
 				}
 			}
 		}
-		
+
 		return users;
 	}
-	
+
 	private Email getEmail(User user) {
 		try {
 			return getUserBusiness().getUsersMainEmail(user);
@@ -192,7 +193,7 @@ public class SendInvitationToConfirmUserAndCompanyHandler implements ActionHandl
 		}
 		return null;
 	}
-	
+
 	private UserBusiness getUserBusiness() {
 		try {
 			return IBOLookup.getServiceInstance(IWMainApplication.getDefaultIWApplicationContext(), UserBusiness.class);
@@ -201,7 +202,7 @@ public class SendInvitationToConfirmUserAndCompanyHandler implements ActionHandl
 		}
 		return null;
 	}
-	
+
 	public BPMFactory getBpmFactory() {
 		return bpmFactory;
 	}
