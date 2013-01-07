@@ -198,6 +198,16 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return getPhoneByType(getGeneralGroup().getPhones(), PhoneBMPBean.getHomeNumberID());
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.company.data.Company#getMobilePhone()
+	 */
+	@SuppressWarnings("unchecked")
+	@Override
+	public Phone getMobilePhone() {
+		return getPhoneByType(getGeneralGroup().getPhones(), PhoneBMPBean.getMobileNumberID());
+	}
+	
 	private Phone getPhoneByType(Collection<Phone> phones, int type) {
 		if (ListUtil.isEmpty(phones)) {
 			return null;

@@ -2,14 +2,15 @@ package com.idega.company.data;
 
 
 import java.sql.Date;
-import com.idega.core.contact.data.Phone;
-import com.idega.data.IDOEntity;
-import com.idega.user.data.User;
-import com.idega.core.location.data.Address;
-import com.idega.data.IDOStoreException;
+
 import com.idega.core.contact.data.Email;
+import com.idega.core.contact.data.Phone;
+import com.idega.core.location.data.Address;
 import com.idega.core.location.data.Commune;
+import com.idega.data.IDOEntity;
+import com.idega.data.IDOStoreException;
 import com.idega.user.data.Group;
+import com.idega.user.data.User;
 
 public interface Company extends IDOEntity {
 	/**
@@ -66,12 +67,19 @@ public interface Company extends IDOEntity {
 	 * @see com.idega.company.data.CompanyBMPBean#getPhone
 	 */
 	public Phone getPhone();
-
+	
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#updatePhone
 	 */
 	public void updatePhone(Phone newPhone);
 
+	/**
+	 * 
+	 * @return mobile phone of {@link Company} or <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Phone getMobilePhone();
+	
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getFax
 	 */

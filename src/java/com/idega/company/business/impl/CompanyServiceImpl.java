@@ -238,6 +238,26 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 				
 		return phone.getNumber();
 	}
+	
+	@Override
+	public Phone getMobilePhone(String personalID) {
+		Company company = getCompany(personalID);
+		if (company == null) {
+			return null;
+		}
+		
+		return company.getMobilePhone();
+	}
+	
+	@Override
+	public String getMobilePhoneNumber(String personalID) {
+		Phone phone = getMobilePhone(personalID);
+		if (phone == null) {
+			return CoreConstants.EMPTY;
+		}
+				
+		return phone.getNumber();
+	}
 
 	@Override
 	public Phone getFax(String personalID) {
