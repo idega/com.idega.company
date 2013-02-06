@@ -325,7 +325,7 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 			return getCompanyBusiness().getCompany(personalID);
 		} catch (FinderException e) {
 			getLogger().log(Level.WARNING, 
-					"Unable to find company by personal ID: " + personalID, e);
+					"Unable to find company by personal ID: " + personalID);
 		} catch (RemoteException e) {
 			getLogger().log(Level.WARNING, "Unable to search database: ", e);
 		}
@@ -368,11 +368,6 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 			return null;
 		}
 		
-		for (Company company: companies) {
-			// FIXME Kind a stupid idea to return first company
-			return company;
-		}
-		
-		return null;
+		return companies.iterator().next();
 	}
 }
