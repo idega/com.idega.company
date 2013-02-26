@@ -15,7 +15,7 @@
  *     (1) funds have been received for payment of the License for Software and 
  *     (2) the appropriate License has been purchased as stated in the 
  *     documentation for Software. As used in this License Agreement, 
- *     �Licensee� shall also mean the individual using or installing 
+ *       Licensee   shall also mean the individual using or installing 
  *     the source code together with any individual or entity, including 
  *     but not limited to your employer, on whose behalf you are acting 
  *     in using or installing the Source Code. By completing this agreement, 
@@ -159,6 +159,15 @@ public interface CompanyService {
 	
 	/**
 	 * 
+	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
+	 * @return {@link Company#getMobilePhone()} or {@link CoreConstants#EMPTY} on 
+	 * failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public String getMobilePhoneNumber(String personalID);
+	
+	/**
+	 * 
 	 * <p>TODO</p>
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getPhone()} or {@link CoreConstants#EMPTY} on 
@@ -263,11 +272,20 @@ public interface CompanyService {
 	/**
 	 * 
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
-	 * @return {@link Phone} oof {@link Company} or <code>null</code>
+	 * @return {@link Phone} of {@link Company} or <code>null</code>
 	 * on failure.
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Phone getPhone(String personalID);
+	
+	/**
+	 * 
+	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
+	 * @return {@link Phone} of {@link Company} or <code>null</code>
+	 * on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Phone getMobilePhone(String personalID);
 
 	/**
 	 * 

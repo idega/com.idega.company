@@ -15,7 +15,7 @@
  *     (1) funds have been received for payment of the License for Software and 
  *     (2) the appropriate License has been purchased as stated in the 
  *     documentation for Software. As used in this License Agreement, 
- *     �Licensee� shall also mean the individual using or installing 
+ *       Licensee   shall also mean the individual using or installing 
  *     the source code together with any individual or entity, including 
  *     but not limited to your employer, on whose behalf you are acting 
  *     in using or installing the Source Code. By completing this agreement, 
@@ -238,6 +238,26 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 				
 		return phone.getNumber();
 	}
+	
+	@Override
+	public Phone getMobilePhone(String personalID) {
+		Company company = getCompany(personalID);
+		if (company == null) {
+			return null;
+		}
+		
+		return company.getMobilePhone();
+	}
+	
+	@Override
+	public String getMobilePhoneNumber(String personalID) {
+		Phone phone = getMobilePhone(personalID);
+		if (phone == null) {
+			return CoreConstants.EMPTY;
+		}
+				
+		return phone.getNumber();
+	}
 
 	@Override
 	public Phone getFax(String personalID) {
@@ -305,7 +325,7 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 			return getCompanyBusiness().getCompany(personalID);
 		} catch (FinderException e) {
 			getLogger().log(Level.WARNING, 
-					"Unable to find company by personal ID: " + personalID, e);
+					"Unable to find company by personal ID: " + personalID);
 		} catch (RemoteException e) {
 			getLogger().log(Level.WARNING, "Unable to search database: ", e);
 		}
@@ -348,11 +368,6 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 			return null;
 		}
 		
-		for (Company company: companies) {
-			// FIXME Kind a stupid idea to return first company
-			return company;
-		}
-		
-		return null;
+		return companies.iterator().next();
 	}
 }
