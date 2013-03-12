@@ -538,4 +538,18 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 		
 		return new ArrayList<String>(ids);
 	}
+
+	@Override
+	public String getName(User user) {
+		if (user == null) {
+			return null;
+		}
+		
+		Company company = getCompany(user);
+		if (company == null) {
+			return null;
+		}
+		
+		return company.getName();
+	}
 }

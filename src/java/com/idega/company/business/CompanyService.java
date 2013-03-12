@@ -87,6 +87,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.idega.block.form.data.XForm;
+import com.idega.block.process.business.ExternalEntityInterface;
 import com.idega.company.data.Company;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
@@ -105,7 +106,7 @@ import com.idega.util.CoreConstants;
  * @version 1.0.0 Dec 4, 2012
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
-public interface CompanyService {
+public interface CompanyService extends ExternalEntityInterface {
 	public static final String BEAN_IDENTIFIER = "companyService";
 	
 	/**
