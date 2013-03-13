@@ -82,13 +82,19 @@
  */
 package com.idega.company.business;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import com.idega.block.form.data.XForm;
+import com.idega.block.process.business.ExternalEntityInterface;
 import com.idega.company.data.Company;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.Commune;
 import com.idega.core.location.data.PostalCode;
+import com.idega.user.data.Group;
 import com.idega.user.data.User;
 import com.idega.util.CoreConstants;
 
@@ -100,7 +106,7 @@ import com.idega.util.CoreConstants;
  * @version 1.0.0 Dec 4, 2012
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
-public interface CompanyService {
+public interface CompanyService extends ExternalEntityInterface {
 	public static final String BEAN_IDENTIFIER = "companyService";
 	
 	/**
@@ -168,7 +174,6 @@ public interface CompanyService {
 	
 	/**
 	 * 
-	 * <p>TODO</p>
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getPhone()} or {@link CoreConstants#EMPTY} on 
 	 * failure.
@@ -233,6 +238,80 @@ public interface CompanyService {
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Company getCompany(User user);
+	
+	/**
+	 * TODO Optimize;
+	 * <p>Gets {@link Company}s by given {@link User}s, who are owners of 
+	 * companies.</p>
+	 * @param users who own companies, not empty; 
+	 * @return owned {@link Company}s by {@link User}s or
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public ArrayList<Company> getCompanies(Collection<User> users);
+	
+	/**
+	 * 
+	 * @param users ids to search by, not empty.
+	 * @return owned {@link Company}s by {@link User}s or
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public ArrayList<Company> getCompaniesByUserIDs(Collection<String> users);
+	
+	/**
+	 * 
+	 * @param roles assigned to {@link Group}s, which defines permissions and etc.,
+	 * for example: "bpm_cases_manager". Roles are defined via 
+	 * Lucid->Users->Edit group->Roles.
+	 * @return {@link List} of {@link Company}s, which belongs to {@link User}s
+	 * who are in {@link Group}s having specified roles, <code>null</code>
+	 * on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public ArrayList<Company> getCompaniesByOwnerRoles(Collection<String> roles);
+	
+	/**
+	 * 
+	 * <p>Searches database for owners of given companies</p>
+	 * @param companies - {@link List} of {@link Company} 
+	 * to search by, not <code>null</code>;
+	 * @return {@link List} of {@link User}s, who are owners
+	 * of given {@link Company}s, <code>null</code> on failure. 
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public ArrayList<User> getOwnersByCompanies(Collection<Company> companies);
+	
+	/**
+	 * 
+	 * <p>Searches database for owners of given companies</p>
+	 * @param companies - {@link List} of {@link Company} 
+	 * to search by, not <code>null</code>;
+	 * @return {@link List} of {@link User#getPrimaryKey()}, who are owners
+	 * of given {@link Company}s, <code>null</code> on failure. 
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public ArrayList<String> getOwnersIDsByCompanies(Collection<Company> companies);
+	
+	/**
+	 * 
+	 * <p>Searches database for owners of given companies</p>
+	 * @param companiesIDs - {@link List} of {@link Company#getPrimaryKey()} 
+	 * to search by, not <code>null</code>;
+	 * @return {@link List} of {@link User#getPrimaryKey()}, who are owners
+	 * of given {@link Company}s, <code>null</code> on failure. 
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public ArrayList<String> getOwnersIDsForCompaniesByIDs(Collection<String> companiesIDs);
+	
+	/**
+	 * 
+	 * @param companies to get primary keys, not empty;
+	 * @return {@link Company#getPrimaryKey()} of each {@link Company} or 
+	 * <code>null</code> on failure.
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public ArrayList<String> getIDsOfCompanies(Collection<Company> companies);
 
 	/**
 	 * 

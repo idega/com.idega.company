@@ -83,9 +83,11 @@
 package com.idega.company.business.impl;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.logging.Level;
 
+import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -95,15 +97,20 @@ import org.springframework.stereotype.Service;
 import com.idega.company.business.CompanyBusiness;
 import com.idega.company.business.CompanyService;
 import com.idega.company.data.Company;
+import com.idega.core.accesscontrol.business.AccessController;
 import com.idega.core.business.DefaultSpringBean;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.Commune;
 import com.idega.core.location.data.PostalCode;
+import com.idega.user.business.GroupBusiness;
+import com.idega.user.business.UserBusiness;
 import com.idega.user.data.Gender;
+import com.idega.user.data.Group;
 import com.idega.user.data.User;
 import com.idega.util.CoreConstants;
+import com.idega.util.CoreUtil;
 import com.idega.util.ListUtil;
 import com.idega.util.StringUtil;
 
@@ -369,5 +376,180 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 		}
 		
 		return companies.iterator().next();
+	}
+
+	@Override
+	public ArrayList<Company> getCompanies(Collection<User> users) {
+		if (ListUtil.isEmpty(users)) {
+			return null;
+		}
+		
+		ArrayList<Company> companies = new ArrayList<Company>();
+		Collection<Company> companiesCollection = null;
+		for (User user: users) {
+			companiesCollection = getCompanyBusiness().getCompaniesForUser(user);
+			if (!ListUtil.isEmpty(companiesCollection)) {
+				companies.addAll(companiesCollection);
+			}
+		}
+		
+		return companies;
+	}
+
+	@Override
+	public ArrayList<String> getIDsOfCompanies(Collection<Company> companies) {
+		if (ListUtil.isEmpty(companies)) {
+			return null;
+		}
+		
+		ArrayList<String> primaryKeys = new ArrayList<String>();
+		for (Company company: companies) {
+			primaryKeys.add(company.getPrimaryKey().toString());
+		}
+		
+		return primaryKeys;
+	}
+
+	@Override
+	public ArrayList<Company> getCompaniesByUserIDs(Collection<String> users) {
+		if (ListUtil.isEmpty(users)) {
+			return null;
+		}
+		
+		return getCompanies(getUsers(users));
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected Collection<User> getUsers(Collection<String> ids) {
+		if (ListUtil.isEmpty(ids)) {
+			return null;
+		}
+		
+		try {
+			return getUserBusiness().getUsers(ids.toArray(new String[ids.size()]));
+		} catch (EJBException e) {
+			getLogger().log(Level.WARNING, "Unable to get " + User.class, e);
+		} catch (RemoteException e) {
+			getLogger().log(Level.WARNING, "Unable to get " + User.class, e);
+		}
+		
+		return null;
+	}
+	
+	protected UserBusiness getUserBusiness() {
+		return getServiceInstance(UserBusiness.class);
+	}
+	
+	protected GroupBusiness getGroupBusiness() {
+		return getServiceInstance(GroupBusiness.class);
+	}
+
+	@Override
+	public ArrayList<Company> getCompaniesByOwnerRoles(Collection<String> roles) {
+		return getCompanies(getUsersByRoles(roles));
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected ArrayList<User> getUsersByRoles(Collection<String> roles) {
+		if (ListUtil.isEmpty(roles)) {
+			return null;
+		}
+		
+		ArrayList<User> users = new ArrayList<User>();
+		GroupBusiness groupBusiness = getGroupBusiness();
+		if (groupBusiness == null) {
+			return null;
+		}
+		
+		UserBusiness userBusiness = getUserBusiness();
+		if (userBusiness == null) {
+			return null;
+		}
+		
+		AccessController accessController = CoreUtil.getIWContext().getAccessController();
+		for (String roleKey: roles) {
+			Collection<Group> groupsByRole = accessController.getAllGroupsForRoleKey(roleKey, CoreUtil.getIWContext());
+			if (ListUtil.isEmpty(groupsByRole)) {
+				continue;
+			}
+			
+			for (Group group: groupsByRole) {
+				if (StringUtil.isEmpty(group.getName())) {
+					try {
+						User user = userBusiness.getUser(Integer.valueOf(group.getId()));
+						if (accessController.hasRole(user, roleKey) && !users.contains(user)) {
+							users.add(user);
+						}
+					} catch (NumberFormatException e) {
+						e.printStackTrace();
+					} catch (Exception e) {
+					}
+				}
+				
+				Collection<User> usersInGroup = null;
+				try {
+					usersInGroup = groupBusiness.getUsers(group);
+				} catch (FinderException e) {
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+				if (!ListUtil.isEmpty(usersInGroup)) {
+					for (User user: usersInGroup) {
+						if (!users.contains(user)) {
+							users.add(user);
+						}
+					}
+				}
+			}
+		}
+		
+		return users;
+	}
+
+	@Override
+	public ArrayList<User> getOwnersByCompanies(Collection<Company> companies) {
+		Collection<User> users = getCompanyBusiness().getOwnersForCompanies(companies);
+		if (ListUtil.isEmpty(users)) {
+			return null;
+		}
+		
+		return new ArrayList<User>(users);
+	}
+
+	@Override
+	public ArrayList<String> getOwnersIDsByCompanies(Collection<Company> companies) {
+		Collection<String> users = getCompanyBusiness().getOwnersIDsForCompanies(companies);
+		if (ListUtil.isEmpty(users)) {
+			return null;
+		}
+		
+		return new ArrayList<String>(users);
+	}
+
+	@Override
+	public ArrayList<String> getOwnersIDsForCompaniesByIDs(
+			Collection<String> companiesIDs) {
+		
+		Collection<String> ids = getCompanyBusiness().getOwnersIDsForCompaniesByIDs(companiesIDs);
+		if (ListUtil.isEmpty(ids)) {
+			return null;
+		}
+		
+		return new ArrayList<String>(ids);
+	}
+
+	@Override
+	public String getName(User user) {
+		if (user == null) {
+			return null;
+		}
+		
+		Company company = getCompany(user);
+		if (company == null) {
+			return null;
+		}
+		
+		return company.getName();
 	}
 }

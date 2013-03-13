@@ -66,6 +66,39 @@ public interface CompanyBusiness extends IBOService {
 	public Collection<Company> getCompaniesForUser(User user);
 	
 	/**
+	 * 
+	 * <p>Searches database for owners of given companies</p>
+	 * @param companies - {@link List} of {@link Company} 
+	 * to search by, not <code>null</code>;
+	 * @return {@link List} of {@link User}s, who are owners
+	 * of given {@link Company}s, <code>null</code> on failure. 
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Collection<User> getOwnersForCompanies(Collection<Company> companies);
+	
+	/**
+	 * 
+	 * <p>Searches database for owners of given companies</p>
+	 * @param companies - {@link List} of {@link Company} 
+	 * to search by, not <code>null</code>;
+	 * @return {@link List} of {@link User#getPrimaryKey()}, who are owners
+	 * of given {@link Company}s, <code>null</code> on failure. 
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Collection<String> getOwnersIDsForCompanies(Collection<Company> companies);
+	
+	/**
+	 * 
+	 * <p>Searches database for owners of given companies</p>
+	 * @param companiesIDs - {@link List} of {@link Company#getPrimaryKey()} 
+	 * to search by, not <code>null</code>;
+	 * @return {@link List} of {@link User#getPrimaryKey()}, who are owners
+	 * of given {@link Company}s, <code>null</code> on failure. 
+	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
+	 */
+	public Collection<String> getOwnersIDsForCompaniesByIDs(Collection<String> companiesIDs);
+		
+	/**
 	 * @see com.idega.company.business.CompanyBusinessBean#storeCompany
 	 */
 	public Company storeCompany(String name, String personalID)
