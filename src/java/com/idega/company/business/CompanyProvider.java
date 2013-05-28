@@ -123,7 +123,7 @@ public class CompanyProvider extends DefaultSpringBean implements DWRAnnotationP
 
 		User currentUser = null;
 		try {
-			currentUser = getOldUser(loginSession.getUser());
+			currentUser = loginSession.getUser();
 		} catch(Exception e) {
 			LOGGER.log(Level.WARNING, "Error getting current user", e);
 		}
