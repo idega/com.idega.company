@@ -68,7 +68,14 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 	}
 
 	public Company getCompany(Object pk) throws FinderException {
-		return getCompanyHome().findByPrimaryKey(new Integer(pk.toString()));
+		try {
+			return getCompanyHome().findByPrimaryKey(new Integer(pk.toString()));
+		} catch (NumberFormatException e) {
+			getLogger().warning("Failed to convert " + pk.toString() + " to " +
+					Integer.class.getName());
+		}
+		
+		return null;
 	}
 
 	public Company getCompany(Group group) throws FinderException {
