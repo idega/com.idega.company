@@ -337,6 +337,15 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 			getLogger().log(Level.WARNING, "Unable to search database: ", e);
 		}
 
+		try {
+			return getCompanyBusiness().getCompany((Object) personalID);
+		} catch (RemoteException e) {
+			getLogger().log(Level.WARNING, "Unable to find company by personal ID: " + personalID, e);
+		} catch (FinderException e) {
+			getLogger().log(Level.WARNING,
+					"Unable to find company by primary key: " + personalID);
+		}
+
 		return null;
 	}
 
