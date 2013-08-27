@@ -329,6 +329,9 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 		if (ceo != null && employeePersonalID.equals(ceo.getPersonalID()))
 			return "CEO";
 
+		if (personalID.equals(employeePersonalID))
+			return "CEO";
+
 		getLogger().warning("Unknown employee's (personal ID: " + employeePersonalID + ") role in company " + company);
 		return null;
 	}
