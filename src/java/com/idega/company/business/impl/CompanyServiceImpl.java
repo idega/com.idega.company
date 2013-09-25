@@ -470,6 +470,7 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 
 	protected ArrayList<User> getUsersByRoles(Collection<String> roles) {
 		if (ListUtil.isEmpty(roles)) {
+			getLogger().warning("Roles are not provided");
 			return null;
 		}
 
@@ -522,6 +523,9 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 			}
 		}
 
+		if (ListUtil.isEmpty(users)) {
+			getLogger().warning("There are no users by role(s): " + roles);
+		}
 		return users;
 	}
 
@@ -546,9 +550,7 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 	}
 
 	@Override
-	public ArrayList<String> getOwnersIDsForCompaniesByIDs(
-			Collection<String> companiesIDs) {
-
+	public ArrayList<String> getOwnersIDsForCompaniesByIDs(Collection<String> companiesIDs) {
 		Collection<String> ids = getCompanyBusiness().getOwnersIDsForCompaniesByIDs(companiesIDs);
 		if (ListUtil.isEmpty(ids)) {
 			return null;
