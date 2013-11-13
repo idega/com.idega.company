@@ -1,8 +1,8 @@
 /*
  * $Id$ Created on Jun 4, 2007
- * 
+ *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
- * 
+ *
  * This software is the proprietary information of Idega hf. Use is subject to license terms.
  */
 package com.idega.company.business;
@@ -59,14 +59,16 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 	}
 
 	// Company
+	@Override
 	public Company getCompany(String personalID) throws FinderException {
 		if (StringUtil.isEmpty(personalID)) {
 			return null;
 		}
-		
+
 		return getCompanyHome().findByPersonalID(personalID);
 	}
 
+	@Override
 	public Company getCompany(Object pk) throws FinderException {
 		try {
 			return getCompanyHome().findByPrimaryKey(new Integer(pk.toString()));
@@ -74,10 +76,11 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 			getLogger().warning("Failed to convert " + pk.toString() + " to " +
 					Integer.class.getName());
 		}
-		
+
 		return null;
 	}
 
+	@Override
 	public Company getCompany(Group group) throws FinderException {
 		if (group.getGroupType().equals(CompanyConstants.GROUP_TYPE_COMPANY)) {
 			return getCompany(group.getPrimaryKey());
@@ -85,10 +88,12 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		return null;
 	}
 
+	@Override
 	public Collection<Company> getCompanies() {
 		return getCompanies(null);
 	}
 
+	@Override
 	public Collection<Company> getValidCompanies(boolean valid) {
 		return getCompanies(new Boolean(valid));
 	}
@@ -103,6 +108,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 	}
 
+	@Override
 	public Collection<Company> getActiveCompanies() {
 		try {
 			return getCompanyHome().findAllWithOpenStatus();
@@ -113,6 +119,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 	}
 
+	@Override
 	public Collection<Company> getActiveAndOpenCompanies() {
 		try {
 			return getCompanyHome().findAllActiveWithOpenStatus();
@@ -123,6 +130,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 	}
 
+	@Override
 	public Company storeCompany(String name, String personalID) throws CreateException {
 		Company company = getCompanyHome().create();
 		company.setName(name);
@@ -133,10 +141,12 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 	}
 
 	// Company type
+	@Override
 	public CompanyType getCompanyType(Object pk) throws FinderException {
 		return getCompanyTypeHome().findByPrimaryKey(pk);
 	}
 
+	@Override
 	public Collection<CompanyType> getTypes() {
 		try {
 			return getCompanyTypeHome().findAll();
@@ -147,6 +157,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 	}
 
+	@Override
 	public void storeCompanyType(String type, String name, String description, int order) {
 		try {
 			CompanyType companyType = getCompanyTypeHome().create();
@@ -162,40 +173,40 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 	}
 
+	@Override
 	public Company getCompanyByName(String name) throws FinderException, RemoteException {
 		if (StringUtil.isEmpty(name)) {
 			return null;
 		}
-		
+
 		return getCompanyHome().findByName(name);
 	}
 
 	@Override
 	public Collection<Company> getCompaniesForUser(User user) {
-		
 		Collection<Company> companies = new ArrayList<Company>();
 		Collection<Company> managedCompanies = getCompanyHome().findAll(user);
 		if (!ListUtil.isEmpty(managedCompanies)) {
 			companies.addAll(managedCompanies);
 		}
-		
+
 		String ownedCompanyID = user.getMetaData(
 				MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY);
 		if (StringUtil.isEmpty(ownedCompanyID)) {
 			return companies;
 		}
-		
+
 		Company ownedCompany = null;
 		try {
 			ownedCompany = getCompanyHome().findByPrimaryKey(ownedCompanyID);
 		} catch (FinderException e) {
-			getLogger().log(Level.WARNING, "Unable to find " + Company.class + 
+			getLogger().log(Level.WARNING, "Unable to find " + Company.class +
 					" by primary key: " + ownedCompanyID);
 		}
 		if (ownedCompany != null) {
 			companies.add(ownedCompany);
 		}
-		
+
 		return companies;
 	}
 
@@ -205,10 +216,10 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		} catch (IBOLookupException e) {
 			getLogger().log(Level.WARNING, "Unable to get " + UserBusiness.class, e);
 		}
-		
+
 		return null;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<User> getOwnersForCompanies(Collection<Company> companies) {
@@ -222,35 +233,33 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 		return null;
 	}
-	
+
 	@Override
-	public Collection<String> getOwnersIDsForCompanies(
-			Collection<Company> companies) {
+	public Collection<String> getOwnersIDsForCompanies(Collection<Company> companies) {
 		if (ListUtil.isEmpty(companies)) {
 			return null;
 		}
-		
+
 		ArrayList<String> idsOfCompanies = new ArrayList<String>();
 		for (Company company: companies) {
 			idsOfCompanies.add(company.getPrimaryKey().toString());
 		}
-		
+
 		return getOwnersIDsForCompaniesByIDs(idsOfCompanies);
 	}
 
 	@Override
-	public Collection<String> getOwnersIDsForCompaniesByIDs(
-			Collection<String> companiesIDs) {
+	public Collection<String> getOwnersIDsForCompaniesByIDs(Collection<String> companiesIDs) {
 		if (ListUtil.isEmpty(companiesIDs)) {
 			return null;
 		}
-		
+
 		StringBuilder companiesIDsString = new StringBuilder();
 		for (Iterator<String> iterator = companiesIDs.iterator(); iterator.hasNext();) {
 			companiesIDsString.append(CoreConstants.QOUTE_SINGLE_MARK)
 			.append(iterator.next())
 			.append(CoreConstants.QOUTE_SINGLE_MARK);
-			
+
 			if (iterator.hasNext()) {
 				companiesIDsString.append(CoreConstants.COMMA)
 				.append(CoreConstants.SPACE);
@@ -265,18 +274,19 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		.append("AND B.METADATA_NAME='")
 		.append(MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY).append("' ")
 		.append("AND A.IC_METADATA_ID=B.IC_METADATA_ID;");
-		
+
 		String[] ownerIDs = null;
 		try {
 			ownerIDs = SimpleQuerier.executeStringQuery(sb.toString());
 		} catch (Exception e) {
 			getLogger().log(Level.WARNING, "Unable to find owners of companies: ", e);
 		}
-		
+
 		if (ArrayUtil.isEmpty(ownerIDs)) {
 			return null;
 		}
-		
+
 		return Arrays.asList(ownerIDs);
 	}
+
 }

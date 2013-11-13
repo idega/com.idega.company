@@ -14,10 +14,10 @@ import com.idega.util.ListUtil;
 import com.idega.util.expression.ELUtil;
 
 /**
- * 
+ *
  * <p>Presentation component, which shows {@link CheckBox} list
  * of companies.</p>
- * <p>You can report about problems to: 
+ * <p>You can report about problems to:
  * <a href="mailto:martynas@idega.is">Martynas Stakė</a></p>
  *
  * @version 1.0.0 Mar 5, 2013
@@ -26,50 +26,50 @@ import com.idega.util.expression.ELUtil;
 public class CompanyFilter extends FilterList<Company> {
 
 	private List<String> selectedUsers = null;
-	
+
 	private List<String> roles = null;
-	
+
 	private String selectedUsersInputName = null;
-	
-	@Autowired 
-	private CompanyService companyService; 
-	
+
+	@Autowired
+	private CompanyService companyService;
+
 	protected CompanyService getCompanyService() {
 		if (this.companyService == null) {
 			ELUtil.getInstance().autowire(this);
 		}
-		
+
 		return this.companyService;
 	}
 
 	protected List<Company> getCompanies() {
 		return getCompanyService().getCompaniesByOwnerRoles(getRoles());
 	}
-	
+
 	protected List<String> getCompaniesIDs() {
 		Collection<Company> companies = getCompanies();
 		if (ListUtil.isEmpty(companies)) {
 			return getCompanyService().getIDsOfCompanies(
 					getCompanyService().getCompaniesByUserIDs(getSelectedUsers())
-					);
+			);
 		}
-		
+
 		return getCompanyService().getIDsOfCompanies(companies);
 	}
-	
+
 	protected List<Company> getSelectedCompanies() {
 		return getCompanyService().getCompaniesByUserIDs(getSelectedUsers());
 	}
-	
+
 	protected List<String> getSelectedCompaniesIDs() {
 		Collection<Company> companies = getSelectedCompanies();
 		if (companies == null) {
 			return null;
 		}
-		
+
 		return getCompanyService().getIDsOfCompanies(companies);
 	}
-	
+
 	@Override
 	public void main(IWContext iwc) throws Exception {
 		setEntities(getCompanies());
@@ -77,7 +77,7 @@ public class CompanyFilter extends FilterList<Company> {
 		setParameterName(getSelectedUserInputName());
 		super.main(iwc);
 	}
-	
+
 	public void setSelectedUsers(List<String> selectedUsers) {
 		this.selectedUsers = selectedUsers;
 	}
@@ -89,15 +89,15 @@ public class CompanyFilter extends FilterList<Company> {
 	public void setRoles(List<String> asList) {
 		this.roles = asList;
 	}
-	
+
 	public List<String> getRoles() {
 		return roles;
 	}
-	
+
 	public void setSelectedUserInputName(String selectedUsersInputName) {
 		this.selectedUsersInputName = selectedUsersInputName;
 	}
-	
+
 	public String getSelectedUserInputName() {
 		return this.selectedUsersInputName;
 	}
