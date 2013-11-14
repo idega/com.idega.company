@@ -36,7 +36,10 @@ import com.idega.util.CoreConstants;
 import com.idega.util.ListUtil;
 import com.idega.util.StringUtil;
 
-public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusiness {
+
+public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusiness{
+	
+	
 
 	private static final long serialVersionUID = -2466677771702218426L;
 
@@ -182,6 +185,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		return getCompanyHome().findByName(name);
 	}
 
+	
 	@Override
 	public Collection<Company> getCompaniesForUser(User user) {
 		Collection<Company> companies = new ArrayList<Company>();
@@ -220,7 +224,6 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<User> getOwnersForCompanies(Collection<Company> companies) {
 		Collection<String> ids = getOwnersIDsForCompanies(companies);
