@@ -1,5 +1,6 @@
 package com.idega.company.presentation;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -10,6 +11,7 @@ import com.idega.company.data.Company;
 import com.idega.presentation.IWContext;
 import com.idega.presentation.filter.FilterList;
 import com.idega.presentation.ui.CheckBox;
+import com.idega.user.data.User;
 import com.idega.util.ListUtil;
 import com.idega.util.expression.ELUtil;
 
@@ -43,7 +45,20 @@ public class CompanyFilter extends FilterList<Company> {
 	}
 
 	protected List<Company> getCompanies() {
-		return getCompanyService().getCompaniesByOwnerRoles(getRoles());
+		List<Company> companyList =  getCompanyService().getCompaniesByOwnerRoles(getRoles());
+		
+		ArrayList<Company> search = new ArrayList<Company>(1);
+		search.add(null);
+		for(Company company: companyList){
+			search.set(0, company);
+			List<User> owners = getCompanyService().getOwnersByCompanies(search);
+			if(ListUtil.isEmpty(owners)){
+				continue;
+			}
+			company.setName(owners.get(0).getName() + " - " + company.getName());
+		}
+		
+		return companyList;
 	}
 
 	protected List<String> getCompaniesIDs() {
