@@ -10,21 +10,21 @@ import com.idega.business.IBOLookup;
 import com.idega.business.IBOLookupException;
 import com.idega.company.business.CompanyBusiness;
 import com.idega.core.business.DefaultSpringBean;
+import com.idega.core.business.GeneralCompanyBusiness;
+import com.idega.core.company.bean.GeneralCompany;
 import com.idega.idegaweb.IWMainApplication;
-import com.idega.jbpm.bean.JBPMCompany;
-import com.idega.jbpm.business.JBPMCompanyBusiness;
 import com.idega.user.data.User;
 
-@Service(JBPMCompanyBusiness.BEAN_NAME)
+@Service(GeneralCompanyBusiness.BEAN_NAME)
 @Scope(BeanDefinition.SCOPE_SINGLETON)
-public class JBPMCompanyBusinessImpl extends DefaultSpringBean implements JBPMCompanyBusiness{
+public class GeneralCompanyBusinessImpl extends DefaultSpringBean implements GeneralCompanyBusiness{
 	
 	private CompanyBusiness companyBusiness = null;
 	
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Collection<JBPMCompany> getJBPMCompaniesForUser(User user){
+	public Collection<GeneralCompany> getJBPMCompaniesForUser(User user){
 		Collection companies = getCompanyBusiness().getCompaniesForUser(user);
 		return companies;
 	}

@@ -17,6 +17,7 @@ import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
 
 import com.idega.company.CompanyConstants;
+import com.idega.core.company.bean.GeneralCompany;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneBMPBean;
@@ -33,14 +34,13 @@ import com.idega.data.IDOStoreException;
 import com.idega.data.query.MatchCriteria;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
-import com.idega.jbpm.bean.JBPMCompany;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupHome;
 import com.idega.user.data.User;
 import com.idega.util.CoreConstants;
 import com.idega.util.ListUtil;
 
-public class CompanyBMPBean extends GenericEntity implements Company, JBPMCompany {
+public class CompanyBMPBean extends GenericEntity implements Company, GeneralCompany {
 
 	private static final long serialVersionUID = 5902685982267772143L;
 	private static final String ENTITY_NAME = "ic_company";

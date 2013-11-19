@@ -2,17 +2,24 @@ package com.idega.company.presentation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.faces.component.UIComponentBase;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.idega.company.business.CompanyService;
 import com.idega.company.data.Company;
+import com.idega.core.contact.data.Email;
 import com.idega.presentation.IWContext;
+import com.idega.presentation.PresentationObjectContainer;
 import com.idega.presentation.filter.FilterList;
 import com.idega.presentation.ui.CheckBox;
 import com.idega.user.data.User;
+import com.idega.util.CoreConstants;
 import com.idega.util.ListUtil;
+import com.idega.util.StringUtil;
 import com.idega.util.expression.ELUtil;
 
 /**
@@ -45,20 +52,7 @@ public class CompanyFilter extends FilterList<Company> {
 	}
 
 	protected List<Company> getCompanies() {
-		List<Company> companyList =  getCompanyService().getCompaniesByOwnerRoles(getRoles());
-		
-		ArrayList<Company> search = new ArrayList<Company>(1);
-		search.add(null);
-		for(Company company: companyList){
-			search.set(0, company);
-			List<User> owners = getCompanyService().getOwnersByCompanies(search);
-			if(ListUtil.isEmpty(owners)){
-				continue;
-			}
-			company.setName(owners.get(0).getName() + " - " + company.getName());
-		}
-		
-		return companyList;
+		return getCompanyService().getCompaniesByOwnerRoles(getRoles());
 	}
 
 	protected List<String> getCompaniesIDs() {
@@ -85,6 +79,68 @@ public class CompanyFilter extends FilterList<Company> {
 		return getCompanyService().getIDsOfCompanies(companies);
 	}
 
+	@Override
+	protected Collection<UIComponentBase> getEntityFields(Company company){
+		ArrayList<UIComponentBase> components = new ArrayList<UIComponentBase>();
+		
+		PresentationObjectContainer userSpan = getCell();
+		components.add(userSpan);
+		userSpan.setStyleClass("company-span");
+		
+		PresentationObjectContainer emailSpan = getCell();
+		components.add(emailSpan);
+		emailSpan.setStyleClass("company-span");
+		
+		PresentationObjectContainer companySpan = getCell();
+		components.add(companySpan);
+		companySpan.setStyleClass("company-span");
+		companySpan.add(company.getName());
+		
+		ArrayList<Company> search = new ArrayList<Company>(1);
+		search.add(0, company);
+		List<User> owners = getCompanyService().getOwnersByCompanies(search);
+		if(ListUtil.isEmpty(owners)){
+			return components;
+		}
+		
+		User owner = owners.get(0);
+		
+		userSpan.add(owner.getName());
+		
+		@SuppressWarnings("unchecked")
+		Collection<Email> emails = owner.getEmails();
+		String userEmails;
+		if(ListUtil.isEmpty(emails)){
+			userEmails = CoreConstants.EMPTY;
+		}else{
+			StringBuilder builder = new StringBuilder();
+			Iterator<Email> iter = emails.iterator();
+			while(iter.hasNext()){
+				Email email = iter.next();
+				String addresss = email.getEmailAddress();
+				if(StringUtil.isEmpty(addresss)){
+					continue;
+				}
+				builder.append(addresss);
+				if(iter.hasNext()){
+					builder.append(", ");
+				}
+			}
+			userEmails = builder.toString();
+		}
+//		UserApplicationEngine userApplicationEngine = ELUtil.getInstance().getBean(UserApplicationEngine.SPRING_BEAN_IDENTIFIER);
+		emailSpan.add(userEmails);
+		
+//		emailSpan.add(userApplicationEngine.getUserInfo(owner).getEmail());
+		
+		return components;
+	}
+	
+	@Override
+	protected String getRepresentation(Company entity){
+		return entity.getName();
+	}
+	
 	@Override
 	public void main(IWContext iwc) throws Exception {
 		setEntities(getCompanies());
