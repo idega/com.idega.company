@@ -24,7 +24,7 @@ public class GeneralCompanyBusinessImpl extends DefaultSpringBean implements Gen
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	public Collection<GeneralCompany> getJBPMCompaniesForUser(User user){
+	public Collection<GeneralCompany> getCompaniesForUser(User user){
 		Collection companies = getCompanyBusiness().getCompaniesForUser(user);
 		return companies;
 	}
