@@ -148,6 +148,7 @@ public interface Company extends IDOEntity {
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#store
 	 */
+	@Override
 	public void store() throws IDOStoreException;
 
 	/**

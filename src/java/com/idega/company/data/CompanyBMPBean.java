@@ -39,7 +39,7 @@ import com.idega.user.data.User;
 import com.idega.util.CoreConstants;
 import com.idega.util.ListUtil;
 
-public class CompanyBMPBean extends GenericEntity implements Company {
+public class CompanyBMPBean extends GenericEntity implements Company{
 
 	private static final long serialVersionUID = 5902685982267772143L;
 	private static final String ENTITY_NAME = "ic_company";
@@ -131,10 +131,12 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	}
 
 	// Getters
+	@Override
 	public Group getGroup() {
 		return (Group) getColumnValue(getIDColumnName());
 	}
 
+	@Override
 	public CompanyType getType() {
 		return (CompanyType) getColumnValue(COLUMN_TYPE);
 	}
@@ -144,30 +146,37 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return getStringColumnValue(COLUMN_NAME);
 	}
 
+	@Override
 	public String getPersonalID() {
 		return getStringColumnValue(COLUMN_PERSONAL_ID);
 	}
 
+	@Override
 	public String getWebPage() {
 		return getStringColumnValue(COLUMN_WEB_PAGE);
 	}
 
+	@Override
 	public String getBankAccount() {
 		return getStringColumnValue(COLUMN_BANK_ACCOUNT);
 	}
 
+	@Override
 	public String getExtraInfo() {
 		return getStringColumnValue(COLUMN_EXTRA_INFO);
 	}
 
+	@Override
 	public boolean isValid() {
 		return getBooleanColumnValue(COLUMN_IS_VALID, false);
 	}
 
+	@Override
 	public boolean isOpen() {
 		return getBooleanColumnValue(COLUMN_IS_OPEN, false);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Address getAddress() {
 		try {
@@ -193,6 +202,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return null;
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Phone getPhone() {
 		return getPhoneByType(getGeneralGroup().getPhones(), PhoneBMPBean.getHomeNumberID());
@@ -222,6 +232,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return null;
 	}
 	
+	@Override
 	public void updatePhone(Phone newPhone) {
 		Phone phone = getPhone();
 		if(phone == null) {
@@ -239,11 +250,13 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Phone getFax() {
 		return getPhoneByType(getGeneralGroup().getPhones(), PhoneBMPBean.getFaxNumberID());
 	}
 	
+	@Override
 	public void updateFax(Phone newFax) {
 		Phone fax = getFax();
 		if(fax == null) {
@@ -261,6 +274,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		}
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Email getEmail() {
 		Collection<Email> emails = getGeneralGroup().getEmails();
@@ -270,6 +284,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		return emails.iterator().next();
 	}
 	
+	@Override
 	public void updateEmail(Email newEmail) {
 		Email email = getEmail();
 		if(email == null) {
@@ -288,10 +303,12 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 	}
 
 	// Setters
+	@Override
 	public void setGroup(Group group) {
 		setPrimaryKey(group.getPrimaryKey());
 	}
 
+	@Override
 	public void setType(CompanyType type) {
 		setColumn(COLUMN_TYPE, type);
 	}
@@ -302,26 +319,32 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		setColumn(COLUMN_NAME, name);
 	}
 
+	@Override
 	public void setPersonalID(String personalID) {
 		setColumn(COLUMN_PERSONAL_ID, personalID);
 	}
 
+	@Override
 	public void setWebPage(String webPage) {
 		setColumn(COLUMN_WEB_PAGE, webPage);
 	}
 
+	@Override
 	public void setBankAccount(String bankAccount) {
 		setColumn(COLUMN_BANK_ACCOUNT, bankAccount);
 	}
 
+	@Override
 	public void setExtraInfo(String extraInfo) {
 		setColumn(COLUMN_EXTRA_INFO, extraInfo);
 	}
 
+	@Override
 	public void setValid(boolean valid) {
 		setColumn(COLUMN_IS_VALID, valid);
 	}
 
+	@Override
 	public void setOpen(boolean open) {
 		setColumn(COLUMN_IS_OPEN, open);
 	}
@@ -441,6 +464,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		getGeneralGroup().remove();
 	}
 
+	@Override
 	public Group getGeneralGroup() {
 		if (this.iGroup == null) {
 			try {
@@ -468,122 +492,152 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		setValid(true);
 	}
 
+	@Override
 	public String getRecipientId() {
 		return getStringColumnValue(RECIPIENT_ID);
 	}
 
+	@Override
 	public String getRecipientName() {
 		return getStringColumnValue(RECIPIENT_NAME);
 	}
 
+	@Override
 	public void setRecipientId(String recipient) {
 		setColumn(RECIPIENT_ID, recipient);
 	}
 
+	@Override
 	public void setRecipientName(String recipient) {
 		setColumn(RECIPIENT_NAME, recipient);
 	}
 
+	@Override
 	public String getBanMarking() {
 		return getStringColumnValue(BAN_MARKING);
 	}
 
+	@Override
 	public User getCEO() {
 		return (User) this.getColumnValue(CEO_ID);
 	}
 
+	@Override
 	public void setCEO(User ceo) {
 		setColumn(CEO_ID, ceo);
 	}
 
+	@Override
 	public IndustryCode getIndustryCode() {
 		return (IndustryCode) getColumnValue(INDUSTRY_CODE);
 	}
 
+	@Override
 	public void setIndustryCode(IndustryCode industryCode) {
 		setColumn(INDUSTRY_CODE, industryCode);
 	}
 
+	@Override
 	public Date getLastChange() {
 		return (Date) getColumnValue(LAST_CHANGE);
 	}
 
+	@Override
 	public void setLastChange(Date lastChange) {
 		setColumn(LAST_CHANGE, lastChange);
 	}
 
+	@Override
 	public Commune getLegalCommune() {
 		return (Commune) getColumnValue(LEGAL_COMMUNE);
 	}
 
+	@Override
 	public void setLegalCommune(Commune legalCommune) {
 		setColumn(LEGAL_COMMUNE, legalCommune);
 	}
 
+	@Override
 	public String getOperation() {
 		return getStringColumnValue(OPERATION);
 	}
 
+	@Override
 	public void setOperation(String operation) {
 		setColumn(OPERATION, operation);
 	}
 
+	@Override
 	public OperationForm getOperationForm() {
 		return (OperationForm) getColumnValue(OPERATION_FORM);
 	}
 
+	@Override
 	public void setOperationForm(OperationForm operationForm) {
 		setColumn(OPERATION_FORM, operationForm);
 	}
 
+	@Override
 	public String getOrderAreaForName() {
 		return getStringColumnValue(ORDER_AREA_FOR_NAME);
 	}
 
+	@Override
 	public void setOrderAreaForName(String orderAreaForName) {
 		setColumn(ORDER_AREA_FOR_NAME, orderAreaForName);
 	}
 
+	@Override
 	public Date getRegisterDate() {
 		return (Date) getColumnValue(REGISTER_DATE);
 	}
 
+	@Override
 	public void setRegisterDate(Date registerDate) {
 		setColumn(REGISTER_DATE, registerDate);
 	}
 
+	@Override
 	public Date getUnregisterDate() {
 		return (Date) getColumnValue(UNREGISTER_DATE);
 	}
 
+	@Override
 	public void setUnregisterDate(Date unregisterDate) {
 		setColumn(UNREGISTER_DATE, unregisterDate);
 	}
 
+	@Override
 	public UnregisterType getUnregisterType() {
 		return (UnregisterType) getColumnValue(UNREGISTER_TYPE);
 	}
 
+	@Override
 	public void setUnregisterType(UnregisterType unregisterType) {
 		setColumn(UNREGISTER_TYPE, unregisterType);
 	}
 
+	@Override
 	public String getVATNumber() {
 		return getStringColumnValue(VAT_NUMBER);
 	}
 
+	@Override
 	public void setVATNumber(String number) {
 		setColumn(VAT_NUMBER, number);
 	}
 
+	@Override
 	public Commune getWorkingArea() {
 		return (Commune) getColumnValue(WORKING_AREA);
 	}
 
+	@Override
 	public void setWorkingArea(Commune workingArea) {
 		setColumn(WORKING_AREA, workingArea);
 	}
 
+	@Override
 	public void setAddress(Address address) {
 		try {
 			getGeneralGroup().addAddress(address);
@@ -593,6 +647,7 @@ public class CompanyBMPBean extends GenericEntity implements Company {
 		}
 	}
 
+	@Override
 	public void setBanMarking(String banMarking) {
 		setColumn(BAN_MARKING, banMarking);
 	}
