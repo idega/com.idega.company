@@ -2,8 +2,10 @@ package com.idega.company.presentation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.faces.component.UIComponentBase;
 
@@ -39,6 +41,10 @@ public class CompanyFilter extends FilterList<Company> {
 	private List<String> roles = null;
 
 	private String selectedUsersInputName = null;
+	
+	private HashMap<Company, User> companyUsers = null;
+	
+	private Map<Company,String> representationMap = null;
 
 	@Autowired
 	private CompanyService companyService;
@@ -79,6 +85,22 @@ public class CompanyFilter extends FilterList<Company> {
 		return getCompanyService().getIDsOfCompanies(companies);
 	}
 
+	private User getCompanyUser(Company company){
+		HashMap<Company, User> companyUsers = getCompanyUsers();
+		User user = companyUsers.get(company);
+		if(user != null){
+			return user;
+		}
+		ArrayList<Company> search = new ArrayList<Company>(1);
+		search.add(0, company);
+		List<User> owners = getCompanyService().getOwnersByCompanies(search);
+		if(ListUtil.isEmpty(owners)){
+			return null;
+		}
+		user = owners.get(0);
+		companyUsers.put(company, user);
+		return user;
+	}
 	@Override
 	protected Collection<UIComponentBase> getEntityFields(Company company){
 		ArrayList<UIComponentBase> components = new ArrayList<UIComponentBase>();
@@ -96,18 +118,13 @@ public class CompanyFilter extends FilterList<Company> {
 		companySpan.setStyleClass("company-span");
 		companySpan.add(company.getName());
 		
-		ArrayList<Company> search = new ArrayList<Company>(1);
-		search.add(0, company);
-		List<User> owners = getCompanyService().getOwnersByCompanies(search);
-		if(ListUtil.isEmpty(owners)){
+		User owner = getCompanyUser(company);
+		if(owner == null){
 			return components;
 		}
 		
-		User owner = owners.get(0);
-		
 		userSpan.add(owner.getName());
 		
-		@SuppressWarnings("unchecked")
 		Collection<Email> emails = owner.getEmails();
 		String userEmails;
 		if(ListUtil.isEmpty(emails)){
@@ -138,7 +155,35 @@ public class CompanyFilter extends FilterList<Company> {
 	
 	@Override
 	protected String getRepresentation(Company entity){
-		return entity.getName();
+		Map<Company, String> representationMap = getRepresentationMap();
+		String representation = representationMap.get(entity);
+		if(representation != null){
+			return representation;
+		}
+		User user = getCompanyUser(entity);
+		Collection<Email> emails = user.getEmails();
+		String userEmails;
+		if(ListUtil.isEmpty(emails)){
+			userEmails = CoreConstants.EMPTY;
+		}else{
+			StringBuilder builder = new StringBuilder();
+			Iterator<Email> iter = emails.iterator();
+			while(iter.hasNext()){
+				Email email = iter.next();
+				String addresss = email.getEmailAddress();
+				if(StringUtil.isEmpty(addresss)){
+					continue;
+				}
+				builder.append(addresss);
+				if(iter.hasNext()){
+					builder.append(", ");
+				}
+			}
+			userEmails = builder.toString();
+		}
+		representation =  user.getName() + CoreConstants.SPACE + userEmails + CoreConstants.SPACE + entity.getName();
+		representationMap.put(entity, representation);
+		return representation;
 	}
 	
 	@Override
@@ -190,4 +235,19 @@ public class CompanyFilter extends FilterList<Company> {
 	public boolean isContainer() {
 		return false;
 	}
+
+	public HashMap<Company, User> getCompanyUsers() {
+		if(companyUsers == null){
+			companyUsers = new HashMap<Company, User>();
+		}
+		return companyUsers;
+	}
+
+	public Map<Company, String> getRepresentationMap() {
+		if(representationMap == null){
+			representationMap = new HashMap<Company, String>();
+		}
+		return representationMap;
+	}
+
 }
