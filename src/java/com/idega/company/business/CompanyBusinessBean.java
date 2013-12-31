@@ -220,7 +220,6 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public Collection<User> getOwnersForCompanies(Collection<Company> companies) {
 		Collection<String> ids = getOwnersIDsForCompanies(companies);

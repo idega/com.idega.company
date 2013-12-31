@@ -35,9 +35,10 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 
 	private static final long serialVersionUID = 1014401288441001288L;
 	private static Logger logger = Logger.getLogger(CompanyRegisterBusinessBean.class.getName());
-	
+
 	public static final String RECORDS_DATE_FORMAT = "ddMMyy";
-	
+
+	@Override
 	public boolean updateEntry(
 			String personal_id,
 			String commune,
@@ -59,9 +60,9 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			String unregistrationType,
 			String unregistrationDate,
 			String banMarking) {
-		
+
 			Company company_registry = getEntryByPersonalId(personal_id);
-				
+
 			try {
 				if (company_registry == null) {
 					company_registry = getCompanyRegisterHome().create();
@@ -70,11 +71,11 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 				logger.log(Level.SEVERE, "Exception while creating company register entry", re);
 				return false;
 			}
-			
+
 			if(company_registry.getPersonalID() == null || company_registry.getPersonalID().equals("")) {
 				company_registry.setPersonalID(personal_id);
 			}
-				
+
 			if(banMarking != null && !banMarking.trim().equals("")) {
 				company_registry.setBanMarking(banMarking.trim());
 			}
@@ -90,13 +91,13 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			if(name != null && !name.trim().equals("")) {
 				company_registry.setName(name.trim());
 			}
-					
+
 			UserBusiness userBusiness = getUserBusiness();
 			if(userBusiness == null) {
 				logger.log(Level.SEVERE, "Could not retrieve UserBusiness service bean");
 				return false;
 			}
-			
+
 			User ceo = null;
 			try {
 				if(ceoId != null) {
@@ -127,8 +128,8 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 					return false;
 				}
 			}
-			
-			
+
+
 //			User recipient = null;
 //			try {
 //				if(recipientPersonalId != null) {
@@ -144,7 +145,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 //			if(recipient == null) {
 //				try {
 //					recipient = getUserHome().create();
-//				} catch(Exception re) { 
+//				} catch(Exception re) {
 //					logger.log(Level.SEVERE, "Exception while creating a new user entry", re);
 //					return false;
 //				}
@@ -159,7 +160,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			if(recipientName != null && !recipientName.trim().equals("")) {
 				company_registry.setRecipientName(recipientName);
 			}
-					
+
 
 			Address addressBean = company_registry.getAddress();
 			if(addressBean == null) {
@@ -171,7 +172,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 					return false;
 				}
 			}
-					
+
 			AddressBusiness addressBusiness = getAddressBusiness();
 			if(addressBusiness == null) {
 				logger.log(Level.SEVERE, "Could not retrieve AddressBusiness service bean");
@@ -188,7 +189,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			} catch(Exception re) {
 				logger.log(Level.SEVERE, "Exception while handling company address", re);
 			}
-			
+
 			Commune communeBean = addressBean.getCommune();
 			if(communeBean == null) {
 				try {
@@ -207,7 +208,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			company_registry.setLastChange(CompanyRegisterImportFile.getSQLDateFromStringFormat(dateOfLastChange.trim(), logger, RECORDS_DATE_FORMAT));
 			company_registry.setRegisterDate(CompanyRegisterImportFile.getSQLDateFromStringFormat(registerDate.trim(), logger, RECORDS_DATE_FORMAT));
 			company_registry.setUnregisterDate(CompanyRegisterImportFile.getSQLDateFromStringFormat(unregistrationDate.trim(), logger, RECORDS_DATE_FORMAT));
-					
+
 			PostalCode postalCodeBean = addressBean.getPostalCode();
 			if(postalCodeBean == null) {
 				try {
@@ -225,7 +226,6 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			addressBean.setPostalCode(postalCodeBean);
 			addressBean.store();
 			try {
-				@SuppressWarnings("unchecked")
 				Collection<Address> addreses = company_registry.getGeneralGroup().getAddresses(getAddressHome().getAddressType1());
 				String pk1 = ((Integer) addressBean.getPrimaryKey()).toString();
 				boolean addressSet = false;
@@ -259,7 +259,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 				}
 			}
 			company_registry.setLegalCommune(legalCommune);
-			
+
 			Commune workCommune = company_registry.getWorkingArea();
 			if(workCommune == null) {
 				try {
@@ -275,7 +275,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 				}
 			}
 			company_registry.setWorkingArea(workCommune);
-					
+
 			try {
 				OperationForm operationFormBean = ((OperationFormHome) IDOLookup.getHome(OperationForm.class)).findOperationFormByUniqueCode(operationForm);
 				if(operationFormBean != null) {
@@ -285,7 +285,7 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			} catch(Exception re) {
 				logger.log(Level.SEVERE, "Exception while finding a OperationForm entry", re);
 			}
-				
+
 			try {
 				IndustryCode industryCodeBean = ((IndustryCodeHome) IDOLookup.getHome(IndustryCode.class)).findIndustryByUniqueCode(industryCode);
 				if(industryCodeBean != null) {
@@ -295,11 +295,11 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			} catch(Exception re) {
 				logger.log(Level.SEVERE, "Exception while finding a IndustryCode entry", re);
 			}
-			
+
 			try {
-				
+
 				UnregisterType unregisterTypeBean = ((UnregisterTypeHome) IDOLookup.getHome(UnregisterType.class)).findUnregisterTypeByUniqueCode(unregistrationType);
-				
+
 				if(unregisterTypeBean != null) {
 					company_registry.setUnregisterType(unregisterTypeBean);
 				}
@@ -311,36 +311,37 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 
 			return true;
 	}
-	
+
 	protected CompanyHome getCompanyRegisterHome() throws RemoteException {
-		
+
 		return (CompanyHome) IDOLookup.getHome(Company.class);
 	}
-	
-	
-	
+
+
+
 	protected UserHome getUserHome() throws RemoteException {
 		return (UserHome) IDOLookup.getHome(User.class);
 	}
-	
+
 	protected AddressHome getAddressHome() throws RemoteException {
 		return (AddressHome) IDOLookup.getHome(Address.class);
 	}
-	
+
 	protected CommuneHome getCommuneHome() throws RemoteException {
 		return (CommuneHome) IDOLookup.getHome(Commune.class);
 	}
-	
+
 	protected PostalCodeHome getPostalCodeHome() throws RemoteException {
 		return (PostalCodeHome) IDOLookup.getHome(PostalCode.class);
 	}
-	
+
+	@Override
 	public Company getEntryByPersonalId(String personal_id) {
-		
+
 		try {
-			
+
 			return getCompanyRegisterHome().findByPersonalID(personal_id);
-		
+
 		} catch (FinderException e) {
 			return null;
 		} catch (Exception e) {
@@ -348,19 +349,19 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			return null;
 		}
 	}
-	
+
 	protected UserBusiness getUserBusiness() {
 		try {
-			return (UserBusiness) getServiceInstance(UserBusiness.class);
+			return getServiceInstance(UserBusiness.class);
 		}
 		catch (IBOLookupException ile) {
 			throw new IBORuntimeException(ile);
 		}
 	}
-	
+
 	protected AddressBusiness getAddressBusiness() {
 		try {
-			return (AddressBusiness) getServiceInstance(AddressBusiness.class);
+			return getServiceInstance(AddressBusiness.class);
 		}
 		catch (IBOLookupException ile) {
 			throw new IBORuntimeException(ile);
