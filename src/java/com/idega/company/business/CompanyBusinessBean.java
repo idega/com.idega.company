@@ -74,7 +74,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 	@Override
 	public Company getCompany(Object pk) throws FinderException {
 		try {
-			return getCompanyHome().findByPrimaryKey(new Integer(pk.toString()));
+			return getCompanyHome().findByPrimaryKey(new Long(pk.toString()));
 		} catch (NumberFormatException e) {
 			getLogger().warning("Failed to convert " + pk.toString() + " to " +
 					Integer.class.getName());
