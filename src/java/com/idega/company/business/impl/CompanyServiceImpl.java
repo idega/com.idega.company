@@ -438,7 +438,6 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 		return getCompanies(getUsers(users));
 	}
 
-	@SuppressWarnings("unchecked")
 	protected Collection<User> getUsers(Collection<String> ids) {
 		if (ListUtil.isEmpty(ids)) {
 			return null;
