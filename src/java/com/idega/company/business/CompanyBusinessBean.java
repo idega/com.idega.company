@@ -36,7 +36,10 @@ import com.idega.util.CoreConstants;
 import com.idega.util.ListUtil;
 import com.idega.util.StringUtil;
 
-public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusiness {
+
+public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusiness{
+	
+	
 
 	private static final long serialVersionUID = -2466677771702218426L;
 
@@ -71,7 +74,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 	@Override
 	public Company getCompany(Object pk) throws FinderException {
 		try {
-			return getCompanyHome().findByPrimaryKey(new Integer(pk.toString()));
+			return getCompanyHome().findByPrimaryKey(new Long(pk.toString()));
 		} catch (NumberFormatException e) {
 			getLogger().warning("Failed to convert " + pk.toString() + " to " +
 					Integer.class.getName());
@@ -182,6 +185,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		return getCompanyHome().findByName(name);
 	}
 
+	
 	@Override
 	public Collection<Company> getCompaniesForUser(User user) {
 		Collection<Company> companies = new ArrayList<Company>();

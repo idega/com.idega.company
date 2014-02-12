@@ -1,0 +1,15 @@
+#
+=Vinsamlegast fylltu \u00FAt \u00ED alla reitina h\u00E9r til vinstri.\n<br><br>\nKennit\u00F6lu skal rita \u00E1n bandstrika og bila.\n<br><br>\nAthugi\u00F0 a\u00F0 bankareikningsn\u00FAmeri\u00F0 ne\u00F0st ver\u00F0ur a\u00F0 vera \u00E1 forminu 0000-00-000000\n\n
+application.admin_user_help=Vinsamlegast fylltu \u00FAt \u00ED alla reitina h\u00E9r til vinstri.\n<br><br>\nKennit\u00F6lu skal rita \u00E1n bandstrika og bila.\n\n
+application.agreement=\u00C9g hef kynnt m\u00E9r  <a href\="http\://rafraen.reykjavik.is/content/files/public/appAgreement/Notkunarskilmalar_Rafraennar_Reykjavikur.pdf">reglur Rafr\u00E6nnar Reykjav\u00EDkur</a> og sam\u00FEykki \u00FE\u00E6r h\u00E9r me\u00F0.\n\n
+application.change_company_info_help=Vinsamlegast fylltu \u00FAt \u00ED alla reitina h\u00E9r til vinstri.\n<br><br>\nKennit\u00F6lu skal rita \u00E1n bandstrika og bila.\n<br><br>\nAthugi\u00F0 a\u00F0 bankareikningsn\u00FAmeri\u00F0 ne\u00F0st ver\u00F0ur a\u00F0 vera \u00E1 forminu 0000-00-000000 
+application.enter_company_info=Sl\u00E1i\u00F0 inn uppl\u00FDsingar um fyrirt\u00E6ki
+application.receipt_body=Ums\u00F3kn \u00FE\u00EDn a\u00F0 fyrirt\u00E6kjag\u00E1ttinni hefur veri\u00F0 m\u00F3ttekin.\nLykilor\u00F0 ver\u00F0ur sent \u00ED heimabanka fyrirt\u00E6kisins.
+bank_account=Bankareikningsn\u00FAmer<br>\n0000-00-000000
+employee_personal_id_small=kennitala\n<br><br>\nRiti\u00F0 \u00E1n bila og bandstrika
+enabled_from=Enabled from
+enabled_to=Enabled to
+insufficient_rights=Insufficient rights
+itemviewer.more=itemviewer.more
+iw.component.is.idega.idegaweb.egov.company.presentation.company.CompanyEmployeeServicesManager.name=CompanyEmployeeServicesManager
+loading_text=Loading...

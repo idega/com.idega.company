@@ -1,8 +1,8 @@
 /*
  * $Id$ Created on May 30, 2007
- * 
+ *
  * Copyright (C) 2007 Idega Software hf. All Rights Reserved.
- * 
+ *
  * This software is the proprietary information of Idega hf. Use is subject to license terms.
  */
 package com.idega.company.data;
@@ -17,6 +17,7 @@ import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
 
 import com.idega.company.CompanyConstants;
+import com.idega.core.company.bean.GeneralCompany;
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneBMPBean;
@@ -39,7 +40,7 @@ import com.idega.user.data.User;
 import com.idega.util.CoreConstants;
 import com.idega.util.ListUtil;
 
-public class CompanyBMPBean extends GenericEntity implements Company{
+public class CompanyBMPBean extends GenericEntity implements Company, GeneralCompany {
 
 	private static final long serialVersionUID = 5902685982267772143L;
 	private static final String ENTITY_NAME = "ic_company";
@@ -177,7 +178,6 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Address getAddress() {
 		try {
 			AddressHome home = (AddressHome) getIDOHome(Address.class);
@@ -203,35 +203,33 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Phone getPhone() {
 		return getPhoneByType(getGeneralGroup().getPhones(), PhoneBMPBean.getHomeNumberID());
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * @see com.idega.company.data.Company#getMobilePhone()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public Phone getMobilePhone() {
 		return getPhoneByType(getGeneralGroup().getPhones(), PhoneBMPBean.getMobileNumberID());
 	}
-	
+
 	private Phone getPhoneByType(Collection<Phone> phones, int type) {
 		if (ListUtil.isEmpty(phones)) {
 			return null;
 		}
-		
+
 		for (Phone phone: phones) {
 			if (phone.getPhoneTypeId() == type) {
 				return phone;
 			}
 		}
-		
+
 		return null;
 	}
-	
+
 	@Override
 	public void updatePhone(Phone newPhone) {
 		Phone phone = getPhone();
@@ -251,11 +249,10 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Phone getFax() {
 		return getPhoneByType(getGeneralGroup().getPhones(), PhoneBMPBean.getFaxNumberID());
 	}
-	
+
 	@Override
 	public void updateFax(Phone newFax) {
 		Phone fax = getFax();
@@ -275,7 +272,6 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
 	public Email getEmail() {
 		Collection<Email> emails = getGeneralGroup().getEmails();
 		if (ListUtil.isEmpty(emails)) {
@@ -283,7 +279,7 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 		}
 		return emails.iterator().next();
 	}
-	
+
 	@Override
 	public void updateEmail(Email newEmail) {
 		Email email = getEmail();
@@ -368,7 +364,7 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 
 		return idoFindOnePKByQuery(query);
 	}
-	
+
 	public Object ejbFindByName(String name) throws FinderException {
 		Table table = new Table(this);
 
@@ -379,7 +375,6 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 		return idoFindOnePKByQuery(query);
 	}
 
-	@SuppressWarnings("unchecked")
 	public Collection<Company> ejbFindAll(Boolean valid) throws FinderException {
 		Table table = new Table(this);
 
@@ -393,7 +388,6 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 		return idoFindPKsByQuery(query);
 	}
 
-	@SuppressWarnings("unchecked")
 	public Collection<Company> ejbFindAllWithOpenStatus() throws FinderException {
 		Table table = new Table(this);
 
@@ -405,7 +399,6 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 		return idoFindPKsByQuery(query);
 	}
 
-	@SuppressWarnings("unchecked")
 	public Collection<Company> ejbFindAllActiveWithOpenStatus() throws FinderException {
 		Table table = new Table(this);
 
@@ -417,10 +410,10 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 
 		return idoFindPKsByQuery(query);
 	}
-	
+
 	/**
-	 * 
-	 * <p>Finds all active and valid {@link Company}s by 
+	 *
+	 * <p>Finds all active and valid {@link Company}s by
 	 * {@link Company#getCEO()}.</p>
 	 * @param user - {@link Company#getCEO()}.
 	 * @return {@link Collection} of {@link Company}s or <code>null</code>
@@ -428,13 +421,12 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 	 * @throws FinderException - if unable to find {@link Company}.
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
-	@SuppressWarnings("unchecked")
 	public Collection<Company> ejbFindAll(User user) throws FinderException {
 		if (user == null) {
 			log("Given " + User.class + " is: " + user);
 			return null;
 		}
-		
+
 		Table table = new Table(this);
 
 		SelectQuery query = new SelectQuery(table);
@@ -446,7 +438,7 @@ public class CompanyBMPBean extends GenericEntity implements Company{
 
 		return idoFindPKsByQuery(query);
 	}
-	
+
 	// General methods
 	@Override
 	public void store() throws IDOStoreException {
