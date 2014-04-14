@@ -112,6 +112,7 @@ import com.idega.user.data.User;
 import com.idega.util.CoreConstants;
 import com.idega.util.CoreUtil;
 import com.idega.util.ListUtil;
+import com.idega.util.StringHandler;
 import com.idega.util.StringUtil;
 
 /**
@@ -345,19 +346,19 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 		try {
 			return getCompanyBusiness().getCompany(personalID);
 		} catch (FinderException e) {
-			getLogger().log(Level.WARNING,
-					"Unable to find company by personal ID: " + personalID);
-		} catch (RemoteException e) {
-			getLogger().log(Level.WARNING, "Unable to search database: ", e);
+			getLogger().log(Level.WARNING, "Unable to find company by personal ID: " + personalID);
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Unable to find company by personal ID: " + personalID, e);
 		}
 
-		try {
-			return getCompanyBusiness().getCompany((Object) personalID);
-		} catch (RemoteException e) {
-			getLogger().log(Level.WARNING, "Unable to search database: ", e);
-		} catch (FinderException e) {
-			getLogger().log(Level.WARNING,
-					"Unable to find company by primary key: " + personalID);
+		if (StringHandler.isNumeric(personalID)) {
+			try {
+				return getCompanyBusiness().getCompany((Object) personalID);
+			} catch (FinderException e) {
+				getLogger().log(Level.WARNING, "Unable to find company by primary key: " + personalID);
+			} catch (Exception e) {
+				getLogger().log(Level.WARNING, "Unable to find company by primary key: " + personalID, e);
+			}
 		}
 
 		return null;
