@@ -16,14 +16,24 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 
 	private static final long serialVersionUID = -3167879639586671567L;
 
+	@Override
 	public Class getEntityInterfaceClass() {
 		return Company.class;
 	}
 
+	@Override
 	public Company findByPrimaryKey(Object pk) throws FinderException {
+		if (pk instanceof String) {
+			try {
+				pk = Integer.valueOf((String) pk);
+			} catch (Exception e) {
+				return null;
+			}
+		}
 		return (Company) super.findByPrimaryKeyIDO(pk);
 	}
 
+	@Override
 	public Company create() throws CreateException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Object pk = ((CompanyBMPBean) entity).ejbCreate();
@@ -38,6 +48,7 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 		}
 	}
 
+	@Override
 	public Company findByPersonalID(String personalID) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Object pk = ((CompanyBMPBean) entity).ejbFindByPersonalID(personalID);
@@ -45,6 +56,7 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 		return this.findByPrimaryKey(pk);
 	}
 
+	@Override
 	public Company findByName(String name) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Object pk = ((CompanyBMPBean) entity).ejbFindByName(name);
@@ -52,6 +64,7 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 		return this.findByPrimaryKey(pk);
 	}
 
+	@Override
 	public Collection<Company> findAll(Boolean valid) throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Collection<Company> ids = ((CompanyBMPBean) entity).ejbFindAll(valid);
@@ -59,6 +72,7 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
+	@Override
 	public Collection<Company> findAllWithOpenStatus() throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Collection<Company> ids = ((CompanyBMPBean) entity)
@@ -67,6 +81,7 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 		return this.getEntityCollectionForPrimaryKeys(ids);
 	}
 
+	@Override
 	public Collection<Company> findAllActiveWithOpenStatus()
 			throws FinderException {
 		IDOEntity entity = this.idoCheckOutPooledEntity();
@@ -80,11 +95,11 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 	public Collection<Company> findAll(User user) {
 		if (user == null) {
 			java.util.logging.Logger.getLogger(getClass().getName()).log(
-					Level.WARNING, User.class + 
+					Level.WARNING, User.class +
 					" must be not null.");
 			return null;
 		}
-		
+
 		IDOEntity entity = this.idoCheckOutPooledEntity();
 		Collection<Company> ids = null;
 		try {
