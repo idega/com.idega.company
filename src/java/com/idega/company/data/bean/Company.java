@@ -75,7 +75,7 @@ public class Company extends Group{
     
     @Column(name = COLUMN_IS_VALID)
     @Type(type="yes_no")
-	private boolean isValid;
+	private Boolean isValid;
     
     @Column(name = COLUMN_IS_OPEN)
     @Type(type="yes_no")
@@ -173,10 +173,10 @@ public class Company extends Group{
 	}
 
 	public boolean isValid() {
-		return isValid;
+		return isValid == null ? Boolean.FALSE : isValid;
 	}
 
-	public void setValid(boolean isValid) {
+	public void setValid(Boolean isValid) {
 		this.isValid = isValid;
 	}
 
