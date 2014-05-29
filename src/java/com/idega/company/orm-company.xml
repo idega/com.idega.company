@@ -9,5 +9,6 @@
     <entity class="com.idega.company.data.bean.IndustryCode" />
     <entity class="com.idega.company.data.bean.OperationForm" />
     <entity class="com.idega.company.data.bean.UnregisterType" />
+    <entity class="com.idega.company.data.bean.CompanyGroup" />
         
 </entity-mappings>
