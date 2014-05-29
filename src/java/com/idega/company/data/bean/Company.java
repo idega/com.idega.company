@@ -79,7 +79,7 @@ public class Company extends Group{
     
     @Column(name = COLUMN_IS_OPEN)
     @Type(type="yes_no")
-	private boolean isOpen;
+	private Boolean isOpen;
     
     @Column(name = COLUMN_EXTRA_INFO,insertable =  false, updatable = false)
     private String extraInfo;
@@ -181,10 +181,10 @@ public class Company extends Group{
 	}
 
 	public boolean isOpen() {
-		return isOpen;
+		return isOpen == null ? Boolean.FALSE : isOpen;
 	}
 
-	public void setOpen(boolean isOpen) {
+	public void setOpen(Boolean isOpen) {
 		this.isOpen = isOpen;
 	}
 
