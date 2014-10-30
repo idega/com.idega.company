@@ -33,9 +33,9 @@ import com.idega.company.data.UnregisterType;
 import com.idega.company.data.UnregisterTypeHome;
 import com.idega.data.IDOLookup;
 import com.idega.user.data.Group;
+import com.idega.util.CoreConstants;
 
-public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
-		implements CompanyRegisterFileImportHandler, ImportFileHandler {
+public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean implements CompanyRegisterFileImportHandler, ImportFileHandler {
 
 	private static final long serialVersionUID = 2628917943901423114L;
 
@@ -74,7 +74,7 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 
 	private ImportFile file;
 	private Logger logger = Logger.getLogger(CompanyRegisterFileImportHandlerBean.class.getName());
-	private List<String> failedRecordList = new ArrayList<String>();
+	private List<String> failedRecordList = new ArrayList<String>(), successRecords = new ArrayList<String>();
 	private List<String> valueList;
 	private CompanyRegisterBusiness comp_reg_biz;
 
@@ -85,22 +85,22 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 
 	@Override
 	public List<String> getSuccessRecords() throws RemoteException {
-		return new ArrayList<String>();
+		return successRecords;
 	}
 
 	@Override
 	public boolean handleRecords() throws RemoteException {
-
-		String item;
+		String item = null;
 
 		try {
 			checkCodesStartData();
 
-			comp_reg_biz = (CompanyRegisterBusiness) getServiceInstance(CompanyRegisterBusiness.class);
+			comp_reg_biz = getServiceInstance(CompanyRegisterBusiness.class);
 
-			while (!(item = (String)file.getNextRecord()).equals("")) {
-
-				if (!processRecord(item)) {
+			while (!(item = (String)file.getNextRecord()).equals(CoreConstants.EMPTY)) {
+				if (processRecord(item)) {
+					successRecords.add(item);
+				} else {
 					failedRecordList.add(item);
 				}
 			}
@@ -120,14 +120,14 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 
 	@Override
 	public void printFailedRecords() {
-
-		if (!this.failedRecordList.isEmpty())
+		if (!this.failedRecordList.isEmpty()) {
 			logger.log(Level.WARNING, "Import failed for these records (total: "+failedRecordList.size()+"), please fix and import again: ");
+		}
 
 		Iterator<String> iter = this.failedRecordList.iterator();
-
-		while (iter.hasNext())
+		while (iter.hasNext()) {
 			logger.log(Level.WARNING, iter.next());
+		}
 	}
 
 	@Override
@@ -164,12 +164,15 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	private boolean processRecord(String record) throws RemoteException, CreateException {
 		try {
 			this.valueList = this.file.getValuesFromRecordString(record);
-
 		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Failed to get values from record: " + record, e);
 			return false;
 		}
 
 		boolean success = storeCompanyRegisterEntry();
+		if (!success) {
+			getLogger().warning("Failed to process record: " + record);
+		}
 
 		this.valueList = null;
 
@@ -188,12 +191,12 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	    	while(it.hasNext()) {
 	    		HSSFRow row = (HSSFRow) it.next();
 	    		if(row != null) {
-	    			HSSFCell codeCell = row.getCell((short) 0);
+	    			HSSFCell codeCell = row.getCell(0);
 	    			if(codeCell != null) {
 	    				OperationForm operationForm = getOperationFormHome().create();
 	    				operationForm.setCode(codeCell.getStringCellValue());
 
-	    				HSSFCell descriptionCell = row.getCell((short) 1);
+	    				HSSFCell descriptionCell = row.getCell(1);
 	    				if(descriptionCell != null) {
 	    					operationForm.setDescription(descriptionCell.getStringCellValue());
 	    				}
@@ -216,12 +219,12 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	    	while(it.hasNext()) {
 	    		HSSFRow row = (HSSFRow) it.next();
 	    		if(row != null) {
-	    			HSSFCell codeCell = row.getCell((short) 0);
+	    			HSSFCell codeCell = row.getCell(0);
 	    			if(codeCell != null) {
 	    				IndustryCode industryCode = getIndustryCodeHome().create();
 	    				industryCode.setISATCode(codeCell.getStringCellValue());
 
-	    				HSSFCell descriptionCell = row.getCell((short) 1);
+	    				HSSFCell descriptionCell = row.getCell(1);
 	    				if(descriptionCell != null) {
 	    					industryCode.setISATDescription(descriptionCell.getStringCellValue());
 	    				}
@@ -244,12 +247,12 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	    	while(it.hasNext()) {
 	    		HSSFRow row = (HSSFRow) it.next();
 	    		if(row != null) {
-	    			HSSFCell codeCell = row.getCell((short) 0);
+	    			HSSFCell codeCell = row.getCell(0);
 	    			if(codeCell != null) {
 	    				UnregisterType unregisterType = getUnregisterTypeHome().create();
 	    				unregisterType.setCode(codeCell.getStringCellValue());
 
-	    				HSSFCell descriptionCell = row.getCell((short) 1);
+	    				HSSFCell descriptionCell = row.getCell(1);
 	    				if(descriptionCell != null) {
 	    					unregisterType.setDescription(descriptionCell.getStringCellValue());
 	    				}
@@ -259,7 +262,6 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean
 	    	}
 	    }
 	}
-
 
 	private void checkCodesStartData() {
 		InputStream is = null;
