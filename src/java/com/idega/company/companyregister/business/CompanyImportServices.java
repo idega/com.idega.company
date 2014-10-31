@@ -49,11 +49,7 @@ public class CompanyImportServices extends DefaultSpringBean implements DWRAnnot
 			handler.setImportFile(file);
 			handler.handleRecords();
 			List<?> failedRecords = handler.getFailedRecords();
-			List<?> succeededRecords = handler.getSuccessRecords();
 
-			if (!ListUtil.isEmpty(succeededRecords)) {
-				getLogger().info("Succeeded records: " + succeededRecords);
-			}
 			if (!ListUtil.isEmpty(failedRecords)) {
 				getLogger().warning("Failed records: " + failedRecords);
 				return false;
