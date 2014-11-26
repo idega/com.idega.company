@@ -117,4 +117,13 @@ public class CompanyHomeImpl extends IDOFactory implements CompanyHome {
 			return null;
 		}
 	}
+
+	@Override
+	public Company findByUniqueId(String uniqueId) throws FinderException {
+		IDOEntity entity = this.idoCheckOutPooledEntity();
+		Object pk = ((CompanyBMPBean) entity).ejbFindByUniqueId(uniqueId);
+		this.idoCheckInPooledEntity(entity);
+		return this.findByPrimaryKey(pk);
+	}
+
 }

@@ -289,4 +289,13 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		return Arrays.asList(ownerIDs);
 	}
 
+	@Override
+	public Company getCompanyByUniqueId(String uniqueId) throws FinderException, RemoteException {
+		if (StringUtil.isEmpty(uniqueId)) {
+			return null;
+		}
+
+		return getCompanyHome().findByUniqueId(uniqueId);
+	}
+
 }

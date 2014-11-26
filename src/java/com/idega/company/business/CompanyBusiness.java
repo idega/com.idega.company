@@ -128,4 +128,9 @@ public interface CompanyBusiness extends IBOService {
 	public Company getCompanyByName(String name) throws FinderException,
 			RemoteException, RemoteException;
 
+	/**
+	 * @see com.idega.company.business.CompanyBusinessBean#getCompanyByUniqueId
+	 */
+	public Company getCompanyByUniqueId(String uniqueId) throws FinderException,
+			RemoteException, RemoteException;
 }

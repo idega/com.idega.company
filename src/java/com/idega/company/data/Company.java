@@ -67,19 +67,19 @@ public interface Company extends IDOEntity {
 	 * @see com.idega.company.data.CompanyBMPBean#getPhone
 	 */
 	public Phone getPhone();
-	
+
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#updatePhone
 	 */
 	public void updatePhone(Phone newPhone);
 
 	/**
-	 * 
+	 *
 	 * @return mobile phone of {@link Company} or <code>null</code> on failure.
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Phone getMobilePhone();
-	
+
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getFax
 	 */
@@ -310,4 +310,15 @@ public interface Company extends IDOEntity {
 	 * @see com.idega.company.data.CompanyBMPBean#setBanMarking
 	 */
 	public void setBanMarking(String banMarking);
+
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#getUniqueId
+	 */
+	public String getUniqueId();
+
+	/**
+	 * @see com.idega.company.data.CompanyBMPBean#setUniqueId
+	 */
+	public void setUniqueId(String uniqueId);
+
 }

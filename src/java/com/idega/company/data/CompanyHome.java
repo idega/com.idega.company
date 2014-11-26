@@ -27,12 +27,15 @@ public interface CompanyHome extends IDOHome {
 			throws FinderException;
 
 	/**
-	 * 
+	 *
 	 * <p>Searches {@link Company}s, where given {@link User} ir CEO.</p>
 	 * @param user - {@link Company#getCEO()}.
-	 * @return {@link List} of {@link Company}s, where user is CEO or 
+	 * @return {@link List} of {@link Company}s, where user is CEO or
 	 * <code>null</code> on failure.
 	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Collection<Company> findAll(User user);
+
+	public Company findByUniqueId(String uniqueId) throws FinderException;
+
 }

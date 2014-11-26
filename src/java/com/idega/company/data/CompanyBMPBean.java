@@ -84,6 +84,8 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 
 	protected static final String BAN_MARKING = "ban_marking";
 
+	protected static final String COLUMN_UNIQUE_ID = "unique_id";
+
 	private Group iGroup;
 
 	@Override
@@ -120,6 +122,7 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 		addAttribute(BAN_MARKING, "Ban Marking", java.lang.String.class);
 		addAttribute(RECIPIENT_ID, "Recipient ID", java.lang.String.class);
 		addAttribute(RECIPIENT_NAME, "Recipient Name", java.lang.String.class);
+		addAttribute(COLUMN_UNIQUE_ID, "Unique id", java.lang.String.class);
 		addManyToOneRelationship(LEGAL_COMMUNE, "Legal Commune", Commune.class);
 		addManyToOneRelationship(OPERATION_FORM, "Operation form", OperationForm.class);
 		addManyToOneRelationship(CEO_ID, "CEO ID", User.class);
@@ -371,6 +374,16 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 		SelectQuery query = new SelectQuery(table);
 		query.addColumn(table.getColumn(getIDColumnName()));
 		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_NAME), MatchCriteria.EQUALS, name));
+
+		return idoFindOnePKByQuery(query);
+	}
+
+	public Object ejbFindByUniqueId(String uniqueId) throws FinderException {
+		Table table = new Table(this);
+
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(table.getColumn(getIDColumnName()));
+		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_UNIQUE_ID), MatchCriteria.EQUALS, uniqueId));
 
 		return idoFindOnePKByQuery(query);
 	}
@@ -645,6 +658,17 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 	}
 
 	@Override
+	public String getUniqueId() {
+		return getStringColumnValue(COLUMN_UNIQUE_ID);
+	}
+
+	@Override
+	public void setUniqueId(String uniqueId) {
+		setColumn(COLUMN_UNIQUE_ID, uniqueId);
+	}
+
+
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(super.toString()).append(CoreConstants.NEWLINE)
@@ -675,6 +699,7 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 		.append("getUnregisterDate(): ").append(getUnregisterDate()).append(CoreConstants.NEWLINE)
 		.append("getUnregisterType(): ").append(getUnregisterType()).append(CoreConstants.NEWLINE)
 		.append("getVATNumber(): ").append(getVATNumber()).append(CoreConstants.NEWLINE)
+		.append("getUniqueId(): ").append(getUniqueId()).append(CoreConstants.NEWLINE)
 		.append("getWorkingArea(): ").append(getWorkingArea()).append(CoreConstants.NEWLINE);
 		return sb.toString();
 	}
