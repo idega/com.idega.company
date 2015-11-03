@@ -41,9 +41,9 @@ public class CompanyFilter extends FilterList<Company> {
 	private List<String> roles = null;
 
 	private String selectedUsersInputName = null;
-	
+
 	private HashMap<Company, User> companyUsers = null;
-	
+
 	private Map<Company,String> representationMap = null;
 
 	@Autowired
@@ -104,27 +104,27 @@ public class CompanyFilter extends FilterList<Company> {
 	@Override
 	protected Collection<UIComponentBase> getEntityFields(Company company){
 		ArrayList<UIComponentBase> components = new ArrayList<UIComponentBase>();
-		
+
 		PresentationObjectContainer userSpan = getCell();
 		components.add(userSpan);
 		userSpan.setStyleClass("company-span");
-		
+
 		PresentationObjectContainer emailSpan = getCell();
 		components.add(emailSpan);
 		emailSpan.setStyleClass("company-span");
-		
+
 		PresentationObjectContainer companySpan = getCell();
 		components.add(companySpan);
 		companySpan.setStyleClass("company-span");
 		companySpan.add(company.getName());
-		
+
 		User owner = getCompanyUser(company);
 		if(owner == null){
 			return components;
 		}
-		
+
 		userSpan.add(owner.getName());
-		
+
 		Collection<Email> emails = owner.getEmails();
 		String userEmails;
 		if(ListUtil.isEmpty(emails)){
@@ -147,12 +147,12 @@ public class CompanyFilter extends FilterList<Company> {
 		}
 //		UserApplicationEngine userApplicationEngine = ELUtil.getInstance().getBean(UserApplicationEngine.SPRING_BEAN_IDENTIFIER);
 		emailSpan.add(userEmails);
-		
+
 //		emailSpan.add(userApplicationEngine.getUserInfo(owner).getEmail());
-		
+
 		return components;
 	}
-	
+
 	@Override
 	protected String getRepresentation(Company entity){
 		Map<Company, String> representationMap = getRepresentationMap();
@@ -185,7 +185,7 @@ public class CompanyFilter extends FilterList<Company> {
 		representationMap.put(entity, representation);
 		return representation;
 	}
-	
+
 	@Override
 	public void main(IWContext iwc) throws Exception {
 		setEntities(getCompanies());
@@ -229,7 +229,13 @@ public class CompanyFilter extends FilterList<Company> {
 	}
 
 	@Override
-	public void handleKeepStatus(IWContext iwc) {}
+	public void handleKeepStatus(IWContext iwc) {
+		try {
+			super.handleKeepStatus(iwc);
+		} catch (AssertionError e) {
+			return;
+		}
+	}
 
 	@Override
 	public boolean isContainer() {
