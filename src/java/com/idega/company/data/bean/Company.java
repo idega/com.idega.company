@@ -16,20 +16,24 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Type;
+import org.springframework.cache.annotation.Cacheable;
 
 import com.idega.company.CompanyConstants;
 import com.idega.core.location.data.bean.Commune;
 import com.idega.user.data.bean.Group;
 import com.idega.user.data.bean.User;
+import com.idega.util.CoreConstants;
 
 @DiscriminatorValue(CompanyConstants.GROUP_TYPE_COMPANY)
 @Entity
 @Table(name = Company.TABLE_NAME,
 		uniqueConstraints = {@UniqueConstraint(columnNames={Company.COLUMN_PERSONAL_ID})}
 )
-public class Company extends Group{
+@Cacheable
+public class Company extends Group {
 
 	private static final long serialVersionUID = -3326560174514011692L;
+
 	public static final String TABLE_NAME = "ic_company";
 
 	public static final String COLUMN_TYPE = "company_type";
@@ -55,88 +59,88 @@ public class Company extends Group{
 	public static final String UNREGISTER_TYPE = "unregister_type";
 	public static final String UNREGISTER_DATE = "unregister_date";
 	public static final String BAN_MARKING = "ban_marking";
-	
-	
-    public static final String nameProp = TABLE_NAME + "_" + COLUMN_NAME;
+
+
+    public static final String nameProp = TABLE_NAME + CoreConstants.UNDER + COLUMN_NAME;
     @Column(name = COLUMN_NAME,insertable =  false, updatable = false)
     private String name;
-    
-    public static final String personalIdProp = TABLE_NAME + "_" + COLUMN_PERSONAL_ID;
+
+    public static final String personalIdProp = TABLE_NAME + CoreConstants.UNDER + COLUMN_PERSONAL_ID;
     @Column(name = COLUMN_PERSONAL_ID)
     private String personalId;
-    
-    public static final String webPageProp = TABLE_NAME + "_" + COLUMN_WEB_PAGE;
+
+    public static final String webPageProp = TABLE_NAME + CoreConstants.UNDER + COLUMN_WEB_PAGE;
     @Column(name = COLUMN_WEB_PAGE)
     private String webPage;
-    
-    public static final String bankAccountProp = TABLE_NAME + "_" + COLUMN_BANK_ACCOUNT;
+
+    public static final String bankAccountProp = TABLE_NAME + CoreConstants.UNDER + COLUMN_BANK_ACCOUNT;
     @Column(name = COLUMN_BANK_ACCOUNT)
     private String bankAccount;
-    
+
     @Column(name = COLUMN_IS_VALID)
     @Type(type="yes_no")
 	private Boolean isValid;
-    
+
     @Column(name = COLUMN_IS_OPEN)
     @Type(type="yes_no")
 	private Boolean isOpen;
-    
+
     @Column(name = COLUMN_EXTRA_INFO,insertable =  false, updatable = false)
     private String extraInfo;
-    
+
     @Column(name = VAT_NUMBER)
     private String vatNumber;
-    
+
     @Column(name = OPERATION)
     private String operation;
-    
+
     @Column(name = UNREGISTER_DATE)
     private Date unregisterDate;
-    
+
     @Column(name = ORDER_AREA_FOR_NAME)
     private String orderAreaForName;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = LAST_CHANGE)
     private Date lastChange;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "created_on")
 	private Date createdOn;
-    
+
     @Column(name = REGISTER_DATE)
     private Date registerDate;
-    
+
     @Column(name = BAN_MARKING)
     private String banMarking;
-    
+
     @Column(name = RECIPIENT_NAME)
     private String recipientName;
-    
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = LEGAL_COMMUNE)
     private Commune legalCommune;
-    
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = OPERATION_FORM)
     private OperationForm operationForm;
-    
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = CEO_ID)
     private User CEO;
-    
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = WORKING_AREA)
     private Commune workingArea;
-    
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = INDUSTRY_CODE)
     private IndustryCode industryCode;
-    
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = UNREGISTER_TYPE)
     private UnregisterType unregisterType;
-    
+
 
 	@Override
 	public String getName() {
@@ -306,22 +310,20 @@ public class Company extends Group{
 		this.unregisterType = unregisterType;
 	}
 
-
 	public Date getCreatedOn() {
 		return createdOn;
 	}
 
-	@SuppressWarnings("unused")
 	@PrePersist
 	private void prePersist() {
 		Date currentDate = new Date();
 		this.createdOn = currentDate;
 		this.lastChange = currentDate;
 	}
-	
-	@SuppressWarnings("unused")
+
 	@PreUpdate
 	private void preUpdate() {
 		this.lastChange = new Date();
 	}
+
 }
