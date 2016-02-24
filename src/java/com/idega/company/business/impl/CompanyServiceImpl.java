@@ -90,6 +90,10 @@ import java.util.logging.Level;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 
+import org.directwebremoting.annotations.Param;
+import org.directwebremoting.annotations.RemoteMethod;
+import org.directwebremoting.annotations.RemoteProxy;
+import org.directwebremoting.spring.SpringCreator;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -125,6 +129,10 @@ import com.idega.util.StringUtil;
  */
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 @Service(CompanyService.BEAN_IDENTIFIER)
+@RemoteProxy(creator=SpringCreator.class, creatorParams={
+	@Param(name="beanName", value=CompanyService.BEAN_IDENTIFIER),
+	@Param(name="javascript", value=CompanyService.JAVASCRIPT_NAME)
+}, name=CompanyService.JAVASCRIPT_NAME)
 public class CompanyServiceImpl extends DefaultSpringBean implements CompanyService {
 
 	private CompanyBusiness companyBusiness;
@@ -137,6 +145,18 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 		return this.companyBusiness;
 	}
 
+	protected User getUser(String personalID) {
+		if (StringUtil.isEmpty(personalID)) {
+			return null;
+		}
+
+		try {
+			return getUserBusiness().getUser(personalID);
+		} catch (Exception e) {}
+
+		return null;
+	}
+
 	@Override
 	public String getName(String personalID) {
 		Company company = getCompany(personalID);
@@ -145,6 +165,30 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 		}
 
 		return company.getName();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.company.business.CompanyService#getNameOfUserOrCompany(java.lang.String)
+	 */
+	@RemoteMethod
+	@Override
+	public String getNameOfUserOrCompany(String personalID) {
+		if (StringUtil.isEmpty(personalID)) {
+			return CoreConstants.EMPTY;
+		}
+
+		String name = getName(personalID);
+		if (!StringUtil.isEmpty(name)) {
+			return name;
+		}
+
+		User user = getUser(personalID);
+		if (user == null) {
+			return CoreConstants.EMPTY;
+		}
+
+		return user.getName();
 	}
 
 	@Override

@@ -107,14 +107,15 @@ import com.idega.util.CoreConstants;
  * @author <a href="mailto:martynas@idega.is">Martynas Stakė</a>
  */
 public interface CompanyService extends ExternalEntityInterface {
+
 	public static final String BEAN_IDENTIFIER = "companyService";
-	
+	public static final String JAVASCRIPT_NAME = "CompanyService";
+
 	/**
 	 * 
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getName()} or {@link CoreConstants#EMPTY} on 
 	 * failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getName(String personalID);
 	
@@ -123,7 +124,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getAddress()} or {@link CoreConstants#EMPTY} on 
 	 * failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getStreetAddress(String personalID);
 	
@@ -132,7 +132,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getEmail()} or {@link CoreConstants#EMPTY} on 
 	 * failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getEmailAddress(String personalID);
 	
@@ -141,7 +140,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link PostalCode} of {@link Company#getAddress()} or 
 	 * {@link CoreConstants#EMPTY} on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getPostalCodeString(String personalID);
 	
@@ -150,7 +148,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getWorkingArea()} or {@link CoreConstants#EMPTY} 
 	 * on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getWorkingAreaString(String personalID);
 	
@@ -159,7 +156,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getPhone()} or {@link CoreConstants#EMPTY} on 
 	 * failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getPhoneNumber(String personalID);
 	
@@ -168,7 +164,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getMobilePhone()} or {@link CoreConstants#EMPTY} on 
 	 * failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getMobilePhoneNumber(String personalID);
 	
@@ -177,7 +172,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getPhone()} or {@link CoreConstants#EMPTY} on 
 	 * failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getFaxNumber(String personalID);
 	
@@ -186,7 +180,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return Name of {@link Company#getCEO()} or {@link CoreConstants#EMPTY} 
 	 * on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getCEOName(String personalID);
 	
@@ -195,7 +188,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link User#getPersonalID()} of {@link Company#getCEO()} or 
 	 * {@link CoreConstants#EMPTY} on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getCEOPersonalID(String personalID);
 	
@@ -206,7 +198,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param employeePersonalID of employee in given {@link Company}.
 	 * @return Role name of man working at {@link Company} or 
 	 * {@link CoreConstants#EMPTY} on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getRole(String personalID, String employeePersonalID);
 	
@@ -216,7 +207,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * <code>null</code>.
 	 * @return {@link User#getGender()} of {@link Company#getCEO()} or 
 	 * <code>null</code> on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public String getCEOGenderID(String personalID);
 	
@@ -224,7 +214,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * 
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company} by given id or <code>null</code> on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Company getCompany(String personalID);
 	
@@ -235,7 +224,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param user - {@link Company#getCEO()}.
 	 * @return {@link Company}, where {@link User} is CEO or <code>null</code>
 	 * on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Company getCompany(User user);
 	
@@ -246,7 +234,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param users who own companies, not empty; 
 	 * @return owned {@link Company}s by {@link User}s or
 	 * <code>null</code> on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public ArrayList<Company> getCompanies(Collection<User> users);
 	
@@ -255,7 +242,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param users ids to search by, not empty.
 	 * @return owned {@link Company}s by {@link User}s or
 	 * <code>null</code> on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public ArrayList<Company> getCompaniesByUserIDs(Collection<String> users);
 	
@@ -267,7 +253,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @return {@link List} of {@link Company}s, which belongs to {@link User}s
 	 * who are in {@link Group}s having specified roles, <code>null</code>
 	 * on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public ArrayList<Company> getCompaniesByOwnerRoles(Collection<String> roles);
 	
@@ -278,7 +263,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * to search by, not <code>null</code>;
 	 * @return {@link List} of {@link User}s, who are owners
 	 * of given {@link Company}s, <code>null</code> on failure. 
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public ArrayList<User> getOwnersByCompanies(Collection<Company> companies);
 	
@@ -289,7 +273,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * to search by, not <code>null</code>;
 	 * @return {@link List} of {@link User#getPrimaryKey()}, who are owners
 	 * of given {@link Company}s, <code>null</code> on failure. 
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public ArrayList<String> getOwnersIDsByCompanies(Collection<Company> companies);
 	
@@ -300,7 +283,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * to search by, not <code>null</code>;
 	 * @return {@link List} of {@link User#getPrimaryKey()}, who are owners
 	 * of given {@link Company}s, <code>null</code> on failure. 
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public ArrayList<String> getOwnersIDsForCompaniesByIDs(Collection<String> companiesIDs);
 	
@@ -309,7 +291,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param companies to get primary keys, not empty;
 	 * @return {@link Company#getPrimaryKey()} of each {@link Company} or 
 	 * <code>null</code> on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public ArrayList<String> getIDsOfCompanies(Collection<Company> companies);
 
@@ -318,7 +299,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Address} of {@link Company} or <code>null</code>
 	 * on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Address getAddress(String personalID);
 
@@ -326,7 +306,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * 
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Email} of {@link Company} or <code>null</code> on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Email getEmail(String personalID);
 
@@ -335,7 +314,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link PostalCode} of {@link Company} or <code>null</code>
 	 * on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public PostalCode getPostalCode(String personalID);
 
@@ -344,7 +322,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Commune} of {@link Company} or <code>null</code> on 
 	 * failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Commune getWorkingArea(String personalID);
 
@@ -353,7 +330,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Phone} of {@link Company} or <code>null</code>
 	 * on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Phone getPhone(String personalID);
 	
@@ -362,7 +338,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Phone} of {@link Company} or <code>null</code>
 	 * on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Phone getMobilePhone(String personalID);
 
@@ -370,7 +345,6 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * 
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getCEO()} or <code>null</code> on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public User getCEO(String personalID);
 
@@ -378,7 +352,15 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * 
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
 	 * @return {@link Company#getFax()} or <code>null</code> on failure.
-	 * @author <a href="mailto:martynas@idega.com">Martynas Stakė</a>
 	 */
 	public Phone getFax(String personalID);
+
+	/**
+	 *
+	 * @param personalID - {@link Company#getPersonalID()} or
+	 * {@link User#getPersonalID()}, not <code>null</code>;
+	 * @return {@link Company#getName()} or {@link User#getName()} or
+	 * {@link CoreConstants#EMPTY} on failure.
+	 */
+	String getNameOfUserOrCompany(String personalID);
 }
