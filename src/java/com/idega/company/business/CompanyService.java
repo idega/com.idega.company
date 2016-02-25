@@ -332,7 +332,7 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * on failure.
 	 */
 	public Phone getPhone(String personalID);
-	
+
 	/**
 	 * 
 	 * @param personalID - {@link Company#getPersonalID()}, not <code>null</code>.
@@ -363,4 +363,13 @@ public interface CompanyService extends ExternalEntityInterface {
 	 * {@link CoreConstants#EMPTY} on failure.
 	 */
 	String getNameOfUserOrCompany(String personalID);
+
+	/**
+	 *
+	 * @param personalID - {@link Company#getPersonalID()} or
+	 * {@link User#getPersonalID()}, not <code>null</code>;
+	 * @return {@link Company#getEmail()} or {@link User#getUsersEmail()} or
+	 * {@link CoreConstants#EMPTY} on failure.
+	 */
+	String getMailOfUserOrCompany(String personalID);
 }

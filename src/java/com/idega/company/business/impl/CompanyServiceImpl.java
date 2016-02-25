@@ -191,6 +191,35 @@ public class CompanyServiceImpl extends DefaultSpringBean implements CompanyServ
 		return user.getName();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see com.idega.company.business.CompanyService#getMailOfUserOrCompany(java.lang.String)
+	 */
+	@RemoteMethod
+	@Override
+	public String getMailOfUserOrCompany(String personalID) {
+		String mail = getEmailAddress(personalID);
+		if (!StringUtil.isEmpty(mail)) {
+			return mail;
+		}
+
+		User user = getUser(personalID);
+		if (user != null) {
+			Email email = null;
+			try {
+				email = user.getUsersEmail();
+				if (email != null) {
+					return email.getEmailAddress();
+				}
+			} catch (Exception e) {
+				getLogger().log(Level.WARNING, 
+						"Failed to get email for: " + user.getName());
+			}
+		}
+
+		return CoreConstants.EMPTY;
+	}
+
 	@Override
 	public Address getAddress(String personalID) {
 		Company company = getCompany(personalID);
