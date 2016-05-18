@@ -31,15 +31,24 @@ public class CompanyImportServices extends DefaultSpringBean implements DWRAnnot
 
 	@RemoteMethod
 	public boolean doImportCompanies(String filePath) {
-		if (StringUtil.isEmpty(filePath)) {
-			getLogger().warning("File is not provided");
-			return false;
-		}
-
 		try {
 			IWContext iwc = CoreUtil.getIWContext();
 			if (!iwc.isLoggedOn() || !iwc.isSuperAdmin()) {
 				getLogger().warning("Do not have permission");
+				return false;
+			}
+
+			return doImport(filePath);
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error importing companies from " + filePath);
+		}
+		return false;
+	}
+
+	public boolean doImport(String filePath) {
+		try {
+			if (StringUtil.isEmpty(filePath)) {
+				getLogger().warning("File is not provided");
 				return false;
 			}
 
