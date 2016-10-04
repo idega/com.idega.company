@@ -20,6 +20,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Row;
 
 import com.idega.block.importer.business.ImportFileHandler;
 import com.idega.block.importer.data.ImportFile;
@@ -34,6 +35,8 @@ import com.idega.company.data.UnregisterTypeHome;
 import com.idega.data.IDOLookup;
 import com.idega.user.data.Group;
 import com.idega.util.CoreConstants;
+import com.idega.util.IOUtil;
+import com.idega.util.ListUtil;
 
 public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean implements CompanyRegisterFileImportHandler, ImportFileHandler {
 
@@ -73,9 +76,12 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 	public final static int COLUMN_NOT_USED9 = 31;
 
 	private ImportFile file;
-	private Logger logger = Logger.getLogger(CompanyRegisterFileImportHandlerBean.class.getName());
+
+	private Logger LOGGER = Logger.getLogger(CompanyRegisterFileImportHandlerBean.class.getName());
+
 	private List<String> failedRecordList = new ArrayList<String>(), successRecords = new ArrayList<String>();
 	private List<String> valueList;
+
 	private CompanyRegisterBusiness comp_reg_biz;
 
 	@Override
@@ -97,7 +103,7 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 
 			comp_reg_biz = getServiceInstance(CompanyRegisterBusiness.class);
 
-			while (!(item = (String)file.getNextRecord()).equals(CoreConstants.EMPTY)) {
+			while (!(item = (String) file.getNextRecord()).equals(CoreConstants.EMPTY)) {
 				if (processRecord(item)) {
 					successRecords.add(item);
 				} else {
@@ -109,24 +115,21 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 			printFailedRecords();
 
 			return true;
-
 		} catch (Exception ex) {
-
-			logger.log(Level.SEVERE, "Exception while handling company register records", ex);
-
+			LOGGER.log(Level.SEVERE, "Exception while handling company register records from " + file + (file == null ? CoreConstants.EMPTY : file.getFile()), ex);
 			return false;
 		}
 	}
 
 	@Override
 	public void printFailedRecords() {
-		if (!this.failedRecordList.isEmpty()) {
-			logger.log(Level.WARNING, "Import failed for these records (total: "+failedRecordList.size()+"), please fix and import again: ");
+		if (!ListUtil.isEmpty(failedRecordList)) {
+			LOGGER.log(Level.WARNING, "Import failed for these records (total: " + failedRecordList.size() + "), please fix and import again: ");
 		}
 
 		Iterator<String> iter = this.failedRecordList.iterator();
 		while (iter.hasNext()) {
-			logger.log(Level.WARNING, iter.next());
+			LOGGER.log(Level.WARNING, iter.next());
 		}
 	}
 
@@ -183,12 +186,12 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 	    HSSFWorkbook wb = new HSSFWorkbook(new POIFSFileSystem(is));
 
 	    HSSFSheet sheet = wb.getSheetAt(4);
-	    if(sheet != null) {
-	    	Iterator it = sheet.rowIterator();
-	    	if(it.hasNext()) {
+	    if (sheet != null) {
+	    	Iterator<Row> it = sheet.rowIterator();
+	    	if (it.hasNext()) {
 	    		it.next();
 	    	}
-	    	while(it.hasNext()) {
+	    	while (it.hasNext()) {
 	    		HSSFRow row = (HSSFRow) it.next();
 	    		if(row != null) {
 	    			HSSFCell codeCell = row.getCell(0);
@@ -212,15 +215,15 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 
 	    HSSFSheet sheet = wb.getSheetAt(0);
 	    if(sheet != null) {
-	    	Iterator it = sheet.rowIterator();
-	    	if(it.hasNext()) {
+	    	Iterator<Row> it = sheet.rowIterator();
+	    	if (it.hasNext()) {
 	    		it.next();
 	    	}
-	    	while(it.hasNext()) {
+	    	while (it.hasNext()) {
 	    		HSSFRow row = (HSSFRow) it.next();
-	    		if(row != null) {
+	    		if (row != null) {
 	    			HSSFCell codeCell = row.getCell(0);
-	    			if(codeCell != null) {
+	    			if (codeCell != null) {
 	    				IndustryCode industryCode = getIndustryCodeHome().create();
 	    				industryCode.setISATCode(codeCell.getStringCellValue());
 
@@ -240,15 +243,15 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 
 	    HSSFSheet sheet = wb.getSheetAt(5);
 	    if(sheet != null) {
-	    	Iterator it = sheet.rowIterator();
+	    	Iterator<Row> it = sheet.rowIterator();
 	    	if(it.hasNext()) {
 	    		it.next();
 	    	}
-	    	while(it.hasNext()) {
+	    	while (it.hasNext()) {
 	    		HSSFRow row = (HSSFRow) it.next();
-	    		if(row != null) {
+	    		if (row != null) {
 	    			HSSFCell codeCell = row.getCell(0);
-	    			if(codeCell != null) {
+	    			if (codeCell != null) {
 	    				UnregisterType unregisterType = getUnregisterTypeHome().create();
 	    				unregisterType.setCode(codeCell.getStringCellValue());
 
@@ -265,48 +268,58 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 
 	private void checkCodesStartData() {
 		InputStream is = null;
+		String filePath = "resources/startdata/Codes.xls";
 		try {
-			is = new FileInputStream(getIWMainApplication().getBundlesRealPath()+"/"+CompanyConstants.IW_BUNDLE_IDENTIFIER+".bundle/resources/startdata/Codes.xls");
-		} catch(Exception e) {
-			logger.log(Level.SEVERE, "Exception while retrieving codes.xls resource from: "+getIWMainApplication().getBundle(CompanyConstants.IW_BUNDLE_IDENTIFIER).getResourcesRealPath(), e);
+			is = IOUtil.getStreamFromJar(CompanyConstants.IW_BUNDLE_IDENTIFIER, filePath);
+		} catch (Exception e) {}
+		if (is == null) {
+			try {
+				is = new FileInputStream(getIWMainApplication().getBundlesRealPath() + File.separator + CompanyConstants.IW_BUNDLE_IDENTIFIER + ".bundle" + File.separator + filePath);
+			} catch (Exception e) {}
+		}
+		if (is == null) {
+			LOGGER.warning("Failed to retrieve Codes.xls (" + filePath + ") resource from: " + getIWMainApplication().getBundle(CompanyConstants.IW_BUNDLE_IDENTIFIER).getResourcesRealPath());
 			return;
 		}
+
 		try {
-			Collection operationForms = null;
+			Collection<?> operationForms = null;
 			try {
 				operationForms = ((OperationFormHome) IDOLookup.getHome(OperationForm.class)).findAllOperationForms();
-				if(operationForms.isEmpty()) {
-					logger.log(Level.ALL, "No Operation forms, importing new ones");
+				if (operationForms.isEmpty()) {
+					LOGGER.log(Level.ALL, "No Operation forms, importing new ones");
 					importOperationForms(is);
 				}
-			} catch(FinderException re) {
-				logger.log(Level.ALL, "No Operation forms, importing new ones");
+			} catch (FinderException re) {
+				LOGGER.log(Level.ALL, "No Operation forms, importing new ones");
 				importOperationForms(is);
 			}
-			Collection unregisterTypes = null;
+
+			Collection<?> unregisterTypes = null;
 			try {
 				unregisterTypes = ((UnregisterTypeHome) IDOLookup.getHome(UnregisterType.class)).findAllUnregisterTypes();
-				if(unregisterTypes.isEmpty()) {
-					logger.log(Level.ALL, "No unregister types, importing new ones");
+				if (unregisterTypes.isEmpty()) {
+					LOGGER.log(Level.ALL, "No unregister types, importing new ones");
 					importUnregisterTypes(is);
 				}
-			} catch(FinderException re) {
-				logger.log(Level.ALL, "No unregister types, importing new ones");
+			} catch (FinderException re) {
+				LOGGER.log(Level.ALL, "No unregister types, importing new ones");
 				importUnregisterTypes(is);
 			}
-			Collection industryCodes = null;
+
+			Collection<?> industryCodes = null;
 			try {
 				industryCodes = ((IndustryCodeHome) IDOLookup.getHome(IndustryCode.class)).findAllIndustryCodes();
 				if(industryCodes.isEmpty()) {
-					logger.log(Level.ALL, "No industry codes, importing new ones");
+					LOGGER.log(Level.ALL, "No industry codes, importing new ones");
 					importIndustryCodes(is);
 				}
-			} catch(FinderException re) {
-				logger.log(Level.ALL, "No industry codes, importing new ones");
+			} catch (FinderException re) {
+				LOGGER.log(Level.ALL, "No industry codes, importing new ones");
 				importIndustryCodes(is);
 			}
-		} catch(Exception re) {
-			logger.log(Level.SEVERE, "Exception importing new initial data", re);
+		} catch (Exception re) {
+			LOGGER.log(Level.SEVERE, "Exception importing new initial data", re);
 		}
 	}
 
