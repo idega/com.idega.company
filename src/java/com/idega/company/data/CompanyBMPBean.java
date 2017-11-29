@@ -375,6 +375,20 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 		query.addColumn(table.getColumn(getIDColumnName()));
 		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_NAME), MatchCriteria.EQUALS, name));
 
+		Object result = null;
+		try {
+			result = idoFindOnePKByQuery(query);
+		} catch (Exception e) {}
+		return result == null ? ejbFindBySimilarName(name) : result;
+	}
+
+	private Object ejbFindBySimilarName(String name) throws FinderException {
+		Table table = new Table(this);
+
+		SelectQuery query = new SelectQuery(table);
+		query.addColumn(table.getColumn(getIDColumnName()));
+		query.addCriteria(new MatchCriteria(table.getColumn(COLUMN_NAME), MatchCriteria.LIKE, true, name));
+
 		return idoFindOnePKByQuery(query);
 	}
 
