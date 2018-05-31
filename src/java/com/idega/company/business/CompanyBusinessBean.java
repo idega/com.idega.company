@@ -266,14 +266,14 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 			}
 		}
 
-		StringBuilder sb = new StringBuilder("SELECT A.IC_USER_ID FROM ");
-		sb.append("ic_metadata_ic_user AS A, ")
-		.append("ic_metadata AS B ")
-		.append("WHERE B.METADATA_VALUE in (")
+		StringBuilder sb = new StringBuilder("SELECT a.IC_USER_ID FROM ");
+		sb.append("ic_metadata_ic_user a, ")
+		.append("ic_metadata b ")
+		.append("WHERE b.METADATA_VALUE in (")
 		.append(companiesIDsString.toString()).append(") ")
-		.append("AND B.METADATA_NAME='")
+		.append("AND b.METADATA_NAME='")
 		.append(MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY).append("' ")
-		.append("AND A.IC_METADATA_ID=B.IC_METADATA_ID;");
+		.append("AND a.IC_METADATA_ID=b.IC_METADATA_ID");
 
 		String[] ownerIDs = null;
 		try {
