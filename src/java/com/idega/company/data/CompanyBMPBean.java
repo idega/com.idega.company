@@ -10,23 +10,29 @@ package com.idega.company.data;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.Collection;
+import java.util.logging.Level;
 
 import javax.ejb.CreateException;
 import javax.ejb.EJBException;
 import javax.ejb.FinderException;
 import javax.ejb.RemoveException;
 
+import com.idega.business.IBOLookup;
 import com.idega.company.CompanyConstants;
 import com.idega.core.company.bean.GeneralCompany;
 import com.idega.core.contact.data.Email;
+import com.idega.core.contact.data.EmailHome;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneBMPBean;
+import com.idega.core.location.business.AddressBusiness;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressHome;
 import com.idega.core.location.data.Commune;
+import com.idega.core.location.data.PostalCode;
 import com.idega.data.GenericEntity;
 import com.idega.data.IDOAddRelationshipException;
 import com.idega.data.IDOCompositePrimaryKeyException;
+import com.idega.data.IDOLookup;
 import com.idega.data.IDOLookupException;
 import com.idega.data.IDORelationshipException;
 import com.idega.data.IDORuntimeException;
@@ -34,11 +40,14 @@ import com.idega.data.IDOStoreException;
 import com.idega.data.query.MatchCriteria;
 import com.idega.data.query.SelectQuery;
 import com.idega.data.query.Table;
+import com.idega.idegaweb.IWMainApplication;
 import com.idega.user.data.Group;
 import com.idega.user.data.GroupHome;
 import com.idega.user.data.User;
 import com.idega.util.CoreConstants;
+import com.idega.util.EmailValidator;
 import com.idega.util.ListUtil;
+import com.idega.util.StringUtil;
 
 public class CompanyBMPBean extends GenericEntity implements Company, GeneralCompany {
 
@@ -284,21 +293,35 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 	}
 
 	@Override
-	public void updateEmail(Email newEmail) {
+	public Email updateEmail(String newEmailAddress) {
+		if (!EmailValidator.getInstance().isValid(newEmailAddress)) {
+			return null;
+		}
+
 		Email email = getEmail();
-		if(email == null) {
+		if (email == null) {
 			try {
+				EmailHome emailHome = (EmailHome) IDOLookup.getHome(Email.class);
+				Email newEmail = emailHome.create();
+				newEmail.setEmailAddress(newEmailAddress);
 				newEmail.store();
 				getGeneralGroup().addEmail(newEmail);
-			} catch (IDOAddRelationshipException e) {
+				return newEmail;
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		} else {
-			if(email.getEmailAddress() == null || !email.getEmailAddress().equals(newEmail.getEmailAddress())) {
-				email.setEmailAddress(newEmail.getEmailAddress());
+			if (email.getEmailAddress() == null || !email.getEmailAddress().equals(newEmailAddress)) {
+				email.setEmailAddress(newEmailAddress);
 				email.store();
 			}
 		}
+		return email;
+	}
+
+	@Override
+	public Email updateEmail(Email newEmail) {
+		return updateEmail(newEmail == null ? null : newEmail.getEmailAddress());
 	}
 
 	// Setters
@@ -664,6 +687,47 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 		catch (IDOAddRelationshipException e) {
 			throw new IDORuntimeException(e.getMessage());
 		}
+	}
+
+	@Override
+	public Address updateAddress(String street, String commune, String postalCode, String city) {
+		Address address = getAddress();
+		if (address == null) {
+			try {
+				AddressHome addressHome = (AddressHome) IDOLookup.getHome(Address.class);
+				address = addressHome.create();
+				setAddress(address);
+			} catch (Exception e) {
+				getLogger().log(Level.WARNING, "Error setting address for company " + this, e);
+			}
+		}
+
+		if (address == null) {
+			return null;
+		}
+
+		try {
+			AddressBusiness addressBusiness = IBOLookup.getServiceInstance(IWMainApplication.getDefaultIWApplicationContext(), AddressBusiness.class);
+			String streetName = addressBusiness.getStreetNameFromAddressString(street);
+			String streetNumber = addressBusiness.getStreetNumberFromAddressString(street);
+			address.setStreetName(streetName);
+			address.setStreetNumber(StringUtil.isEmpty(streetNumber) ? CoreConstants.EMPTY : streetNumber);
+
+			address.setCity(city);
+
+			Commune communeEntity = addressBusiness.getCommuneAndCreateIfDoesNotExist(commune, null);
+			address.setCommune(communeEntity);
+
+			PostalCode postalCodeEntity = addressBusiness.getPostalCodeAndCreateIfDoesNotExist(postalCode, null);
+			address.setPostalCode(postalCodeEntity);
+
+			address.store();
+			return address;
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error updating address for company " + this, e);
+		}
+
+		return null;
 	}
 
 	@Override

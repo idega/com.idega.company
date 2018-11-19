@@ -63,6 +63,8 @@ public interface Company extends IDOEntity {
 	 */
 	public Address getAddress();
 
+	public Address updateAddress(String street, String commune, String postalCode, String city);
+
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#getPhone
 	 */
@@ -95,10 +97,12 @@ public interface Company extends IDOEntity {
 	 */
 	public Email getEmail();
 
+	public Email updateEmail(String newEmailAddress);
+
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#updateEmail
 	 */
-	public void updateEmail(Email newEmail);
+	public Email updateEmail(Email newEmail);
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#setGroup
