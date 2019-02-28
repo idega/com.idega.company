@@ -30,6 +30,7 @@ import com.idega.data.IDOLookup;
 import com.idega.user.business.UserBusiness;
 import com.idega.user.data.User;
 import com.idega.user.data.UserHome;
+import com.idega.util.StringUtil;
 
 public class CompanyRegisterBusinessBean extends IBOServiceBean implements CompanyRegisterBusiness{
 
@@ -96,6 +97,20 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			if(userBusiness == null) {
 				logger.log(Level.SEVERE, "Could not retrieve UserBusiness service bean");
 				return false;
+			}
+
+			if (!StringUtil.isEmpty(personal_id) && !StringUtil.isEmpty(name)) {
+				User companyUser = null;
+				try {
+					companyUser = userBusiness.getUser(personal_id);
+				} catch (Exception e) {}
+				if (companyUser != null) {
+					companyUser.setFirstName(name);
+					companyUser.setMiddleName(null);
+					companyUser.setLastName(null);
+					companyUser.setDisplayName(name);
+					companyUser.store();
+				}
 			}
 
 			User ceo = null;

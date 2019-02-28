@@ -172,8 +172,15 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 			return false;
 		}
 
-		boolean success = storeCompanyRegisterEntry();
-		if (!success) {
+		boolean success = false;
+		try {
+			success = storeCompanyRegisterEntry();
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Failed to process record: '" + record + "'", e);
+		}
+		if (success) {
+			getLogger().info("Successfully processed company " + getProperty(COLUMN_PERSONAL_ID));
+		} else {
 			getLogger().warning("Failed to process record: " + record);
 		}
 
