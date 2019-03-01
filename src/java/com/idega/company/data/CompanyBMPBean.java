@@ -696,6 +696,7 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 			try {
 				AddressHome addressHome = (AddressHome) IDOLookup.getHome(Address.class);
 				address = addressHome.create();
+				address.store();
 				setAddress(address);
 			} catch (Exception e) {
 				getLogger().log(Level.WARNING, "Error setting address for company " + this, e);

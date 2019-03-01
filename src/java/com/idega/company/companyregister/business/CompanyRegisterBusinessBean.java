@@ -22,6 +22,8 @@ import com.idega.company.data.UnregisterTypeHome;
 import com.idega.core.location.business.AddressBusiness;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressHome;
+import com.idega.core.location.data.AddressType;
+import com.idega.core.location.data.AddressTypeHome;
 import com.idega.core.location.data.Commune;
 import com.idega.core.location.data.CommuneHome;
 import com.idega.core.location.data.PostalCode;
@@ -110,6 +112,19 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 					companyUser.setLastName(null);
 					companyUser.setDisplayName(name);
 					companyUser.store();
+
+					try {
+						userBusiness.updateUsersMainAddressByFullAddressString(companyUser, address);
+					} catch (Exception e) {
+						getLogger().log(Level.WARNING, "Error updating main address for company user " + companyUser + ": " + address, e);
+					}
+					try {
+						AddressTypeHome addressTypeHome = (AddressTypeHome) IDOLookup.getHome(AddressType.class);
+						AddressType workAddressType = addressTypeHome.findAddressType2();
+						userBusiness.updateUsersAddressByFullAddressString(companyUser, address, workAddressType);
+					} catch (Exception e) {
+						getLogger().log(Level.WARNING, "Error updating work address for company user " + companyUser + ": " + address, e);
+					}
 				}
 			}
 
@@ -221,8 +236,12 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			}
 			addressBean.setCommune(communeBean);
 			company_registry.setLastChange(CompanyRegisterImportFile.getSQLDateFromStringFormat(dateOfLastChange.trim(), logger, RECORDS_DATE_FORMAT));
-			company_registry.setRegisterDate(CompanyRegisterImportFile.getSQLDateFromStringFormat(registerDate.trim(), logger, RECORDS_DATE_FORMAT));
-			company_registry.setUnregisterDate(CompanyRegisterImportFile.getSQLDateFromStringFormat(unregistrationDate.trim(), logger, RECORDS_DATE_FORMAT));
+			if (registerDate != null) {
+				company_registry.setRegisterDate(CompanyRegisterImportFile.getSQLDateFromStringFormat(registerDate.trim(), logger, RECORDS_DATE_FORMAT));
+			}
+			if (unregistrationDate != null) {
+				company_registry.setUnregisterDate(CompanyRegisterImportFile.getSQLDateFromStringFormat(unregistrationDate.trim(), logger, RECORDS_DATE_FORMAT));
+			}
 
 			PostalCode postalCodeBean = addressBean.getPostalCode();
 			if(postalCodeBean == null) {
