@@ -326,9 +326,16 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 		} catch(Exception re) {
 			logger.log(Level.SEVERE, "Exception while finding a UnregisterType entry", re);
 		}
-		company.store();
 
-		return true;
+		if (company != null) {
+			try {
+				company.store();
+			} catch (Exception e) {
+				getLogger().log(Level.WARNING, "Error storing company " + company, e);
+			}
+		}
+
+		return company != null && company.getPrimaryKey() != null;
 	}
 
 	protected CompanyHome getCompanyRegisterHome() throws RemoteException {
