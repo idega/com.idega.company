@@ -34,6 +34,7 @@ import com.idega.user.business.UserBusiness;
 import com.idega.user.data.User;
 import com.idega.user.data.UserHome;
 import com.idega.util.StringUtil;
+import com.idega.util.text.Name;
 
 public class CompanyRegisterBusinessBean extends IBOServiceBean implements CompanyRegisterBusiness{
 
@@ -152,14 +153,20 @@ public class CompanyRegisterBusinessBean extends IBOServiceBean implements Compa
 			}
 		}
 		if (ceo == null || createNewCeo) {
+			String ceoName = null;
 			try {
-				ceo = getUserHome().create();
-				ceo.setFullName(name.trim());
-				ceo.setPersonalID(ceoId);
-				ceo.store();
+				ceoId = StringUtil.isEmpty(ceoId) ? personal_id : ceoId;
+				ceoName = StringUtil.isEmpty(name) ? ceoId : name.trim();
+
+				Name nameUtil = new Name(ceoName);
+				ceo = getUserBusiness().createUser(nameUtil.getFirstName(), nameUtil.getMiddleName(), nameUtil.getLastName(), ceoId);
+				if (ceo == null) {
+					logger.severe("Failed to create CEO (" + ceoName + ") with personal ID " + ceoId);
+					return false;
+				}
 				company.setCEO(ceo);
-			} catch(Exception re) {
-				logger.log(Level.SEVERE, "Exception while creating a new user entry", re);
+			} catch (Exception re) {
+				logger.log(Level.SEVERE, "Exception while creating a new user entry, CEO (" + ceoName + ") personal ID: " + ceoId, re);
 				return false;
 			}
 		}
