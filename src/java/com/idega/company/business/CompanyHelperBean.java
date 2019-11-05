@@ -39,6 +39,7 @@ public class CompanyHelperBean extends DefaultSpringBean implements CompanyHelpe
 
 		companyInfo.setName(company.getName());
 		companyInfo.setPersonalId(company.getPersonalID());
+		companyInfo.setGroupId((Integer) company.getPrimaryKey());
 
 		try {
 			getUserAppEngine().fillUserInfo(companyInfo, company.getPhone(), company.getEmail(), company.getAddress());
