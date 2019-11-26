@@ -2,6 +2,7 @@ package com.idega.company.data;
 
 
 import java.sql.Date;
+import java.util.Collection;
 
 import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.Phone;
@@ -99,10 +100,14 @@ public interface Company extends IDOEntity {
 
 	public Email updateEmail(String newEmailAddress);
 
+	public Email addEmail(String newEmailAddress);
+
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#updateEmail
 	 */
 	public Email updateEmail(Email newEmail);
+
+	public Collection<Email> getEmails();
 
 	/**
 	 * @see com.idega.company.data.CompanyBMPBean#setGroup

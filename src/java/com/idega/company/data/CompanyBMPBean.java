@@ -10,6 +10,7 @@ package com.idega.company.data;
 import java.rmi.RemoteException;
 import java.sql.Date;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.logging.Level;
 
 import javax.ejb.CreateException;
@@ -284,8 +285,13 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 	}
 
 	@Override
+	public Collection<Email> getEmails() {
+		return getGeneralGroup().getEmails();
+	}
+
+	@Override
 	public Email getEmail() {
-		Collection<Email> emails = getGeneralGroup().getEmails();
+		Collection<Email> emails = getEmails();
 		if (ListUtil.isEmpty(emails)) {
 			return null;
 		}
@@ -293,13 +299,23 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 	}
 
 	@Override
-	public Email updateEmail(String newEmailAddress) {
+	public Email addEmail(String newEmailAddress) {
 		if (!EmailValidator.getInstance().isValid(newEmailAddress)) {
 			return null;
 		}
 
-		Email email = getEmail();
-		if (email == null) {
+		Collection<Email> emails = getEmails();
+		Email emailToUpdate = null;
+		if (!ListUtil.isEmpty(emails)) {
+			for (Iterator<Email> iter = emails.iterator(); (emailToUpdate == null && iter.hasNext());) {
+				emailToUpdate = iter.next();
+				if (StringUtil.isEmpty(emailToUpdate.getEmailAddress()) || !emailToUpdate.getEmailAddress().equals(newEmailAddress)) {
+					emailToUpdate = null;
+				}
+			}
+		}
+
+		if (emailToUpdate == null) {
 			try {
 				EmailHome emailHome = (EmailHome) IDOLookup.getHome(Email.class);
 				Email newEmail = emailHome.create();
@@ -308,15 +324,47 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 				getGeneralGroup().addEmail(newEmail);
 				return newEmail;
 			} catch (Exception e) {
-				e.printStackTrace();
+				getLogger().log(Level.WARNING, "Error adding email " + newEmailAddress + " for company " + this);
 			}
+
 		} else {
-			if (email.getEmailAddress() == null || !email.getEmailAddress().equals(newEmailAddress)) {
-				email.setEmailAddress(newEmailAddress);
-				email.store();
+			if (emailToUpdate.getEmailAddress() == null || !emailToUpdate.getEmailAddress().equals(newEmailAddress)) {
+				emailToUpdate.setEmailAddress(newEmailAddress);
+				emailToUpdate.store();
 			}
 		}
-		return email;
+		return emailToUpdate;
+	}
+
+	@Override
+	public Email updateEmail(String newEmailAddress) {
+		if (!EmailValidator.getInstance().isValid(newEmailAddress)) {
+			return null;
+		}
+
+		Collection<Email> emails = getEmails();
+		Email emailToUpdate = null;
+		if (!ListUtil.isEmpty(emails)) {
+			if (emails.size() == 1) {
+				emailToUpdate = emails.iterator().next();
+			} else {
+				for (Iterator<Email> iter = emails.iterator(); (emailToUpdate == null && iter.hasNext());) {
+					emailToUpdate = iter.next();
+					if (StringUtil.isEmpty(emailToUpdate.getEmailAddress()) || !emailToUpdate.getEmailAddress().equals(newEmailAddress)) {
+						emailToUpdate = null;
+					}
+				}
+			}
+		}
+		if (emailToUpdate == null) {
+			return addEmail(newEmailAddress);
+		} else {
+			if (emailToUpdate.getEmailAddress() == null || !emailToUpdate.getEmailAddress().equals(newEmailAddress)) {
+				emailToUpdate.setEmailAddress(newEmailAddress);
+				emailToUpdate.store();
+			}
+		}
+		return emailToUpdate;
 	}
 
 	@Override
