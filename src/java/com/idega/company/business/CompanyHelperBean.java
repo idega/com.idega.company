@@ -40,6 +40,10 @@ public class CompanyHelperBean extends DefaultSpringBean implements CompanyHelpe
 	@Override
 	public UserDataBean getCompanyInfo(String companyPersonalId) {
 		Company company = getCompany(companyPersonalId);
+		return getCompanyInfo(company);
+	}
+
+	private UserDataBean getCompanyInfo(Company company) {
 		if (company == null) {
 			return null;
 		}
@@ -71,10 +75,31 @@ public class CompanyHelperBean extends DefaultSpringBean implements CompanyHelpe
 
 			getUserAppEngine().fillUserInfo(companyInfo, company.getPhone(), email, company.getAddress());
 		} catch(Exception e) {
-			getLogger().log(Level.WARNING, "Error filling company (personal ID: " + companyPersonalId + ") info!", e);
+			getLogger().log(Level.WARNING, "Error getting info for company " + company + " (personal ID: " + (company == null ? "unknown" : company.getPersonalID()) + ") info!", e);
 		}
 
 		return companyInfo;
+	}
+
+	@Override
+	public UserDataBean doCreateCompany(String name, String companyPersonalId) {
+		if (StringUtil.isEmpty(name) || StringUtil.isEmpty(companyPersonalId)) {
+			return null;
+		}
+
+		CompanyBusiness companyBusiness = getServiceInstance(CompanyBusiness.class);
+		if (companyBusiness == null) {
+			return null;
+		}
+
+		Company company = null;
+		try {
+			company = companyBusiness.storeCompany(name, companyPersonalId);
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error creating company '" + name + "' with personal ID " + companyPersonalId, e);
+		}
+
+		return getCompanyInfo(company);
 	}
 
 	private Email getEmail(Collection<User> users) {
