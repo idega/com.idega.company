@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.rmi.RemoteException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -36,7 +37,9 @@ import com.idega.data.IDOLookup;
 import com.idega.user.data.Group;
 import com.idega.util.CoreConstants;
 import com.idega.util.IOUtil;
+import com.idega.util.IWTimestamp;
 import com.idega.util.ListUtil;
+import com.idega.util.Timer;
 
 public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean implements CompanyRegisterFileImportHandler, ImportFileHandler {
 
@@ -84,11 +87,19 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 
 	private CompanyRegisterBusiness comp_reg_biz;
 
+	private final static int BYTES_PER_RECORD = 301;
+
+	private NumberFormat precentNF = NumberFormat.getPercentInstance();
+
+	private NumberFormat twoDigits = NumberFormat.getNumberInstance();
+
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getFailedRecords() throws RemoteException {
 		return failedRecordList;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> getSuccessRecords() throws RemoteException {
 		return successRecords;
@@ -98,19 +109,55 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 	public boolean handleRecords() throws RemoteException {
 		String item = null;
 
+		Timer clock = new Timer();
+		clock.start();
 		try {
 			checkCodesStartData();
 
 			comp_reg_biz = getServiceInstance(CompanyRegisterBusiness.class);
 
+			int count = 0;
+			long totalBytes = file.getFile().length();
+			long totalRecords = totalBytes / BYTES_PER_RECORD;
+			if (totalRecords == 0) {
+				Collection<String> allRecords = file.getRecords();
+				totalRecords = ListUtil.isEmpty(allRecords) ? 1 : allRecords.size();
+			}
+			long beginTime = System.currentTimeMillis();
+			long lastTimeCheck = beginTime;
+			long averageTimePerUser100 = 0;
+			long timeLeft100 = 0;
+			long estimatedTimeFinished100 = beginTime;
+			IWTimestamp stamp;
+			double progress = 0;
+			int intervalBetweenOutput = 100;
+			LOGGER.info("CompRegImport processing RECORD [0] time: " + IWTimestamp.getTimestampRightNow().toString());
 			while (!(item = (String) file.getNextRecord()).equals(CoreConstants.EMPTY)) {
+				count++;
+
 				if (processRecord(item)) {
 					successRecords.add(item);
 				} else {
 					failedRecordList.add(item);
 				}
+
+				if ((count % intervalBetweenOutput) == 0) {
+					averageTimePerUser100 = (System.currentTimeMillis() - lastTimeCheck) / intervalBetweenOutput;
+					lastTimeCheck = System.currentTimeMillis();
+					timeLeft100 = averageTimePerUser100 * (totalRecords - count);
+					estimatedTimeFinished100 = System.currentTimeMillis() + timeLeft100;
+					progress = ((double) count) / ((double) totalRecords);
+					LOGGER.info("CompRegImport " + IWTimestamp.getTimestampRightNow().toString() + ", processing RECORD [" + count + " / " + totalRecords + "]");
+					stamp = new IWTimestamp(estimatedTimeFinished100);
+					LOGGER.info(" | " + this.precentNF.format(progress) + " done, guestimated time left of PHASE 1 : " + getTimeString(timeLeft100) + "  finish at " + stamp.getTime().toString());
+				}
 			}
 			file.close();
+			LOGGER.info("CompRegImport processed RECORD [" + count + "] time: " + IWTimestamp.getTimestampRightNow().toString());
+			clock.stop();
+			long msTime = clock.getTime();
+			long secTime = msTime / 1000;
+			LOGGER.info("Time to handleRecords: " + msTime + " ms  OR " + secTime + " s, averaging " + (count > 0 ? (msTime / count) : 0) + "ms per record");
 
 			printFailedRecords();
 
@@ -119,6 +166,17 @@ public class CompanyRegisterFileImportHandlerBean extends IBOServiceBean impleme
 			LOGGER.log(Level.SEVERE, "Exception while handling company register records from " + file + (file == null ? CoreConstants.EMPTY : file.getFile()), ex);
 			return false;
 		}
+	}
+
+	public String getTimeString(long time) {
+		long t = time;
+		int milli = (int) (t % 1000);
+		t = (t - milli) / 1000;
+		int second = (int) (t % 60);
+		t = (t - second) / 60;
+		int minut = (int) (t) % 60;
+		int hour = (int) ((t - minut) / 60);
+		return this.twoDigits.format(hour) + ":" + this.twoDigits.format(minut) + ":" + this.twoDigits.format(second) + "." + milli;
 	}
 
 	@Override
