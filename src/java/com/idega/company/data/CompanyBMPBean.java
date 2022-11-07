@@ -28,6 +28,7 @@ import com.idega.core.contact.data.PhoneBMPBean;
 import com.idega.core.location.business.AddressBusiness;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressHome;
+import com.idega.core.location.data.AddressType;
 import com.idega.core.location.data.Commune;
 import com.idega.core.location.data.PostalCode;
 import com.idega.data.GenericEntity;
@@ -744,6 +745,8 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 			try {
 				AddressHome addressHome = (AddressHome) IDOLookup.getHome(Address.class);
 				address = addressHome.create();
+				AddressType mainAddressType = addressHome.getAddressType1();
+				address.setAddressType(mainAddressType);
 				address.store();
 				setAddress(address);
 			} catch (Exception e) {
