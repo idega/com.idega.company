@@ -11,7 +11,9 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 import java.util.logging.Level;
 
 import javax.ejb.CreateException;
@@ -104,7 +106,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 		catch (FinderException e) {
 			e.printStackTrace();
-			return new ArrayList<Company>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -115,7 +117,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 		catch (FinderException e) {
 			e.printStackTrace();
-			return new ArrayList<Company>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -126,7 +128,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 		catch (FinderException e) {
 			e.printStackTrace();
-			return new ArrayList<Company>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -153,7 +155,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 		catch (FinderException e) {
 			e.printStackTrace();
-			return new ArrayList<CompanyType>();
+			return new ArrayList<>();
 		}
 	}
 
@@ -182,30 +184,50 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		return getCompanyHome().findByName(name);
 	}
 
-
 	@Override
 	public Collection<Company> getCompaniesForUser(User user) {
-		Collection<Company> companies = new ArrayList<Company>();
+		Collection<Company> companies = new ArrayList<>();
 		Collection<Company> managedCompanies = getCompanyHome().findAll(user);
 		if (!ListUtil.isEmpty(managedCompanies)) {
 			companies.addAll(managedCompanies);
 		}
 
-		String ownedCompanyID = user.getMetaData(
-				MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY);
-		if (StringUtil.isEmpty(ownedCompanyID)) {
+		Set<String> companiesIds = new HashSet<>();
+
+		Collection<Group> groups = null;
+		try {
+			groups = getUserBusiness().getUserGroupsDirectlyRelated(user);
+			if (!ListUtil.isEmpty(groups)) {
+				for (Group group: groups) {
+					String type = group == null ? null : group.getType();
+					if (!StringUtil.isEmpty(type) && CompanyConstants.GROUP_TYPE_COMPANY.equals(type)) {
+						companiesIds.add(group.getId());
+					}
+				}
+			}
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error while checking if " + user + " is in any company's group. User's groups: " + groups, e);
+		}
+
+		String ownedCompanyID = user.getMetaData(MetadataConstants.USER_REAL_COMPANY_META_DATA_KEY);
+		if (!StringUtil.isEmpty(ownedCompanyID)) {
+			companiesIds.add(ownedCompanyID);
+		}
+
+		if (ListUtil.isEmpty(companiesIds)) {
 			return companies;
 		}
 
-		Company ownedCompany = null;
-		try {
-			ownedCompany = getCompanyHome().findByPrimaryKey(ownedCompanyID);
-		} catch (FinderException e) {
-			getLogger().log(Level.WARNING, "Unable to find " + Company.class +
-					" by primary key: " + ownedCompanyID);
-		}
-		if (ownedCompany != null) {
-			companies.add(ownedCompany);
+		for (String companyId: companiesIds) {
+			Company ownedCompany = null;
+			try {
+				ownedCompany = getCompanyHome().findByPrimaryKey(companyId);
+			} catch (FinderException e) {
+				getLogger().log(Level.WARNING, "Unable to find " + Company.class + " by primary key: " + ownedCompanyID);
+			}
+			if (ownedCompany != null) {
+				companies.add(ownedCompany);
+			}
 		}
 
 		return companies;
@@ -240,7 +262,7 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 			return null;
 		}
 
-		ArrayList<String> idsOfCompanies = new ArrayList<String>();
+		ArrayList<String> idsOfCompanies = new ArrayList<>();
 		for (Company company: companies) {
 			idsOfCompanies.add(company.getPrimaryKey().toString());
 		}
