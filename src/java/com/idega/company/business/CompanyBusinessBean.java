@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -27,6 +28,7 @@ import com.idega.company.data.Company;
 import com.idega.company.data.CompanyHome;
 import com.idega.company.data.CompanyType;
 import com.idega.company.data.CompanyTypeHome;
+import com.idega.data.IDOLookup;
 import com.idega.data.IDORuntimeException;
 import com.idega.data.SimpleQuerier;
 import com.idega.user.business.UserBusiness;
@@ -318,6 +320,62 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 		}
 
 		return getCompanyHome().findByUniqueId(uniqueId);
+	}
+
+	@Override
+	public List<com.idega.user.data.User> getOwners(com.idega.user.data.User user) {
+		if (user == null) {
+			getLogger().warning("User is not provided");
+			return null;
+		}
+
+		try {
+			Company company = null;
+			try {
+				CompanyHome companyHome = (CompanyHome) IDOLookup.getHome(Company.class);
+				company = companyHome.findByPersonalID(user.getPersonalID());
+			} catch (Exception e) {}
+			if (company != null) {
+				getLogger().info("Current user " + user + " is also a company " + company);
+				return Arrays.asList(user);
+			}
+
+			Collection<Company> companies = getCompaniesForUser(user);
+			if (ListUtil.isEmpty(companies)) {
+				getLogger().warning("There are no companies for " + user);
+				return Arrays.asList(user);
+			}
+
+			UserBusiness userBusiness = getServiceInstance(UserBusiness.class);
+
+			company = null;
+			List<User> owners = new ArrayList<>();
+			for (Iterator<Company> iter = companies.iterator(); iter.hasNext();) {
+				company = iter.next();
+				String personalId = company == null ? null : company.getPersonalID();
+				if (StringUtil.isEmpty(personalId)) {
+					continue;
+				}
+
+				User companyUser = null;
+				try {
+					companyUser = userBusiness.getUser(personalId);
+				} catch (Exception e) {}
+				if (companyUser != null) {
+					owners.add(companyUser);
+				}
+			}
+			if (ListUtil.isEmpty(owners)) {
+				getLogger().warning("Did not find company for " + user + " (personal ID: " + user.getPersonalID() + ")");
+			}
+
+			return owners;
+		} catch (Exception e) {
+			getLogger().log(Level.WARNING, "Error getting company owner for " + user, e);
+		}
+
+		getLogger().warning("Failed to find company for " + user + " (personal ID: " + user.getPersonalID() + ")");
+		return null;
 	}
 
 }

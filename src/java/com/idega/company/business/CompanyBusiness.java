@@ -133,4 +133,7 @@ public interface CompanyBusiness extends IBOService {
 	 */
 	public Company getCompanyByUniqueId(String uniqueId) throws FinderException,
 			RemoteException, RemoteException;
+
+	public List<User> getOwners(User user);
+
 }
