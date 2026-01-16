@@ -5,6 +5,7 @@ package com.idega.company.business;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 
 import javax.ejb.CreateException;
 import javax.ejb.FinderException;
@@ -135,5 +136,7 @@ public interface CompanyBusiness extends IBOService {
 			RemoteException, RemoteException;
 
 	public List<User> getOwners(User user);
+
+	public boolean validatePersonalId(String companyPersonalId, Locale locale);
 
 }

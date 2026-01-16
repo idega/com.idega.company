@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 import java.util.logging.Level;
 
@@ -38,6 +39,7 @@ import com.idega.user.data.User;
 import com.idega.util.ArrayUtil;
 import com.idega.util.CoreConstants;
 import com.idega.util.ListUtil;
+import com.idega.util.LocaleUtil;
 import com.idega.util.StringUtil;
 
 
@@ -376,6 +378,41 @@ public class CompanyBusinessBean extends IBOServiceBean implements CompanyBusine
 
 		getLogger().warning("Failed to find company for " + user + " (personal ID: " + user.getPersonalID() + ")");
 		return null;
+	}
+
+	@Override
+	public boolean validatePersonalId(String companyPersonalId, Locale locale) {
+		if (StringUtil.isEmpty(companyPersonalId) || locale == null || !companyPersonalId.matches("\\d{10}")) {
+			return false;
+		}
+
+		if (!LocaleUtil.getIcelandicLocale().toString().equals(locale.toString())) {
+			return false;
+		}
+
+		// Company rule: first digit 4–7
+        int first = Character.getNumericValue(companyPersonalId.charAt(0));
+        if (first < 4 || first > 7) {
+            return false;
+        }
+
+        int[] weights = {3,2,7,6,5,4,3,2};
+
+        int sum = 0;
+        for (int i = 0; i < 8; i++) {
+            int digit = Character.getNumericValue(companyPersonalId.charAt(i));
+            sum += digit * weights[i];
+        }
+
+        int remainder = sum % 11;
+        int control = 11 - remainder;
+
+        if (control == 11) control = 0;
+        if (control == 10) return false;
+
+        int checkDigit = Character.getNumericValue(companyPersonalId.charAt(8));
+
+        return control == checkDigit;
 	}
 
 }
