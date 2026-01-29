@@ -25,6 +25,8 @@ import com.idega.core.contact.data.Email;
 import com.idega.core.contact.data.EmailHome;
 import com.idega.core.contact.data.Phone;
 import com.idega.core.contact.data.PhoneBMPBean;
+import com.idega.core.idgenerator.business.IdGenerator;
+import com.idega.core.idgenerator.business.IdGeneratorFactory;
 import com.idega.core.location.business.AddressBusiness;
 import com.idega.core.location.data.Address;
 import com.idega.core.location.data.AddressHome;
@@ -794,9 +796,22 @@ public class CompanyBMPBean extends GenericEntity implements Company, GeneralCom
 
 	@Override
 	public void setUniqueId(String uniqueId) {
+		try {
+			if (IWMainApplication.getDefaultIWMainApplication().getSettings().getBoolean("company.distinct_unique_ids", true)) {
+				IdGenerator uidGenerator = IdGeneratorFactory.getUUIDGenerator();
+				CompanyHome companyHome = (CompanyHome) IDOLookup.getHome(Company.class);
+				try {
+					while (companyHome.findByUniqueId(uniqueId) != null) {
+						String tmp = uidGenerator.generateId();
+						getLogger().warning("Found existing company by unique ID " + uniqueId + ". Re-generated unique ID: " + tmp);
+						uniqueId = tmp;
+					}
+				} catch (Exception e) {}
+			}
+		} catch (Exception e) {}
+
 		setColumn(COLUMN_UNIQUE_ID, uniqueId);
 	}
-
 
 	@Override
 	public String toString() {

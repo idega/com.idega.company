@@ -1,6 +1,7 @@
 package com.idega.company.data.bean;
 
 import java.util.Date;
+import java.util.logging.Logger;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -19,10 +20,16 @@ import org.hibernate.annotations.Type;
 import org.springframework.cache.annotation.Cacheable;
 
 import com.idega.company.CompanyConstants;
+import com.idega.company.data.CompanyHome;
+import com.idega.core.idgenerator.business.IdGenerator;
+import com.idega.core.idgenerator.business.IdGeneratorFactory;
 import com.idega.core.location.data.bean.Commune;
+import com.idega.data.IDOLookup;
+import com.idega.idegaweb.IWMainApplication;
 import com.idega.user.data.bean.Group;
 import com.idega.user.data.bean.User;
 import com.idega.util.CoreConstants;
+import com.idega.util.StringUtil;
 
 @DiscriminatorValue(CompanyConstants.GROUP_TYPE_COMPANY)
 @Entity
@@ -59,7 +66,7 @@ public class Company extends Group {
 	public static final String UNREGISTER_TYPE = "unregister_type";
 	public static final String UNREGISTER_DATE = "unregister_date";
 	public static final String BAN_MARKING = "ban_marking";
-
+	public static final String UNIQUE_ID = "unique_id";
 
     public static final String nameProp = TABLE_NAME + CoreConstants.UNDER + COLUMN_NAME;
     @Column(name = COLUMN_NAME,insertable =  false, updatable = false)
@@ -141,6 +148,8 @@ public class Company extends Group {
     @JoinColumn(name = UNREGISTER_TYPE)
     private UnregisterType unregisterType;
 
+    @Column(name = UNIQUE_ID)
+    private String uniqueId;
 
 	@Override
 	public String getName() {
@@ -152,26 +161,32 @@ public class Company extends Group {
 		this.name = name;
 	}
 
+	@Override
 	public String getPersonalId() {
 		return personalId;
 	}
 
+	@Override
 	public void setPersonalId(String personalId) {
 		this.personalId = personalId;
 	}
 
+	@Override
 	public String getWebPage() {
 		return webPage;
 	}
 
+	@Override
 	public void setWebPage(String webPage) {
 		this.webPage = webPage;
 	}
 
+	@Override
 	public String getBankAccount() {
 		return bankAccount;
 	}
 
+	@Override
 	public void setBankAccount(String bankAccount) {
 		this.bankAccount = bankAccount;
 	}
@@ -202,10 +217,12 @@ public class Company extends Group {
 		this.extraInfo = extraInfo;
 	}
 
+	@Override
 	public String getVatNumber() {
 		return vatNumber;
 	}
 
+	@Override
 	public void setVatNumber(String vatNumber) {
 		this.vatNumber = vatNumber;
 	}
@@ -314,16 +331,46 @@ public class Company extends Group {
 		return createdOn;
 	}
 
+	@Override
+	public String getUniqueId() {
+		return uniqueId;
+	}
+
+	@Override
+	public void setUniqueId(String uniqueId) {
+		try {
+			if (IWMainApplication.getDefaultIWMainApplication().getSettings().getBoolean("company.distinct_unique_ids", true)) {
+				IdGenerator uidGenerator = IdGeneratorFactory.getUUIDGenerator();
+				CompanyHome companyHome = (CompanyHome) IDOLookup.getHome(com.idega.company.data.Company.class);
+				try {
+					while (companyHome.findByUniqueId(uniqueId) != null) {
+						String tmp = uidGenerator.generateId();
+						Logger.getLogger(getClass().getName()).warning("Found existing company by unique ID " + uniqueId + ". Re-generated unique ID: " + tmp);
+						uniqueId = tmp;
+					}
+				} catch (Exception e) {}
+			}
+		} catch (Exception e) {}
+
+		this.uniqueId = uniqueId;
+	}
+
 	@PrePersist
 	private void prePersist() {
 		Date currentDate = new Date();
 		this.createdOn = currentDate;
 		this.lastChange = currentDate;
+		if (StringUtil.isEmpty(getUniqueId())) {
+			setUniqueId(IdGeneratorFactory.getUUIDGenerator().generateId());
+		}
 	}
 
 	@PreUpdate
 	private void preUpdate() {
 		this.lastChange = new Date();
+		if (StringUtil.isEmpty(getUniqueId())) {
+			setUniqueId(IdGeneratorFactory.getUUIDGenerator().generateId());
+		}
 	}
 
 }
