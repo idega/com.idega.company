@@ -66,7 +66,6 @@ public class Company extends Group {
 	public static final String UNREGISTER_TYPE = "unregister_type";
 	public static final String UNREGISTER_DATE = "unregister_date";
 	public static final String BAN_MARKING = "ban_marking";
-	public static final String UNIQUE_ID = "unique_id";
 
     public static final String nameProp = TABLE_NAME + CoreConstants.UNDER + COLUMN_NAME;
     @Column(name = COLUMN_NAME,insertable =  false, updatable = false)
@@ -147,9 +146,6 @@ public class Company extends Group {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = UNREGISTER_TYPE)
     private UnregisterType unregisterType;
-
-    @Column(name = UNIQUE_ID)
-    private String uniqueId;
 
 	@Override
 	public String getName() {
@@ -332,11 +328,6 @@ public class Company extends Group {
 	}
 
 	@Override
-	public String getUniqueId() {
-		return uniqueId;
-	}
-
-	@Override
 	public void setUniqueId(String uniqueId) {
 		try {
 			if (IWMainApplication.getDefaultIWMainApplication().getSettings().getBoolean("company.distinct_unique_ids", true)) {
@@ -352,7 +343,7 @@ public class Company extends Group {
 			}
 		} catch (Exception e) {}
 
-		this.uniqueId = uniqueId;
+		super.setUniqueId(uniqueId);
 	}
 
 	@PrePersist
